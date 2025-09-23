@@ -9,6 +9,22 @@ textarea {
   color: inherit;
 }
 
+/* Fix horizontal scroll caused by large images in Products section */
+#products .advantage__items { overflow-x: hidden; }
+#products .advantage__item { overflow: hidden; }
+#products .advantage__item img { width: 100%; max-width: 100%; height: auto; display: block; }
+
+/* Mobile: make advantages descriptions flex and wrap */
+@media (max-width: 540px) {
+  .advantage__item-desc {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+}
+
 input,
 textarea {
   padding: 0.625rem 1.25rem;
