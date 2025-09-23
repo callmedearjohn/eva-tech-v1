@@ -1,0 +1,53 @@
+# OS-specific
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+Desktop.ini
+
+# Editors/IDEs
+.vscode/
+.idea/
+*.code-workspace
+
+# Dependencies
+node_modules/
+vendor/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+.envrc
+!.env.example
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Build outputs / caches
+build/
+dist/
+coverage/
+.cache/
+.parcel-cache/
+.next/
+out/
+.tmp/
+.temp/
+
+# Misc
+*.pid
+*.pid.lock
+*.seed
+*.swp
+*.swo
+.phpunit.result.cache

@@ -1,0 +1,37 @@
+[
+    {
+        "code": "PROMO25",
+        "discountValue": 25,
+        "expirationDate": "2024-12-31"
+    },
+    {
+        "code": "KLDP5",
+        "discountValue": 5,
+        "expirationDate": "2024-12-31"
+    },
+    {
+        "code": "PBL5",
+        "discountValue": 5,
+        "expirationDate": "2024-12-31"
+    },
+    {
+        "code": "ARVND5",
+        "discountValue": 5,
+        "expirationDate": "2024-12-31"
+    },
+    {
+        "code": "SIJ5",
+        "discountValue": 5,
+        "expirationDate": "2024-12-31"
+    },
+    {
+        "code": "HRSHL5",
+        "discountValue": 5,
+        "expirationDate": "2024-12-31"
+    },
+    {
+        "code": "JTHN5",
+        "discountValue": 5,
+        "expirationDate": "2024-12-31"
+    }
+]
