@@ -167,10 +167,20 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function updateEligibility() {
+    const hasMakeAndModel = Boolean(state.make && state.model);
+    if (!hasMakeAndModel) {
+      state.thirdRowEligible = false;
+      thirdRowEl.disabled = true;
+      thirdRowEl.checked = false;
+      thirdRowNote.style.display = 'none';
+      return;
+    }
     const key = `${state.make}|${state.model}`.toLowerCase();
     state.thirdRowEligible = eligible.includes(key);
     thirdRowEl.disabled = !state.thirdRowEligible;
-    thirdRowEl.checked = state.thirdRowEligible ? thirdRowEl.checked : false;
+    if (!state.thirdRowEligible) {
+      thirdRowEl.checked = false;
+    }
     thirdRowNote.style.display = state.thirdRowEligible ? 'none' : 'block';
   }
 
@@ -273,7 +283,14 @@ document.addEventListener('DOMContentLoaded', () => {
           const evt = new Event('change', {bubbles:true});
           makeEl.dispatchEvent(evt);
           // after models load, set model
-          setTimeout(()=>{ modelEl.value = state.model; }, 800);
+          setTimeout(()=>{
+            if (state.model) {
+              modelEl.value = state.model;
+              try { __cfgModelNS && __cfgModelNS.update && __cfgModelNS.update(); } catch(_){ }
+              const ev2 = new Event('change', { bubbles: true });
+              modelEl.dispatchEvent(ev2);
+            }
+          }, 800);
         }
       }
     });
@@ -290,12 +307,12 @@ document.addEventListener('DOMContentLoaded', () => {
   addBtn.addEventListener('click', async ()=>{
     const module = await import('./cart.js');
     module.Cart.add({ ...toCartItem() });
-    window.location.href = '/cart';
+    window.location.href = '/cart.html';
   });
   buyBtn.addEventListener('click', async ()=>{
     const module = await import('./cart.js');
     module.Cart.add({ ...toCartItem() });
-    window.location.href = '/order';
+    window.location.href = '/order.html';
   });
 
   // modal open on thumbnail click

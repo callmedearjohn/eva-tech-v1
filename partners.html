@@ -78,6 +78,14 @@
       box-shadow: 0 0 0 2px rgba(0,0,0,0.04);
     }
 
+    /* Mini-survey modal */
+    .partner-survey { padding: 6px; }
+    .partner-survey__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .partner-survey__card { background: #fff; border-radius: 12px; padding: 16px; box-shadow: 0 2px 12px rgba(0,0,0,.08); display: flex; flex-direction: column; gap: 10px; }
+    .partner-survey__title { margin: 0; }
+    .partner-survey__desc { margin: 0 0 8px; color: #555; }
+    .partner-survey__btn { align-self: flex-start; }
+
     @media (max-width: 1024px) {
       .partners-hero__inner { grid-template-columns: 1fr; }
       .partners-hero__media { grid-template-columns: repeat(4, 1fr); grid-auto-rows: 90px; }
@@ -88,6 +96,7 @@
       .partners-hero__media { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 110px; }
       .partners-features__grid { grid-template-columns: 1fr; }
       .partner-forms__grid { grid-template-columns: 1fr; }
+      .partner-survey__grid { grid-template-columns: 1fr; }
     }
   </style>
 
@@ -205,6 +214,22 @@
           </div>
         </div>
       </section>
+      
+      <!-- Hidden survey template -->
+      <div id="partner-survey" class="partner-survey" style="display:none">
+        <div class="partner-survey__grid">
+          <div class="partner-survey__card" data-choice="collaboration">
+            <h3 class="partner-survey__title">Collaboration</h3>
+            <p class="partner-survey__desc">Launch your own EVA mats production using our brand, process, and training.</p>
+            <button class="button partner-survey__btn" data-choice-btn="collaboration">I want to become a partner</button>
+          </div>
+          <div class="partner-survey__card" data-choice="wholesale">
+            <h3 class="partner-survey__title">Wholesale</h3>
+            <p class="partner-survey__desc">Buy ready EVA mats in bulk for resale with tiered pricing.</p>
+            <button class="button partner-survey__btn" data-choice-btn="wholesale">I want to become a wholesaler</button>
+          </div>
+        </div>
+      </div>
     </main>
 
     <footer class="footer">
@@ -252,20 +277,29 @@
     </nav>
   </div>
 
+  <script src="./static/js/vendors/tingle/tingle.min.js"></script>
   <script>
     (function(){
       var cta = document.getElementById('partner-cta');
-      var forms = document.getElementById('partner-forms');
-      if (cta && forms) {
-        forms.classList.remove('is-visible');
-        cta.addEventListener('click', function(){
-          forms.classList.add('is-visible');
-          forms.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      var surveyTpl = document.getElementById('partner-survey');
+      var collabFormTpl = document.getElementById('collab-form');
+      var wholesaleFormTpl = document.getElementById('wholesale-form');
+
+      function createModal(){
+        return new tingle.modal({
+          footer: false,
+          closeMethods: ['overlay','escape','button'],
+          cssClass: ['modal']
         });
       }
-      function send(formId, type){
-        var form = document.getElementById(formId);
-        if(!form) return;
+
+      var surveyModal = createModal();
+      var formModal = createModal();
+
+      function attachSubmitHandlerInOpenModal(type){
+        // Find the form inside the currently open modal content
+        var form = document.querySelector('.tingle-modal .tingle-modal-box__content form');
+        if (!form) return;
         form.addEventListener('submit', function(e){
           e.preventDefault();
           var fd = new FormData(form);
@@ -274,12 +308,42 @@
           var payload = { formName: 'partner', type: type };
           for (var k in data) payload[k] = data[k];
           fetch('action.php', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) })
-            .then(function(res){ if(res.ok){ alert('Sent! We will contact you shortly.'); form.reset(); } else { alert('Failed to send.'); } })
+            .then(function(res){ if(res.ok){ alert('Sent! We will contact you shortly.'); form.reset(); formModal.close(); } else { alert('Failed to send.'); } })
             .catch(function(){ alert('Failed to send.'); });
         });
       }
-      send('collab-form', 'collaboration');
-      send('wholesale-form', 'wholesale');
+
+      function openForm(type){
+        var tpl = type === 'collaboration' ? collabFormTpl : wholesaleFormTpl;
+        if (!tpl) return;
+        formModal.setContent(tpl.outerHTML);
+        formModal.open();
+        // Defer to ensure content is in DOM
+        setTimeout(function(){ attachSubmitHandlerInOpenModal(type); }, 0);
+      }
+
+      function openSurvey(){
+        if (!surveyTpl) return;
+        // render without the inline display:none
+        surveyModal.setContent('<div class="partner-survey">' + surveyTpl.innerHTML + '</div>');
+        surveyModal.open();
+        // Attach click handlers on survey buttons
+        setTimeout(function(){
+          var btns = document.querySelectorAll('.tingle-modal .partner-survey [data-choice-btn]');
+          btns.forEach(function(btn){
+            btn.addEventListener('click', function(e){
+              e.preventDefault();
+              var choice = btn.getAttribute('data-choice-btn');
+              surveyModal.close();
+              openForm(choice);
+            });
+          });
+        }, 0);
+      }
+
+      if (cta) {
+        cta.addEventListener('click', function(){ openSurvey(); });
+      }
     })();
   </script>
   <script defer src="./static/js/vendors/nice-select2/nice-select2.js"></script>

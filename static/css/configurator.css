@@ -2,12 +2,13 @@
   display: grid;
   grid-template-columns: 1.2fr 1.6fr 1fr;
   gap: 2rem;
+  align-items: start;
 }
 
 .configurator__preview img { width: 100%; border-radius: 8px; }
 .pattern-overlay { position:absolute; inset:0; pointer-events:none; background-size: 160px auto; opacity:.25; mix-blend-mode:multiply; border-radius:8px; }
 .configurator__main-image { position:relative; }
-.configurator__thumbnails { display:flex; gap:.5rem; margin-top:.5rem; }
+.configurator__thumbnails { display:flex; gap:.5rem; margin-top:.5rem; flex-wrap:wrap; }
 .configurator__thumbnails img { width: 80px; height: 60px; object-fit: cover; border-radius:6px; cursor:pointer; }
 
 .cfg-block { margin-bottom: 1.5rem; }
@@ -18,7 +19,7 @@
 .cfg-swatch { display:inline-flex; align-items:center; gap:.5rem; margin-right:1rem; cursor:pointer; }
 .cfg-help { color: var(--clr-dark-grey); font-size:.9rem; }
 
-.configurator__summary .summary-card { border:1px solid #ddd; border-radius:8px; padding:1rem; position:sticky; top:1rem; }
+.configurator__summary .summary-card { border:1px solid #ddd; border-radius:8px; padding:1rem; position:sticky; top:1rem; background:#fff; box-shadow:0 2px 8px rgba(0,0,0,.04); }
 .configurator__summary .summary-total { display:flex; justify-content:space-between; border-top:1px solid #eee; margin-top:1rem; padding-top:.75rem; }
 .summary-actions { display:grid; grid-template-columns: 1fr 1fr; gap:.5rem; margin-top:1rem; }
 .badge { margin-top:.5rem; background:#1c7c1c; color:#fff; padding:.25rem .5rem; border-radius:4px; width:max-content; }
@@ -28,5 +29,9 @@
   .cfg-row { grid-template-columns: 1fr; }
   .summary-actions { grid-template-columns: 1fr; }
 }
+
+/* Improve selects appearance with NiceSelect fallback */
+.constructor-step__select { min-height: 42px; }
+.select__arow { background-position: right 10px center; }
 
 
