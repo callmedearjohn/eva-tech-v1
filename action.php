@@ -376,6 +376,79 @@ function sendPartnerEmail($data, $mail) {
 		$mail->AltBody = strip_tags(str_replace(['<br>', '<br/>', '<br />'], "\n", $body));
 
 		$mail->send();
+
+		// Send confirmation email to the submitter (pretty HTML)
+		if (!empty($submitterEmail)) {
+			$displayName = trim($data['name'] ?? '');
+			$company     = trim($data['company'] ?? '');
+			$messageTxt  = trim($data['message'] ?? '');
+			$greeting    = $displayName !== '' ? 'Hi ' . htmlspecialchars($displayName) . ',' : 'Hi,';
+			$hEmail      = htmlspecialchars($submitterEmail);
+			$hPhone      = htmlspecialchars($submitterPhone);
+			$hDate       = htmlspecialchars($now);
+
+			$summaryTitle = 'Your request';
+			$summaryList  = '';
+			if ($type === 'collaboration') {
+				$summaryList =
+					'<li><strong>Name:</strong> ' . htmlspecialchars($displayName) . '</li>' .
+					'<li><strong>Email:</strong> ' . $hEmail . '</li>' .
+					'<li><strong>Phone:</strong> ' . $hPhone . '</li>' .
+					'<li><strong>Message:</strong> ' . nl2br(htmlspecialchars($messageTxt)) . '</li>' .
+					'<li><strong>Date:</strong> ' . $hDate . '</li>';
+			} elseif ($type === 'wholesale') {
+				$summaryList =
+					'<li><strong>Company:</strong> ' . htmlspecialchars($company) . '</li>' .
+					'<li><strong>Email:</strong> ' . $hEmail . '</li>' .
+					'<li><strong>Phone:</strong> ' . $hPhone . '</li>' .
+					'<li><strong>Request:</strong> ' . nl2br(htmlspecialchars($messageTxt)) . '</li>' .
+					'<li><strong>Date:</strong> ' . $hDate . '</li>';
+			} else {
+				$summaryList =
+					'<li><strong>Email:</strong> ' . $hEmail . '</li>' .
+					'<li><strong>Phone:</strong> ' . $hPhone . '</li>' .
+					'<li><strong>Date:</strong> ' . $hDate . '</li>';
+			}
+
+			$brand = '#1a9';
+			$confirmBodyHtml =
+				"<html><body style='background:#f6f9fc;margin:0;padding:24px;'>" .
+				"<div style='max-width:620px;margin:0 auto;background:#ffffff;border:1px solid #e9eef3;border-radius:10px;overflow:hidden;'>" .
+					"<div style='padding:16px 20px;border-bottom:1px solid #eef3f7;background:#ffffff;'>" .
+						"<div style='font-size:18px;font-weight:700;color:#111;letter-spacing:0.2px;'>EVATECH</div>" .
+						"<div style='margin-top:2px;color:#667085;font-size:12px;'>Partner request received</div>" .
+					"</div>" .
+					"<div style='padding:22px 24px;'>" .
+						"<p style='margin:0 0 12px;color:#111;font-size:15px;'>$greeting</p>" .
+						"<p style='margin:0 0 12px;color:#2c2c2c;font-size:14px;line-height:1.6;'>Thanks for contacting <span style='color:$brand;font-weight:600;'>EVATECH</span>. We&rsquo;ve received your message and will get back to you within 1 business day.</p>" .
+						"<div style='margin:16px 0 8px;padding:14px 16px;background:#fafbfc;border:1px solid #edf2f7;border-radius:8px;'>" .
+							"<div style='font-weight:600;color:#111;font-size:14px;margin:0 0 8px;'>$summaryTitle</div>" .
+							"<ul style='margin:0;padding:0;list-style:none;color:#444;font-size:13px;line-height:1.6;'>$summaryList</ul>" .
+						"</div>" .
+						"<p style='margin:16px 0 0;color:#444;font-size:13px;line-height:1.6;'>If you need help sooner, email us at <a style='color:$brand;text-decoration:none;' href='mailto:info.evatech.ca@gmail.com'>info.evatech.ca@gmail.com</a> or call <a style='color:$brand;text-decoration:none;' href='tel:+16132141621'>+1 613-214-1621</a>.</p>" .
+						"<p style='margin:16px 0 0;color:#111;font-size:14px;'>— EVATECH Team</p>" .
+					"</div>" .
+					"<div style='padding:12px 20px;border-top:1px solid #eef3f7;background:#ffffff;color:#8a94a6;font-size:12px;text-align:center;'>Kingston, ON · <a style='color:$brand;text-decoration:none;' href='https://www.instagram.com/evatech.ca/'>Instagram</a> · <a style='color:$brand;text-decoration:none;' href='https://www.facebook.com/people/VI-CarMats/61556124253098/?mibextid=sCpJLy'>Facebook</a></div>" .
+				"</div>" .
+				"</body></html>";
+
+			$confirmAlt =
+				"Thanks for contacting EVATECH. We&rsquo;ve received your message and will get back to you within 1 business day.\n\n" .
+				"$summaryTitle:\n" .
+				strip_tags(str_replace(['<br>', '<br/>', '<br />'], "\n", preg_replace('/<li>\s*<strong>/', '- ', $summaryList))) .
+				"\n\n— EVATECH Team\nKingston, ON\nInstagram: https://www.instagram.com/evatech.ca/\nFacebook: https://www.facebook.com/people/VI-CarMats/61556124253098/?mibextid=sCpJLy";
+
+			$mail->clearAddresses();
+			$mail->clearReplyTos();
+			$mail->addAddress($submitterEmail);
+			$mail->setFrom('info@eva-tech.ca', 'EVATECH Team');
+			$mail->isHTML(true);
+			$mail->Subject = 'We\'ve received your request — EVATECH';
+			$mail->Body = $confirmBodyHtml;
+			$mail->AltBody = $confirmAlt;
+			$mail->send();
+		}
+
 		return true;
 	} catch (Exception $e) {
 		return $e->getMessage();

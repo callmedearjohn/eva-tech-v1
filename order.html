@@ -318,6 +318,10 @@
       var listEl = document.getElementById('order-list');
       var setNameMap = { front: 'Economy', full: 'Standart', complete: 'Premium' };
       var clamp = function(n){ n = Number(n); if(!Number.isFinite(n)) n = 1; n = Math.max(1, Math.min(99, n)); return n; };
+      var totalsEl = document.querySelector('.order__total');
+      var paymentEl = document.querySelector('.order__payment');
+      var submitBtn = document.querySelector('.modalBuy__form-submit');
+      var formEl = document.querySelector('form[name="modalBuy"]');
 
       function save(items){ try { localStorage.setItem('evatech_cart_v1', JSON.stringify(items)); } catch(_){} }
       function read(){ try { return JSON.parse(localStorage.getItem('evatech_cart_v1')||'[]'); } catch(_){ return []; } }
@@ -343,9 +347,15 @@
         listEl.innerHTML = '';
         if (!Array.isArray(items) || items.length === 0) {
           var empty = document.createElement('p');
-          empty.textContent = 'Your cart is empty.';
+          empty.textContent = 'Your order is empty.';
           listEl.appendChild(empty);
+          if (totalsEl) totalsEl.style.display = 'none';
+          if (paymentEl) paymentEl.style.display = 'none';
+          if (submitBtn) submitBtn.style.display = 'none';
         } else {
+          if (totalsEl) totalsEl.style.display = '';
+          if (paymentEl) paymentEl.style.display = '';
+          if (submitBtn) submitBtn.style.display = '';
           syncLegacyUserData(items[0]);
           items.forEach(function(it, idx){
             var wrap = document.createElement('div');
@@ -419,6 +429,16 @@
 
       window.addEventListener('storage', function(e){ if (e.key === 'evatech_cart_v1') render(); });
       render();
+
+      if (formEl) {
+        formEl.addEventListener('submit', function(e){
+          var items = read();
+          if (!Array.isArray(items) || items.length === 0) {
+            e.preventDefault();
+            e.stopPropagation();
+          }
+        });
+      }
     });
   </script>
 </body>
