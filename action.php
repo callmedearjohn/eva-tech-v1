@@ -426,7 +426,7 @@ function sendPartnerEmail($data, $mail) {
 							"<ul style='margin:0;padding:0;list-style:none;color:#444;font-size:13px;line-height:1.6;'>$summaryList</ul>" .
 						"</div>" .
 						"<p style='margin:16px 0 0;color:#444;font-size:13px;line-height:1.6;'>If you need help sooner, email us at <a style='color:$brand;text-decoration:none;' href='mailto:info.evatech.ca@gmail.com'>info.evatech.ca@gmail.com</a> or call <a style='color:$brand;text-decoration:none;' href='tel:+16132141621'>+1 613-214-1621</a>.</p>" .
-						"<p style='margin:16px 0 0;color:#111;font-size:14px;'>— EVATECH Team</p>" .
+						"<p style='margin:16px 0 0;color:#111;font-size:14px;'>EVATECH Team</p>" .
 					"</div>" .
 					"<div style='padding:12px 20px;border-top:1px solid #eef3f7;background:#ffffff;color:#8a94a6;font-size:12px;text-align:center;'>Kingston, ON · <a style='color:$brand;text-decoration:none;' href='https://www.instagram.com/evatech.ca/'>Instagram</a> · <a style='color:$brand;text-decoration:none;' href='https://www.facebook.com/people/VI-CarMats/61556124253098/?mibextid=sCpJLy'>Facebook</a></div>" .
 				"</div>" .
@@ -443,7 +443,7 @@ function sendPartnerEmail($data, $mail) {
 			$mail->addAddress($submitterEmail);
 			$mail->setFrom('info@eva-tech.ca', 'EVATECH Team');
 			$mail->isHTML(true);
-			$mail->Subject = 'We\'ve received your request — EVATECH';
+			$mail->Subject = 'We\'ve received your request - EVATECH';
 			$mail->Body = $confirmBodyHtml;
 			$mail->AltBody = $confirmAlt;
 			$mail->send();
