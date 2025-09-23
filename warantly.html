@@ -58,7 +58,7 @@
           <nav class="about-info__menu">
             <ul class="menu__nav-list">
               <li class="nav__list-item">
-                <a href="/" class="nav__list-link">Home</a>
+                <a href="#home" class="nav__list-link">Home</a>
               </li>
               <li class="nav__list-item">
                 <a href="about-product" class="nav__list-link">What is Eva?</a>
@@ -67,7 +67,7 @@
                 <a href="/#price-constructor" class="nav__list-link">Price</a>
               </li>
               <li class="nav__list-item">
-                <a href="#home" class="nav__list-link">Warranty</a>
+                <a href="warantly" class="nav__list-link">Warranty</a>
               </li>
               <li class="nav__list-item">
                 <a href="delivery" class="nav__list-link">Delivery</a>
@@ -75,38 +75,34 @@
               <li class="nav__list-item">
                 <a href="about-us" class="nav__list-link">About us</a>
               </li>
+              <li class="nav__list-item">
+                <a href="partners" class="nav__list-link">Partners</a>
+              </li>
             </ul>
             <div class="about-info__social">
-              <button class="social-btn">Contact Us
+              <a href="cart" class="about-info__link about-info__link-main" style="position:relative;">
+                Cart
+                <span style="position:absolute; top:-8px; right:-10px; background:#d42920; color:#fff; border-radius:12px; padding:2px 6px; font-size:12px;" data-cart-count>0</span>
+              </a>
+              <button class="social-btn social-btn-main">Contact Us
                 <img id="arow" src="static/images/arow.svg" alt="">
               </button>
-              <div class="social__list fadeOut">
+              <div class="social__list social__list-main fadeOut">
                 <a aria-label="Custom EVA mats phone" href="tel:+16139857956" target="_blank"
-                  class="about-info__link about-info__text">
-                  <!-- <i class="icon-call-in"></i> -->
-                  +1 613-214-1621
-                </a>
+                  class="about-info__link about-info__text about-info__text-main">+1 613-214-1621</a>
                 <a aria-label="Custom EVA mats gmail" href="mailto:info.evatech.ca@gmail.com" target="_blank"
-                  class="about-info__link about-info__text">
-                  <!-- <i class="icon-mail"></i> -->
-                  info.evatech.ca@gmail.com
-                </a>
+                  class="about-info__link about-info__text about-info__text-main">info.evatech.ca@gmail.com</a>
                 <div class="about__info-icon">
                   <a aria-label="Custom EVA mats facebook"
                     href="https://www.facebook.com/people/VI-CarMats/61556124253098/?mibextid=sCpJLy" target="_blank"
-                    class="about-info__link">
-                    <i class="icon-facebook"></i>
-                  </a>
+                    class="about-info__link about-info__link-main"><i class="icon-facebook"></i></a>
                   <a aria-label="Custom EVA mats instagram" href="
-                                    https://www.instagram.com/evatech.ca" target="_blank"
-                    class="about-info__link">
-                    <i class="icon-instagram"></i>
-                  </a>
+                                    https://www.instagram.com/evatech.ca" target="_blank" class="about-info__link about-info__link-main"><i class="icon-instagram"></i></a>
                 </div>
               </div>
             </div>
           </nav>
-          <img class="burger-btn" src="static/images/burgerBtn.svg" alt="">
+          <img class="burger-btn" src="static/images/burgerBtn.svg" alt="" loading="lazy">
         </div>
       </div>
     </header>
@@ -189,7 +185,10 @@
           <a href="/#price-constructor">Price</a>
         </li>
         <li class="header__menu-item">
-          <a href="#home">Warranty</a>
+          <a href="warantly">Warranty</a>
+        </li>
+        <li class="header__menu-item">
+          <a href="partners">Partners</a>
         </li>
         <li class="header__menu-item">
           <a href="delivery">Delivery</a>
@@ -224,6 +223,8 @@
       </div>
     </nav>
   </div>
+  <script defer src="./static/js/vendors/nice-select2/nice-select2.js"></script>
+  <script defer src="static/js/cart-badge.js"></script>
   <script src="static/js/dist/burger.bundle.js"></script>
 </body>
 

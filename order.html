@@ -196,7 +196,7 @@
                   </div>
                   <div class="order__product-item">
                     <p class="total-text">Set name</p>
-                    <p class="order__product-desc" id="orderType">Economy</p>
+                    <p class="order__product-desc" id="orderType">—</p>
                   </div>
                   <div class="order__product-item">
                     <p class="total-text bold">Price</p>
@@ -324,6 +324,26 @@
   <script src="static/js/dist/shipping.bundle.js"></script>
   <script defer src="static/js/cart-badge.js"></script>
   <script defer src="static/js/checkout-bridge.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function(){
+      try {
+        const cart = JSON.parse(localStorage.getItem('evatech_cart_v1')||'[]');
+        const it = Array.isArray(cart) && cart[0] ? cart[0] : null;
+        if (it) {
+          var setNameMap = { front: 'Economy', full: 'Standart', complete: 'Premium' };
+          document.getElementById('orderType').textContent = setNameMap[it.set] || it.set || '—';
+          document.getElementById('orderCar').textContent = it.make + ' ' + it.model;
+          document.getElementById('orderCarYear').textContent = it.year;
+          var img = document.querySelector('.order__product-img');
+          if (img && it.matColor) {
+            img.src = 'static/images/price-constructor/color-combinations/' + (it.matColor||'black') + '-' + (it.trimColor||it.matColor||'black') + '.jpg';
+          }
+          var priceEl = document.querySelector('.order__product-sum');
+          if (priceEl && typeof it.subtotal === 'number') priceEl.textContent = String(it.subtotal);
+        }
+      } catch(_){}
+    });
+  </script>
 </body>
 
 </html>

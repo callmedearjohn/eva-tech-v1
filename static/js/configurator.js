@@ -24,6 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const freeShipEl = $('#free-shipping');
   const addBtn = $('#summary-add');
   const buyBtn = $('#summary-buy');
+  const vehicleSummaryEl = document.getElementById('cfg-vehicle-summary');
 
   const PRICES = { front: 59, full: 139, complete: 219 };
 
@@ -35,14 +36,15 @@ document.addEventListener('DOMContentLoaded', () => {
     thirdRowEligible: false
   };
 
-  // NiceSelect binding if available
+  // NiceSelect binding if available (bind once, then call update())
+  let __cfgMakeNS, __cfgModelNS, __cfgYearNS, __cfgMatNS, __cfgTrimNS;
   try {
     if (window.NiceSelect) {
-      window.NiceSelect.bind(makeEl);
-      window.NiceSelect.bind(modelEl);
-      window.NiceSelect.bind(yearEl);
-      window.NiceSelect.bind(matColorEl);
-      window.NiceSelect.bind(trimColorEl);
+      __cfgMakeNS = window.NiceSelect.bind(makeEl);
+      __cfgModelNS = window.NiceSelect.bind(modelEl);
+      __cfgYearNS  = window.NiceSelect.bind(yearEl);
+      __cfgMatNS   = window.NiceSelect.bind(matColorEl);
+      __cfgTrimNS  = window.NiceSelect.bind(trimColorEl);
     }
   } catch(_) {}
 
@@ -51,6 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
   for (let y = 1990; y <= now.getFullYear(); y++) {
     yearEl.insertAdjacentHTML('beforeend', `<option value="${y}">${y}</option>`);
   }
+  try { __cfgYearNS && __cfgYearNS.update && __cfgYearNS.update(); } catch(_){}
 
   // Makes & models via same API used on homepage script
   const marksUrl = 'https://api.auto.ria.com/categories/1/marks/';
@@ -59,15 +62,80 @@ document.addEventListener('DOMContentLoaded', () => {
     const homepageMake = document.getElementById('car-make');
     if (homepageMake) {
       makeEl.innerHTML = homepageMake.innerHTML;
-      if (window.NiceSelect) window.NiceSelect.bind(makeEl);
+      try { __cfgMakeNS && __cfgMakeNS.update && __cfgMakeNS.update(); } catch(_){}
+    } else {
+      // Fallback: inject full static makes list (mirrors homepage select)
+      makeEl.innerHTML = [
+        '<option disabled selected value>Make</option>',
+        '<option value="98">Acura</option>',
+        '<option value="3">Alfa Romeo</option>',
+        '<option value="5">Aston Martin</option>',
+        '<option value="6">Audi</option>',
+        '<option value="8">Bentley</option>',
+        '<option value="9">BMW</option>',
+        '<option value="109">Bugatti</option>',
+        '<option value="110">Buick</option>',
+        '<option value="11">Cadillac</option>',
+        '<option value="13">Chevrolet</option>',
+        '<option value="14">Chrysler</option>',
+        '<option value="118">Dodge</option>',
+        '<option value="22">Ferrari</option>',
+        '<option value="23">Fiat</option>',
+        '<option value="3444">Fisker</option>',
+        '<option value="24">Ford</option>',
+        '<option value="2604">Genesis</option>',
+        '<option value="123">GMC</option>',
+        '<option value="28">Honda</option>',
+        '<option value="127">Hummer</option>',
+        '<option value="29">Hyundai</option>',
+        '<option value="128">Infiniti</option>',
+        '<option value="30">Isuzu</option>',
+        '<option value="31">Jaguar</option>',
+        '<option value="32">Jeep</option>',
+        '<option value="33">Kia</option>',
+        '<option value="35">Lamborghini</option>',
+        '<option value="37">Land Rover</option>',
+        '<option value="38">Lexus</option>',
+        '<option value="135">Lincoln</option>',
+        '<option value="6317">Lucid</option>',
+        '<option value="45">Maserati</option>',
+        '<option value="46">Maybach</option>',
+        '<option value="47">Mazda</option>',
+        '<option value="3101">McLaren</option>',
+        '<option value="48">Mercedes-Benz</option>',
+        '<option value="144">Mercury</option>',
+        '<option value="49">MG</option>',
+        '<option value="147">MINI</option>',
+        '<option value="52">Mitsubishi</option>',
+        '<option value="55">Nissan</option>',
+        '<option value="6131">Polestar</option>',
+        '<option value="149">Pontiac</option>',
+        '<option value="59">Porsche</option>',
+        '<option value="4369">Ram</option>',
+        '<option value="63">Rolls-Royce</option>',
+        '<option value="65">Saab</option>',
+        '<option value="331">Saturn</option>',
+        '<option value="3268">Scion</option>',
+        '<option value="70">Skoda</option>',
+        '<option value="71">Smart</option>',
+        '<option value="75">Subaru</option>',
+        '<option value="76">Suzuki</option>',
+        '<option value="2233">Tesla</option>',
+        '<option value="79">Toyota</option>',
+        '<option value="84">Volkswagen</option>',
+        '<option value="85">Volvo</option>'
+      ].join('');
+      try { __cfgMakeNS && __cfgMakeNS.update && __cfgMakeNS.update(); } catch(_){}
     }
   }
   async function loadModelsByMake(makeId) {
     modelEl.innerHTML = '<option selected disabled>Model</option>';
-    const res = await fetch(`${marksUrl}${makeId}/models`);
-    const models = await res.json();
-    models.forEach(m => modelEl.insertAdjacentHTML('beforeend', `<option value="${m.name}">${m.name}</option>`));
-    if (window.NiceSelect) window.NiceSelect.bind(modelEl);
+    try {
+      const res = await fetch(`${marksUrl}${makeId}/models`);
+      const models = await res.json();
+      models.forEach(m => modelEl.insertAdjacentHTML('beforeend', `<option value="${m.name}">${m.name}</option>`));
+    } catch(_) {}
+    try { __cfgModelNS && __cfgModelNS.update && __cfgModelNS.update(); } catch(_){}
   }
 
   // Colors from JSON (fallback to defaults)
@@ -83,7 +151,10 @@ document.addEventListener('DOMContentLoaded', () => {
       matColorEl.innerHTML = '<option selected disabled>Choose</option>' + mats.map(c=>`<option value="${c.toLowerCase()}">${c}</option>`).join('');
       trimColorEl.innerHTML = '<option selected disabled>Choose</option>' + trims.map(c=>`<option value="${c.toLowerCase()}">${c}</option>`).join('');
     }
-    if (window.NiceSelect) { window.NiceSelect.bind(matColorEl); window.NiceSelect.bind(trimColorEl); }
+    try {
+      __cfgMatNS && __cfgMatNS.update && __cfgMatNS.update();
+      __cfgTrimNS && __cfgTrimNS.update && __cfgTrimNS.update();
+    } catch(_){}
   }
 
   // 3rd row eligibility
@@ -111,6 +182,10 @@ document.addEventListener('DOMContentLoaded', () => {
     summarySubtotalEl.textContent = String(subtotal);
     state.subtotal = subtotal;
     freeShipEl.style.display = subtotal >= 100 ? 'block' : 'none';
+    if (vehicleSummaryEl) {
+      const mm = [state.make, state.model, state.year].filter(Boolean).join(' ');
+      vehicleSummaryEl.textContent = `Make/Model/Price: ${mm || '—'}${mm? ' — ' : ''}${subtotal}$`;
+    }
   }
 
   function syncSummary() {
@@ -146,6 +221,17 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
     } catch(_){}
+
+    // gallery swap by color
+    try {
+      const mainImg = document.getElementById('preview-image');
+      const thumbs = document.querySelectorAll('.configurator__thumbnails img');
+      if (state.matColor) {
+        const base = `./static/images/price-constructor/color-combinations/${state.matColor}-${state.trimColor||state.matColor}.jpg`;
+        if (mainImg) mainImg.src = base;
+        thumbs.forEach((t, idx)=>{ t.src = base.replace('.jpg', idx===0? '.jpg' : idx===1? '.jpg' : '.jpg'); });
+      }
+    } catch(_) {}
   }
 
   // Listeners
@@ -173,7 +259,10 @@ document.addEventListener('DOMContentLoaded', () => {
     state.make = params.get('make') || ls.carMake || state.make;
     state.model = params.get('model') || ls.carModel || state.model;
     state.year = params.get('year') || ls.carYear || state.year;
-    if (state.year) yearEl.value = state.year;
+    if (state.year) {
+      yearEl.value = state.year;
+      try { __cfgYearNS && __cfgYearNS.update && __cfgYearNS.update(); } catch(_){}
+    }
     loadMakes().then(()=>{
       const homepageMake = document.getElementById('car-make');
       if (homepageMake) {
@@ -208,6 +297,22 @@ document.addEventListener('DOMContentLoaded', () => {
     module.Cart.add({ ...toCartItem() });
     window.location.href = '/order';
   });
+
+  // modal open on thumbnail click
+  (function enableModal(){
+    const thumbs = document.querySelectorAll('.configurator__thumbnails img, .configurator__main-image img');
+    function openModal(src){
+      if (window.tingle) {
+        const modal = new tingle.modal({ footer: false, closeMethods: ['overlay','escape','button'] });
+        modal.setContent(`<img src="${src}" style="max-width:100%;height:auto;display:block;margin:0 auto;" alt="">`);
+        modal.open();
+      } else {
+        // fallback
+        const w = window.open(src, '_blank'); if (w) w.focus();
+      }
+    }
+    thumbs.forEach(el=> el.addEventListener('click', ()=> openModal(el.src)));
+  })();
 });
 
 

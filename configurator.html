@@ -9,27 +9,78 @@
   <link rel="stylesheet" href="./static/css/hero-selector.css">
   <link rel="stylesheet" href="./static/css/style.min.css">
   <link rel="stylesheet" href="./static/css/configurator.css">
+  <link rel="stylesheet" href="./static/js/vendors/tingle/tingle.min.css">
 </head>
 <body>
-  <div class="wrapper">
+  <div class="wrapper" id="home">
     <header class="header">
       <div class="container">
         <div class="about-info">
           <a href="/" aria-label="Custom EVA mats for the interior of your car" class="logo about-info__logo">
-            <img class="logo__image" src="static/images/logo3_1.svg" alt="Evacode logo">
+            <img class="logo__image" src="./static/images/logo3_1.svg" loading="lazy" alt="Evacode logo">
           </a>
           <nav class="about-info__menu">
             <ul class="menu__nav-list">
-              <li class="nav__list-item"><a href="/" class="nav__list-link">Home</a></li>
-              <li class="nav__list-item"><a href="about-product" class="nav__list-link">What is Eva?</a></li>
-              <li class="nav__list-item"><a href="/configurator" class="nav__list-link">Configurator</a></li>
+              <li class="nav__list-item">
+                <a href="#home" class="nav__list-link">Home</a>
+              </li>
+              <li class="nav__list-item">
+                <a href="about-product" class="nav__list-link">What is Eva?</a>
+              </li>
+              <li class="nav__list-item">
+                <a href="/#price-constructor" class="nav__list-link">Price</a>
+              </li>
+              <li class="nav__list-item">
+                <a href="warantly" class="nav__list-link">Warranty</a>
+              </li>
+              <li class="nav__list-item">
+                <a href="delivery" class="nav__list-link">Delivery</a>
+              </li>
+              <li class="nav__list-item">
+                <a href="about-us" class="nav__list-link">About us</a>
+              </li>
+              <li class="nav__list-item">
+                <a href="partners" class="nav__list-link">Partners</a>
+              </li>
             </ul>
             <div class="about-info__social">
               <a href="cart" class="about-info__link about-info__link-main" style="position:relative;">
-                Cart <span style="position:absolute; top:-8px; right:-10px; background:#d42920; color:#fff; border-radius:12px; padding:2px 6px; font-size:12px;" data-cart-count>0</span>
+                Cart
+                <span style="position:absolute; top:-8px; right:-10px; background:#d42920; color:#fff; border-radius:12px; padding:2px 6px; font-size:12px;" data-cart-count>0</span>
               </a>
+              <button class="social-btn social-btn-main">Contact Us
+                <svg id="arow" width="12" height="7" viewBox="0 0 12 7" fill="none"
+                  xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd" clip-rule="evenodd"
+                    d="M0 1.40051L5.96734 7.00272L6.00006 6.97063L6.031 7.00097L12 1.40051L10.5718 0.000421405L5.99867 4.2912L1.42778 0L0 1.40051Z"
+                    fill="white" />
+                </svg>
+              </button>
+              <div class="social__list social__list-main fadeOut">
+                <a aria-label="Custom EVA mats phone" href="tel:+16139857956" target="_blank"
+                  class="about-info__link about-info__text about-info__text-main">
+                  +1 613-214-1621
+                </a>
+                <a aria-label="Custom EVA mats gmail" href="mailto:info.evatech.ca@gmail.com"
+                  target="_blank" class="about-info__link about-info__text about-info__text-main">
+                  info.evatech.ca@gmail.com
+                </a>
+                <div class="about__info-icon">
+                  <a aria-label="Custom EVA mats facebook"
+                    href="https://www.facebook.com/people/VI-CarMats/61556124253098/?mibextid=sCpJLy"
+                    target="_blank" class="about-info__link about-info__link-main">
+                    <i class="icon-facebook"></i>
+                  </a>
+                  <a aria-label="Custom EVA mats instagram" href="
+                                        https://www.instagram.com/evatech.ca/" target="_blank"
+                    class="about-info__link about-info__link-main">
+                    <i class="icon-instagram"></i>
+                  </a>
+                </div>
+              </div>
             </div>
           </nav>
+          <img class="burger-btn" src="static/images/burgerBtn.svg" alt="" loading="lazy">
         </div>
       </div>
     </header>
@@ -59,6 +110,7 @@
                 <select id="cfg-model" class="select constructor-step__select constructor-step__control form-control select__arow"><option selected disabled>Model</option></select>
                 <select id="cfg-year" class="select constructor-step__select constructor-step__control form-control select__arow"><option selected disabled>Year</option></select>
               </div>
+              <p id="cfg-vehicle-summary" class="cfg-help">Make/Model/Price: —</p>
             </div>
 
             <div class="cfg-block">
@@ -127,16 +179,98 @@
     <footer class="footer">
       <div class="about-info">
         <a href="/" aria-label="Custom EVA mats for the interior of your car" class="logo about-info__logo">
-          <img class="logo__image" src="/static/images/logo3_1.svg" alt="Evacode logo">
+          <img class="logo__image" src="/static/images/logo3_1.svg" loading="lazy" alt="Evacode logo">
         </a>
+        <div class="about-info__social">
+          <a aria-label="Custom EVA mats facebook"
+            href="https://www.facebook.com/people/VI-CarMats/61556124253098/?mibextid=sCpJLy"
+            target="_blank" class="about-info__link about-info__link-main">
+            <i class="icon-facebook"></i>
+          </a>
+          <a aria-label="Custom EVA mats instagram" href="
+                          https://www.instagram.com/evatech.ca" target="_blank"
+            class="about-info__link about-info__link-main">
+            <i class="icon-instagram"></i>
+          </a>
+          <a aria-label="Custom EVA mats gmail" href="mailto:info.evatech.ca@gmail.com" target="_blank"
+            class="about-info__link about-info__text-main">
+            <i class="icon-mail"></i>
+            info.evatech.ca@gmail.com
+          </a>
+          <a aria-label="Custom EVA mats phone" href="tel:+16139857956" target="_blank"
+            class="about-info__link about-info__text-main">
+            <i class="icon-call-in"></i>
+            +1 613-214-1621
+          </a>
+          <p class="about-info__text about-info__text-main about-info__location">Our Location: Kingston, ON
+          </p>
+        </div>
       </div>
     </footer>
+  </div>
+  <div class="header__menu-mobile">
+    <div class="header__menu-top">
+      <a href="/" aria-label="Custom EVA mats for the interior of your car" class="logo header__menu-logo">
+        <img loading="lazy" src="static/images/logo2 1.svg" alt="Evacode logo">
+      </a>
+      <img class="close-btn" src="static/images/xmark-solid.svg" loading="lazy" alt="">
+    </div>
+    <nav class="header__menu-nav">
+      <ul class="header__menu-items">
+        <li class="header__menu-item">
+          <a href="#home">Home</a>
+        </li>
+        <li class="header__menu-item">
+          <a href="about-product">What is Eva?</a>
+        </li>
+        <li class="header__menu-item">
+          <a href="/#price-constructor">Price</a>
+        </li>
+        <li class="header__menu-item">
+          <a href="warantly">Warranty</a>
+        </li>
+        <li class="header__menu-item">
+          <a href="delivery">Delivery</a>
+        </li>
+        <li class="header__menu-item">
+          <a href="about-us">About us</a>
+        </li>
+        <li class="header__menu-item">
+          <a href="partners">Partners</a>
+        </li>
+      </ul>
+      <div class="header__menu-social">
+        <div class="header__menu-icon">
+          <a aria-label="Custom EVA mats facebook"
+            href="https://www.facebook.com/people/VI-CarMats/61556124253098/?mibextid=sCpJLy"
+            target="_blank" class="header_menu-link">
+            <i class="icon-facebook"></i>
+          </a>
+          <a aria-label="Custom EVA mats instagram" href="
+                  https://www.instagram.com/evatech.ca/" target="_blank"
+            class="header_menu-link">
+            <i class="icon-instagram"></i>
+          </a>
+        </div>
+        <a aria-label="Custom EVA mats phone" href="tel:+16139857956" target="_blank"
+          class="header_menu-link about-info__text-main">
+          +1 613-214-1621
+        </a>
+        <a aria-label="Custom EVA mats gmail" href="mailto:info.evatech.ca@gmail.com" target="_blank"
+          class="header_menu-link about-info__text-main">
+          info.evatech.ca@gmail.com
+        </a>
+        <p class="header_menu-text">Our Location: Kingston, ON</p>
+      </div>
+    </nav>
   </div>
 
   <script defer src="./static/js/vendors/nice-select2/nice-select2.js"></script>
   <script defer src="./static/js/vendors/swiper/swiper-bundle.min.js"></script>
+  <script defer src="./static/js/vendors/tingle/tingle.min.js"></script>
   <script defer src="./static/js/configurator.js"></script>
   <script defer src="./static/js/cart-badge.js"></script>
+  <script src="static/js/dist/burger.bundle.js"></script>
 </body>
 </html>
 
