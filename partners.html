@@ -1,68 +1,293 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Partners — EVA Mats</title>
-  <link rel="stylesheet" href="./static/css/style.min.css">
+  <meta name="description" content="Partner with EVATECH — wholesale, collaborations, and licensing.">
+  <meta name="robots" content="index, follow">
+  <meta property="og:title" content="Partner with EVATECH">
+  <meta property="og:description" content="Wholesale and collaboration opportunities with EVATECH.">
+  <meta property="og:image" content="./static/images/logo.png">
+  <title>Partners — EVATECH</title>
+  <link rel="shortcut icon" href="favicon.ico">
+  <link rel="apple-touch-icon" type="image/png" href="apple-touch-icon-57x57-precomposed.png" sizes="57x57">
+  <link rel="apple-touch-icon" type="image/png" href="apple-touch-icon-60x60-precomposed.png" sizes="60x60">
+  <link rel="apple-touch-icon" type="image/png" href="apple-touch-icon-72x72-precomposed.png" sizes="72x72">
+  <link rel="apple-touch-icon" type="image/png" href="apple-touch-icon-76x76-precomposed.png" sizes="76x76">
+  <link rel="apple-touch-icon" type="image/png" href="apple-touch-icon-114x114-precomposed.png" sizes="114x114">
+  <link rel="apple-touch-icon" type="image/png" href="apple-touch-icon-120x120-precomposed.png" sizes="120x120">
+  <link rel="apple-touch-icon" type="image/png" href="apple-touch-icon-144x144-precomposed.png" sizes="144x144">
+  <link rel="apple-touch-icon" type="image/png" href="apple-touch-icon-152x152-precomposed.png" sizes="152x152">
+  <link rel="apple-touch-icon" type="image/png" href="apple-touch-icon-180x180-precomposed.png" sizes="180x180">
+  <link rel="icon" type="image/png" href="favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="favicon-32x32.png" sizes="32x32">
+  <link rel="manifest" href="site.webmanifest">
+  <meta name="msapplication-TileColor" content="#2b5797">
+  <meta name="msapplication-config" content="browserconfig.xml">
+  <meta name="theme-color" content="#ffffff">
+  <link rel="stylesheet" href="./static/js/vendors/swiper/swiper-bundle.min.css">
+  <link rel="stylesheet" href="./static/js/vendors/nice-select2/nice-select2.css">
+  <link rel="stylesheet" href="./static/js/vendors/tingle/tingle.min.css">
+  <link rel="stylesheet" href="./static/css/fancybox.css">
+  <link rel="stylesheet" href="./static/css/hero-selector.css">
+  <link rel="stylesheet" href="./static/css/style.min.css?v1">
   <style>
-    .wrap { max-width: 1000px; margin: 2rem auto; padding: 1rem; }
-    .grid { display:grid; grid-template-columns: 1fr 1fr; gap:2rem; }
-    form { border:1px solid #eee; border-radius:8px; padding:1rem; }
-    h2 { margin:.5rem 0 1rem; }
-    .help { color:#666; font-size:.95rem; }
-    .row { display:grid; gap:.5rem; }
+    .partners-hero { padding: 60px 0 20px; }
+    .partners-hero__inner { display: grid; grid-template-columns: 1.2fr 1fr; gap: 32px; align-items: center; }
+    .partners-hero__title { font-size: 40px; line-height: 1.15; margin-bottom: 12px; }
+    .partners-hero__sub { font-size: 18px; color: #555; margin-bottom: 20px; }
+    .partners-hero__list { margin: 0 0 20px; padding: 0; list-style: none; display: grid; gap: 10px; }
+    .partners-hero__list li { display: flex; align-items: center; gap: 10px; font-weight: 600; }
+    .partners-hero__media { display: grid; grid-template-columns: 1fr 1fr; grid-auto-rows: 140px; gap: 10px; }
+    .partners-hero__img { width: 100%; height: 100%; object-fit: cover; border-radius: 10px; }
+    .partners-cta { display: flex; gap: 12px; align-items: center; }
+    .partners-cta .button { padding: 12px 20px; }
+    .partners-cta__note { color: #666; font-size: 14px; }
+
+    .partners-features { padding: 10px 0 30px; }
+    .partners-features__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .partners-feature { background: #fff; border-radius: 12px; padding: 16px; box-shadow: 0 2px 12px rgba(0,0,0,.06); display: flex; gap: 12px; align-items: flex-start; }
+    .partners-feature i { color: #1a9; font-size: 18px; }
+
+    .partner-forms { display: none; padding: 20px 0 60px; }
+    .partner-forms.is-visible { display: block; }
+    .partner-forms__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .partner-card { background: #fff; border-radius: 12px; padding: 16px; box-shadow: 0 2px 12px rgba(0,0,0,.08); }
+    .partner-card h2 { margin: 0 0 8px; }
+    .partner-card p { margin: 0 0 14px; color: #555; }
+    .partner-card .row { display: grid; gap: 10px; }
+    .partner-card .button { width: fit-content; }
+
+    /* Override global feedback form colors inside white partner cards */
+    .partner-card .feedback-form__input,
+    .partner-card .feedback-form__message {
+      color: #111;
+      background: #fff;
+      border: 1px solid #ddd;
+      caret-color: #111;
+    }
+    .partner-card .feedback-form__input::placeholder,
+    .partner-card .feedback-form__message::placeholder {
+      color: #777;
+    }
+    .partner-card .feedback-form__input:focus,
+    .partner-card .feedback-form__message:focus {
+      outline: none;
+      border-color: #bbb;
+      box-shadow: 0 0 0 2px rgba(0,0,0,0.04);
+    }
+
+    @media (max-width: 1024px) {
+      .partners-hero__inner { grid-template-columns: 1fr; }
+      .partners-hero__media { grid-template-columns: repeat(4, 1fr); grid-auto-rows: 90px; }
+    }
+    @media (max-width: 720px) {
+      .partners-hero { padding-top: 30px; }
+      .partners-hero__title { font-size: 28px; }
+      .partners-hero__media { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 110px; }
+      .partners-features__grid { grid-template-columns: 1fr; }
+      .partner-forms__grid { grid-template-columns: 1fr; }
+    }
   </style>
+
+  <meta name="facebook-domain-verification" content="lp5ixqbqlv7dy9unbvbelu87y5abdq" />
+  <script>
+    !function (f, b, e, v, n, t, s) { if (f.fbq) return; n = f.fbq = function () { n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments) }; if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0'; n.queue = []; t = b.createElement(e); t.async = !0; t.src = v; s = b.getElementsByTagName(e)[0]; s.parentNode.insertBefore(t, s) }(window, document, 'script','https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '289709504180758'); fbq('track', 'PageView');
+  </script>
 </head>
+
 <body>
-  <div class="wrap">
-    <h1>Partner with EVATECH</h1>
-    <p class="help">Choose a path that fits your goals. We’ll get back to you within 1–2 business days.</p>
-    <div class="grid">
-      <form id="collab-form">
-        <h2>Collaboration (license/patent)</h2>
-        <p class="help">Start your own EVA mats business under our brand and process. We provide know‑how, cutting templates, supplier list, and marketing guidance.</p>
-        <div class="row">
-          <input class="feedback-form__input form-control" name="name" placeholder="Your name" required>
-          <input class="feedback-form__input form-control" name="email" type="email" placeholder="Email" required>
-          <input class="feedback-form__input form-control" name="phone" placeholder="Phone" required>
-          <textarea class="feedback-form__message form-control" name="message" placeholder="Your location and experience (short)" required></textarea>
-          <button class="button" type="submit">Send request</button>
+  <div class="wrapper" id="partners">
+    <header class="header">
+      <div class="container">
+        <div class="about-info">
+          <a href="/" aria-label="Custom EVA mats for the interior of your car" class="logo about-info__logo">
+            <img class="logo__image" src="./static/images/logo3_1.svg" loading="lazy" alt="Evacode logo">
+          </a>
+          <nav class="about-info__menu">
+            <ul class="menu__nav-list">
+              <li class="nav__list-item"><a href="/" class="nav__list-link">Home</a></li>
+              <li class="nav__list-item"><a href="about-product" class="nav__list-link">What is Eva?</a></li>
+              <li class="nav__list-item"><a href="/#price-constructor" class="nav__list-link">Price</a></li>
+              <li class="nav__list-item"><a href="warantly" class="nav__list-link">Warranty</a></li>
+              <li class="nav__list-item"><a href="delivery" class="nav__list-link">Delivery</a></li>
+              <li class="nav__list-item"><a href="about-us" class="nav__list-link">About us</a></li>
+              <li class="nav__list-item"><a href="partners" class="nav__list-link">Partners</a></li>
+            </ul>
+            <div class="about-info__social">
+              <a href="cart" class="about-info__link about-info__link-main" style="position:relative;">
+                Cart <span style="position:absolute; top:-8px; right:-10px; background:#d42920; color:#fff; border-radius:12px; padding:2px 6px; font-size:12px;" data-cart-count>0</span>
+              </a>
+              <button class="social-btn social-btn-main">Contact Us
+                <svg id="arow" width="12" height="7" viewBox="0 0 12 7" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd" clip-rule="evenodd" d="M0 1.40051L5.96734 7.00272L6.00006 6.97063L6.031 7.00097L12 1.40051L10.5718 0.000421405L5.99867 4.2912L1.42778 0L0 1.40051Z" fill="white" />
+                </svg>
+              </button>
+              <div class="social__list social__list-main fadeOut">
+                <a aria-label="Custom EVA mats phone" href="tel:+16139857956" target="_blank" class="about-info__link about-info__text about-info__text-main">+1 613-214-1621</a>
+                <a aria-label="Custom EVA mats gmail" href="mailto:info.evatech.ca@gmail.com" target="_blank" class="about-info__link about-info__text about-info__text-main">info.evatech.ca@gmail.com</a>
+                <div class="about__info-icon">
+                  <a aria-label="Custom EVA mats facebook" href="https://www.facebook.com/people/VI-CarMats/61556124253098/?mibextid=sCpJLy" target="_blank" class="about-info__link about-info__link-main"><i class="icon-facebook"></i></a>
+                  <a aria-label="Custom EVA mats instagram" href="https://www.instagram.com/evatech.ca/" target="_blank" class="about-info__link about-info__link-main"><i class="icon-instagram"></i></a>
+                </div>
+              </div>
+            </div>
+          </nav>
+          <img class="burger-btn" src="static/images/burgerBtn.svg" alt="" loading="lazy">
         </div>
-      </form>
-      <form id="wholesale-form">
-        <h2>Wholesale (bulk orders)</h2>
-        <p class="help">Buy ready EVA mats in bulk for resale. We’ll offer tiered pricing, lead times, and delivery options.</p>
-        <div class="row">
-          <input class="feedback-form__input form-control" name="company" placeholder="Company name" required>
-          <input class="feedback-form__input form-control" name="email" type="email" placeholder="Email" required>
-          <input class="feedback-form__input form-control" name="phone" placeholder="Phone" required>
-          <textarea class="feedback-form__message form-control" name="message" placeholder="Models/quantities of interest" required></textarea>
-          <button class="button" type="submit">Send request</button>
+      </div>
+    </header>
+    <main class="content">
+      <section class="partners-hero section">
+        <div class="container">
+          <div class="partners-hero__inner">
+            <div>
+              <h1 class="partners-hero__title">Grow with EVATECH</h1>
+              <p class="partners-hero__sub">Join us as a wholesale partner or launch your own branded EVA mats production using our know‑how.</p>
+              <ul class="partners-hero__list">
+                <li><img class="hero__text-icon" src="./static/images/hero-tick.png" loading="lazy" alt=""> Ready supplier list and cutting templates</li>
+                <li><img class="hero__text-icon" src="./static/images/hero-tick.png" loading="lazy" alt=""> Marketing assets and brand guidelines</li>
+                <li><img class="hero__text-icon" src="./static/images/hero-tick.png" loading="lazy" alt=""> Training and onboarding support</li>
+                <li><img class="hero__text-icon" src="./static/images/hero-tick.png" loading="lazy" alt=""> Canada/US friendly fulfillment options</li>
+              </ul>
+              <div class="partners-cta">
+                <button id="partner-cta" class="button">Become a partner</button>
+                <span class="partners-cta__note">Takes 1–2 minutes • We reply within 1–2 business days</span>
+              </div>
+            </div>
+            <div class="partners-hero__media">
+              <img class="partners-hero__img" src="./static/images/work-examples/1.jpg" loading="lazy" alt="EVATECH mats 1">
+              <img class="partners-hero__img" src="./static/images/work-examples/5.jpg" loading="lazy" alt="EVATECH mats 2">
+              <img class="partners-hero__img" src="./static/images/work-examples/9.jpg" loading="lazy" alt="EVATECH mats 3">
+              <img class="partners-hero__img" src="./static/images/work-examples/12.jpg" loading="lazy" alt="EVATECH mats 4">
+            </div>
+          </div>
         </div>
-      </form>
+      </section>
+
+      <section class="partners-features">
+        <div class="container">
+          <div class="partners-features__grid">
+            <div class="partners-feature"><i class="icon-check"></i><div><h3>Proven templates</h3><p>Hundreds of car models supported with precise cuts.</p></div></div>
+            <div class="partners-feature"><i class="icon-check"></i><div><h3>Scalable operations</h3><p>From small batches to wholesale — we support your growth.</p></div></div>
+            <div class="partners-feature"><i class="icon-check"></i><div><h3>Fast onboarding</h3><p>Kick off quickly with our guides and supplier contacts.</p></div></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="partner-forms" class="partner-forms">
+        <div class="container">
+          <div class="partner-forms__grid">
+            <form id="collab-form" class="partner-card">
+              <h2>Collaboration (license/patent)</h2>
+              <p>Start your own EVA mats business under our brand and process. We provide know‑how, cutting templates, supplier list, and marketing guidance.</p>
+              <div class="row">
+                <input class="feedback-form__input form-control" name="name" placeholder="Your name" required autocomplete="name">
+                <input class="feedback-form__input form-control" name="email" type="email" placeholder="Email" required autocomplete="email">
+                <input class="feedback-form__input form-control" name="phone" placeholder="Phone" required autocomplete="tel">
+                <textarea class="feedback-form__message form-control" name="message" placeholder="Your location and experience (short)" required autocomplete="off"></textarea>
+                <button class="button" type="submit">Send request</button>
+              </div>
+            </form>
+            <form id="wholesale-form" class="partner-card">
+              <h2>Wholesale (bulk orders)</h2>
+              <p>Buy ready EVA mats in bulk for resale. We’ll offer tiered pricing, lead times, and delivery options.</p>
+              <div class="row">
+                <input class="feedback-form__input form-control" name="company" placeholder="Company name" required autocomplete="company">
+                <input class="feedback-form__input form-control" name="email" type="email" placeholder="Email" required autocomplete="email">
+                <input class="feedback-form__input form-control" name="phone" placeholder="Phone" required autocomplete="tel">
+                <textarea class="feedback-form__message form-control" name="message" placeholder="Models/quantities of interest" required autocomplete="off"></textarea>
+                <button class="button" type="submit">Send request</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="about-info">
+        <a href="/" aria-label="Custom EVA mats for the interior of your car" class="logo about-info__logo">
+          <img class="logo__image" src="/static/images/logo3_1.svg" loading="lazy" alt="Evacode logo">
+        </a>
+        <div class="about-info__social">
+          <a aria-label="Custom EVA mats facebook" href="https://www.facebook.com/people/VI-CarMats/61556124253098/?mibextid=sCpJLy" target="_blank" class="about-info__link about-info__link-main"><i class="icon-facebook"></i></a>
+          <a aria-label="Custom EVA mats instagram" href="https://www.instagram.com/evatech.ca" target="_blank" class="about-info__link about-info__link-main"><i class="icon-instagram"></i></a>
+          <a aria-label="Custom EVA mats gmail" href="mailto:info.evatech.ca@gmail.com" target="_blank" class="about-info__link about-info__text-main"><i class="icon-mail"></i> info.evatech.ca@gmail.com</a>
+          <a aria-label="Custom EVA mats phone" href="tel:+16139857956" target="_blank" class="about-info__link about-info__text-main"><i class="icon-call-in"></i> +1 613-214-1621</a>
+          <p class="about-info__text about-info__text-main about-info__location">Our Location: Kingston, ON</p>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <div class="header__menu-mobile">
+    <div class="header__menu-top">
+      <a href="/" aria-label="Custom EVA mats for the interior of your car" class="logo header__menu-logo">
+        <img loading="lazy" src="static/images/logo2 1.svg" alt="Evacode logo">
+      </a>
+      <img class="close-btn" src="static/images/xmark-solid.svg" loading="lazy" alt="">
     </div>
+    <nav class="header__menu-nav">
+      <ul class="header__menu-items">
+        <li class="header__menu-item"><a href="/">Home</a></li>
+        <li class="header__menu-item"><a href="about-product">What is Eva?</a></li>
+        <li class="header__menu-item"><a href="/#price-constructor">Price</a></li>
+        <li class="header__menu-item"><a href="warantly">Warranty</a></li>
+        <li class="header__menu-item"><a href="delivery">Delivery</a></li>
+        <li class="header__menu-item"><a href="about-us">About us</a></li>
+        <li class="header__menu-item"><a href="partners">Partners</a></li>
+      </ul>
+      <div class="header__menu-social">
+        <div class="header__menu-icon">
+          <a aria-label="Custom EVA mats facebook" href="https://www.facebook.com/people/VI-CarMats/61556124253098/?mibextid=sCpJLy" target="_blank" class="header_menu-link"><i class="icon-facebook"></i></a>
+          <a aria-label="Custom EVA mats instagram" href="https://www.instagram.com/evatech.ca/" target="_blank" class="header_menu-link"><i class="icon-instagram"></i></a>
+        </div>
+        <a aria-label="Custom EVA mats phone" href="tel:+16139857956" target="_blank" class="header_menu-link">+1 613-214-1621</a>
+        <a aria-label="Custom EVA mats gmail" href="mailto:info.evatech.ca@gmail.com" target="_blank" class="header_menu-link">info.evatech.ca@gmail.com</a>
+        <p class="header_menu-text">Our Location: Kingston, ON</p>
+      </div>
+    </nav>
   </div>
 
   <script>
-    async function send(formId, type){
-      const form = document.getElementById(formId);
-      form.addEventListener('submit', async (e)=>{
-        e.preventDefault();
-        const data = Object.fromEntries(new FormData(form).entries());
-        const payload = { formName: 'partner', type, ...data };
-        try{
-          const res = await fetch('action.php', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
-          if(res.ok){ alert('Sent! We will contact you shortly.'); form.reset(); }
-          else { alert('Failed to send.'); }
-        }catch(_){ alert('Failed to send.'); }
-      });
-    }
-    send('collab-form', 'collaboration');
-    send('wholesale-form', 'wholesale');
+    (function(){
+      var cta = document.getElementById('partner-cta');
+      var forms = document.getElementById('partner-forms');
+      if (cta && forms) {
+        forms.classList.remove('is-visible');
+        cta.addEventListener('click', function(){
+          forms.classList.add('is-visible');
+          forms.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+      }
+      function send(formId, type){
+        var form = document.getElementById(formId);
+        if(!form) return;
+        form.addEventListener('submit', function(e){
+          e.preventDefault();
+          var fd = new FormData(form);
+          var data = {};
+          fd.forEach(function(v, k){ data[k] = v; });
+          var payload = { formName: 'partner', type: type };
+          for (var k in data) payload[k] = data[k];
+          fetch('action.php', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) })
+            .then(function(res){ if(res.ok){ alert('Sent! We will contact you shortly.'); form.reset(); } else { alert('Failed to send.'); } })
+            .catch(function(){ alert('Failed to send.'); });
+        });
+      }
+      send('collab-form', 'collaboration');
+      send('wholesale-form', 'wholesale');
+    })();
   </script>
+  <script defer src="./static/js/vendors/nice-select2/nice-select2.js"></script>
+  <script defer src="./static/js/vendors/swiper/swiper-bundle.min.js"></script>
   <script defer src="static/js/cart-badge.js"></script>
+  <script defer src="static/js/dist/main.bundle.js"></script>
 </body>
+
 </html>
 
 

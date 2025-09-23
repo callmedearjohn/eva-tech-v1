@@ -324,21 +324,62 @@ function sendPaypalEmail($data, $mail) {
 
 // Partner forms
 function sendPartnerEmail($data, $mail) {
-    global $recipientEmail;
-    try {
-        $type = $data['type'] ?? 'unknown';
-        $mail->clearAddresses();
-        $mail->addAddress($recipientEmail);
-        $mail->setFrom('info@eva-tech.ca', 'EVA Carmats');
-        $mail->isHTML(false);
-        $body = "Partner request ({$type})\n" . print_r($data, true);
-        $mail->Subject = 'Partner request: ' . $type;
-        $mail->Body = $body;
-        $mail->send();
-        return true;
-    } catch (Exception $e) {
-        return $e->getMessage();
-    }
+	global $recipientEmail;
+	try {
+		$type = $data['type'] ?? 'unknown';
+
+		// Normalize known fields
+		$submitterEmail = $data['email'] ?? '';
+		$submitterPhone = $data['phone'] ?? '';
+		$now = date('Y-m-d H:i:s');
+
+		// Build a structured body per type
+		if ($type === 'collaboration') {
+			$name = $data['name'] ?? '';
+			$message = $data['message'] ?? '';
+			$subject = 'Partner request: Collaboration (license/patent)';
+			$body = "<h3>Collaboration (license/patent)</h3>"
+				. "<ul>"
+				. "<li><strong>Name:</strong> " . htmlspecialchars($name) . "</li>"
+				. "<li><strong>Email:</strong> " . htmlspecialchars($submitterEmail) . "</li>"
+				. "<li><strong>Phone:</strong> " . htmlspecialchars($submitterPhone) . "</li>"
+				. "<li><strong>Message:</strong> " . nl2br(htmlspecialchars($message)) . "</li>"
+				. "<li><strong>Date:</strong> {$now}</li>"
+				. "</ul>";
+		} elseif ($type === 'wholesale') {
+			$company = $data['company'] ?? '';
+			$message = $data['message'] ?? '';
+			$subject = 'Partner request: Wholesale (bulk orders)';
+			$body = "<h3>Wholesale (bulk orders)</h3>"
+				. "<ul>"
+				. "<li><strong>Company:</strong> " . htmlspecialchars($company) . "</li>"
+				. "<li><strong>Email:</strong> " . htmlspecialchars($submitterEmail) . "</li>"
+				. "<li><strong>Phone:</strong> " . htmlspecialchars($submitterPhone) . "</li>"
+				. "<li><strong>Request:</strong> " . nl2br(htmlspecialchars($message)) . "</li>"
+				. "<li><strong>Date:</strong> {$now}</li>"
+				. "</ul>";
+		} else {
+			$subject = 'Partner request: ' . $type;
+			$body = '<pre>' . htmlspecialchars(print_r($data, true)) . '</pre>';
+		}
+
+		$mail->clearAddresses();
+		$mail->clearReplyTos();
+		$mail->addAddress($recipientEmail);
+		$mail->setFrom('info@eva-tech.ca', 'EVA Carmats');
+		if (!empty($submitterEmail)) {
+			$mail->addReplyTo($submitterEmail);
+		}
+		$mail->isHTML(true);
+		$mail->Subject = $subject;
+		$mail->Body = $body;
+		$mail->AltBody = strip_tags(str_replace(['<br>', '<br/>', '<br />'], "\n", $body));
+
+		$mail->send();
+		return true;
+	} catch (Exception $e) {
+		return $e->getMessage();
+	}
 }
 
 // Обработчик POST запросов

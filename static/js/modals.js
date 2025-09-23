@@ -18,11 +18,21 @@ const premiumModal = new tingle.modal(setModalOptions);
 const thrustModal = new tingle.modal(setModalOptions);
 const thrustModalGift = new tingle.modal(setModalOptions);
 
-ekonomSetModal.setContent(ekonomModalContent.outerHTML);
-standartModal.setContent(standartModalContent.outerHTML);
-premiumModal.setContent(premiumModalContent.outerHTML);
-thrustModal.setContent(thrustModalContent.outerHTML);
-thrustModalGift.setContent(thrustModalContentGift.outerHTML);
+if (ekonomModalContent) {
+  ekonomSetModal.setContent(ekonomModalContent.outerHTML);
+}
+if (standartModalContent) {
+  standartModal.setContent(standartModalContent.outerHTML);
+}
+if (premiumModalContent) {
+  premiumModal.setContent(premiumModalContent.outerHTML);
+}
+if (thrustModalContent) {
+  thrustModal.setContent(thrustModalContent.outerHTML);
+}
+if (thrustModalContentGift) {
+  thrustModalGift.setContent(thrustModalContentGift.outerHTML);
+}
 
 const setModals = {
   "ekonom-modal": ekonomSetModal,
