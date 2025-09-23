@@ -35,6 +35,7 @@
     <link rel="stylesheet" href="./static/js/vendors/nice-select2/nice-select2.css">
     <link rel="stylesheet" href="./static/js/vendors/tingle/tingle.min.css">
     <link rel="stylesheet" href="./static/css/fancybox.css">
+    <link rel="stylesheet" href="./static/css/hero-selector.css">
     <link rel="stylesheet" href="./static/css/style.min.css">
     
 
@@ -88,8 +89,15 @@
                             <li class="nav__list-item">
                                 <a href="about-us" class="nav__list-link">About us</a>
                             </li>
+                            <li class="nav__list-item">
+                                <a href="partners" class="nav__list-link">Partners</a>
+                            </li>
                         </ul>
                         <div class="about-info__social">
+                            <a href="cart" class="about-info__link about-info__link-main" style="position:relative;">
+                                Cart
+                                <span style="position:absolute; top:-8px; right:-10px; background:#d42920; color:#fff; border-radius:12px; padding:2px 6px; font-size:12px;" data-cart-count>0</span>
+                            </a>
                             <button class="social-btn social-btn-main">Contact Us
                                 <svg id="arow" width="12" height="7" viewBox="0 0 12 7" fill="none"
                                     xmlns="http://www.w3.org/2000/svg">
@@ -143,6 +151,7 @@
                         <div class="hero-scroll-down">
                             <a aria-label="Get a price for the order" href="#price-constructor"
                                 class="button hero__button">GET A QUOTE</a>
+                            <a aria-label="Open configurator" href="configurator" class="button hero__button" style="margin-top:10px">OPEN CONFIGURATOR</a>
                             <a aria-label="Get a price for the order" href="#price-constructor"
                                 class="hero-scroll-down__arrows">
                                 <div class="hero-scroll-down__arrow"><i class="icon-arrow-down"></i></div>
@@ -151,17 +160,94 @@
                             </a>
                         </div>
                     </div>
+                    <!-- Hero Make/Year/Model selector -->
+                    <form id="hero-selector" class="hero-selector" action="#price-constructor">
+                        <div class="constructor-step__fields">
+                            <div class="constructor-step__field form-field">
+                                <select aria-label="Car make" required
+                                    class="select constructor-step__select constructor-step__control form-control select__arow"
+                                    name="carMake" id="hero-car-make">
+                                    <option disabled selected value>Make</option>
+                                    <option value="98">Acura</option>
+                                    <option value="3">Alfa Romeo</option>
+                                    <option value="5">Aston Martin</option>
+                                    <option value="6">Audi</option>
+                                    <option value="8">Bentley</option>
+                                    <option value="9">BMW</option>
+                                    <option value="109">Bugatti</option>
+                                    <option value="110">Buick</option>
+                                    <option value="11">Cadillac</option>
+                                    <option value="13">Chevrolet</option>
+                                    <option value="14">Chrysler</option>
+                                    <option value="118">Dodge</option>
+                                    <option value="22">Ferrari</option>
+                                    <option value="23">Fiat</option>
+                                    <option value="3444">Fisker</option>
+                                    <option value="24">Ford</option>
+                                    <option value="2604">Genesis</option>
+                                    <option value="123">GMC</option>
+                                    <option value="28">Honda</option>
+                                    <option value="127">Hummer</option>
+                                    <option value="29">Hyundai</option>
+                                    <option value="128">Infiniti</option>
+                                    <option value="30">Isuzu</option>
+                                    <option value="31">Jaguar</option>
+                                    <option value="32">Jeep</option>
+                                    <option value="33">Kia</option>
+                                    <option value="35">Lamborghini</option>
+                                    <option value="37">Land Rover</option>
+                                    <option value="38">Lexus</option>
+                                    <option value="135">Lincoln</option>
+                                    <option value="6317">Lucid</option>
+                                    <option value="45">Maserati</option>
+                                    <option value="46">Maybach</option>
+                                    <option value="47">Mazda</option>
+                                    <option value="3101">McLaren</option>
+                                    <option value="48">Mercedes-Benz</option>
+                                    <option value="144">Mercury</option>
+                                    <option value="49">MG</option>
+                                    <option value="147">MINI</option>
+                                    <option value="52">Mitsubishi</option>
+                                    <option value="55">Nissan</option>
+                                    <option value="6131">Polestar</option>
+                                    <option value="149">Pontiac</option>
+                                    <option value="59">Porsche</option>
+                                    <option value="4369">Ram</option>
+                                    <option value="63">Rolls-Royce</option>
+                                    <option value="65">Saab</option>
+                                    <option value="331">Saturn</option>
+                                    <option value="3268">Scion</option>
+                                    <option value="70">Skoda</option>
+                                    <option value="71">Smart</option>
+                                    <option value="75">Subaru</option>
+                                    <option value="76">Suzuki</option>
+                                    <option value="2233">Tesla</option>
+                                    <option value="79">Toyota</option>
+                                    <option value="84">Volkswagen</option>
+                                    <option value="85">Volvo</option>
+                                </select>
+                            </div>
+                            <div class="constructor-step__field form-field">
+                                <select aria-label="Car year" required
+                                    class="select constructor-step__select constructor-step__control form-control select__arow"
+                                    name="carYear" id="hero-car-year">
+                                    <option disabled selected value>Year</option>
+                                </select>
+                            </div>
+                            <div class="constructor-step__field form-field">
+                                <select aria-label="Car model" required
+                                    class="select constructor-step__select constructor-step__control form-control select__arow"
+                                    name="carModel" id="hero-car-model">
+                                    <option disabled selected value>Model</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="button" id="hero-go">GO</button>
+                        </div>
+                    </form>
                 </div>
             </section>
-            <div class="video__text">
-                <h4 class="video__title">Watch a video</h4>
-                <p class="video__subtitle">about EVA Floorliner</p>
-            </div>
-            <div class="advantages__video">
-                <a data-fancybox href="https://youtu.be/UijjcqK0r5c?si=myHOEOhyUPkX0hvx">
-                    <img loading="lazy" src="static/images/advantages/video.jpg" alt="">
-                </a>
-            </div>
+            <!-- Free shipping badge (dynamic) -->
+            <div id="free-ship-home" style="display:none; text-align:center; padding:.5rem; color:#0c7; font-weight:700;">Free Shipping in Canada is active (cart ≥ $100)</div>
             <section class="advantages section">
                 <div class="container">
                     <h2 class="section__title advantages__title">
@@ -207,6 +293,45 @@
                             <div class="advantage__item-desc">
                                 EVA is an environmentally friendly material, completely hypoallergic. It does not have
                                 any smell or toxic
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section class="section" id="products">
+                <div class="container">
+                    <h2 class="section__title">Products</h2>
+                    <div class="advantage__items">
+                        <div class="advantage__item" style="text-align:center;">
+                            <img loading="lazy" src="static/images/work-examples/1.jpg" alt="EVA Mats">
+                            <div class="advantage__item-desc" style="opacity:1; position:relative; background:#fff; color:#000;">
+                                <h3>EVA Mats</h3>
+                                <p>Custom-fit interior mats. Configure colors and pattern.</p>
+                                <a href="configurator" class="button" style="margin-top:.5rem;">Configure</a>
+                            </div>
+                        </div>
+                        <div class="advantage__item" style="text-align:center;">
+                            <img loading="lazy" src="static/images/work-examples/2.jpg" alt="Storage Bag">
+                            <div class="advantage__item-desc" style="opacity:1; position:relative; background:#fff; color:#000;">
+                                <h3>Storage Bag</h3>
+                                <p>Keep mats clean and organized.</p>
+                                <button class="button" data-add-bag style="margin-top:.5rem;">Add to cart — $15</button>
+                            </div>
+                        </div>
+                        <div class="advantage__item" style="text-align:center;">
+                            <img loading="lazy" src="static/images/work-examples/3.jpg" alt="Home Mat">
+                            <div class="advantage__item-desc" style="opacity:1; position:relative; background:#fff; color:#000;">
+                                <h3>Home Mat</h3>
+                                <p>Durable EVA doormat for home and garage.</p>
+                                <button class="button" data-add-home style="margin-top:.5rem;">Add to cart — $39</button>
+                            </div>
+                        </div>
+                        <div class="advantage__item" style="text-align:center;">
+                            <img loading="lazy" src="static/images/work-examples/4.jpg" alt="Gift">
+                            <div class="advantage__item-desc" style="opacity:1; position:relative; background:#fff; color:#000;">
+                                <h3>Gift</h3>
+                                <p>Give a set of EVA mats — pick car and colors.</p>
+                                <a href="configurator" class="button" style="margin-top:.5rem;">Choose car</a>
                             </div>
                         </div>
                     </div>
@@ -1002,6 +1127,9 @@
                 <li class="header__menu-item">
                     <a href="about-us">About us</a>
                 </li>
+            <li class="header__menu-item">
+              <a href="partners">Partners</a>
+            </li>
             </ul>
             <div class="header__menu-social">
                 <div class="header__menu-icon">
@@ -1033,6 +1161,10 @@
     </div>
     <script defer src="./static/js/vendors/nice-select2/nice-select2.js"></script>
     <script defer src="./static/js/vendors/swiper/swiper-bundle.min.js"></script>
+    <script defer src="static/js/hero-selector.js"></script>
+    <script defer src="static/js/home-free-shipping.js"></script>
+    <script type="module" defer src="static/js/home-products.js"></script>
+    <script defer src="static/js/cart-badge.js"></script>
     <script defer src="static/js/dist/main.bundle.js"></script>
 </body>
 

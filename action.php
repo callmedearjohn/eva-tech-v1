@@ -201,6 +201,146 @@ function sendQuestionsEmail($data, $mail) {
     }
 }
 
+// One-click purchase: phone only + cart summary
+function sendOneClickEmail($data, $mail) {
+    global $recipientEmail;
+
+    try {
+        $phone = $data['phone'] ?? '';
+        $items = $data['items'] ?? [];
+        $country = $data['country'] ?? '';
+        $shipping = $data['shipping'] ?? 0;
+        $subtotal = $data['subtotal'] ?? 0;
+        $bag = $data['bag'] ?? 0;
+        $total = $data['total'] ?? 0;
+
+        $mail->clearAddresses();
+        $mail->addAddress($recipientEmail);
+        $mail->setFrom('info@eva-tech.ca', 'EVA Carmats');
+        $mail->isHTML(true);
+
+        $rows = '';
+        foreach ($items as $i) {
+            $make = $i['make'] ?? '';
+            $model = $i['model'] ?? '';
+            $year = $i['year'] ?? '';
+            $set = $i['set'] ?? '';
+            $pattern = $i['pattern'] ?? '';
+            $mat = $i['matColor'] ?? '';
+            $trim = $i['trimColor'] ?? '';
+            $third = (!empty($i['thirdRow'])) ? 'Yes' : 'No';
+            $heel = (!empty($i['heelPad'])) ? 'Yes' : 'No';
+            $price = $i['subtotal'] ?? 0;
+            $qty = $i['qty'] ?? 1;
+            $rows .= "<li>{$make} {$model} {$year} — {$set} | {$pattern} | {$mat}/{$trim} | 3rd row: {$third} | heel pad: {$heel} | price: {$price}$ × {$qty}</li>";
+        }
+
+        $mail->Subject = 'One-Click Purchase Request';
+        $mail->Body = "<html><body>
+            <h3>One-click order request</h3>
+            <p><b>Customer phone:</b> {$phone}</p>
+            <ul>{$rows}</ul>
+            <p><b>Subtotal:</b> {$subtotal}$</p>
+            <p><b>Bag:</b> {$bag}$</p>
+            <p><b>Shipping (to {$country}):</b> {$shipping}$</p>
+            <p><b>Total:</b> {$total}$</p>
+        </body></html>";
+        $mail->send();
+        return true;
+    } catch (Exception $e) {
+        return $e->getMessage();
+    }
+}
+
+// PayPal order email
+function sendPaypalEmail($data, $mail) {
+    global $recipientEmail;
+    try {
+        $phone = $data['phone'] ?? '';
+        $items = $data['items'] ?? [];
+        $shipping = $data['shipping'] ?? 0;
+        $subtotal = $data['subtotal'] ?? 0;
+        $tax = $data['tax'] ?? 0;
+        $total = $data['total'] ?? 0;
+        $bag = $data['bag'] ?? 0;
+        $paypalId = $data['paypalOrderId'] ?? '';
+        $payerEmail = $data['payerEmail'] ?? '';
+        $payerName = $data['payerName'] ?? '';
+        $shipTo = $data['shipTo'] ?? [];
+
+        $mail->clearAddresses();
+        $mail->addAddress($recipientEmail);
+        $mail->setFrom('info@eva-tech.ca', 'EVA Carmats');
+        $mail->isHTML(true);
+
+        $rows = '';
+        foreach ($items as $i) {
+            $make = $i['make'] ?? '';
+            $model = $i['model'] ?? '';
+            $year = $i['year'] ?? '';
+            $set = $i['set'] ?? '';
+            $pattern = $i['pattern'] ?? '';
+            $mat = $i['matColor'] ?? '';
+            $trim = $i['trimColor'] ?? '';
+            $third = (!empty($i['thirdRow'])) ? 'Yes' : 'No';
+            $heel = (!empty($i['heelPad'])) ? 'Yes' : 'No';
+            $price = $i['subtotal'] ?? 0;
+            $qty = $i['qty'] ?? 1;
+            $rows .= "<li>{$make} {$model} {$year} — {$set} | {$pattern} | {$mat}/{$trim} | 3rd row: {$third} | heel pad: {$heel} | price: {$price}$ × {$qty}</li>";
+        }
+
+        $address = '';
+        if (!empty($shipTo)) {
+            $name = $shipTo['name'] ?? '';
+            $line1 = $shipTo['line1'] ?? '';
+            $line2 = $shipTo['line2'] ?? '';
+            $city = $shipTo['city'] ?? '';
+            $state = $shipTo['state'] ?? '';
+            $postal = $shipTo['postal'] ?? '';
+            $country = $shipTo['country'] ?? '';
+            $address = "$name, $line1 $line2, $city, $state, $postal, $country";
+        }
+
+        $mail->Subject = 'PayPal Order';
+        $mail->Body = "<html><body>
+            <h3>PayPal order captured</h3>
+            <p><b>PayPal Order ID:</b> {$paypalId}</p>
+            <p><b>Payer:</b> {$payerName} ({$payerEmail})</p>
+            <p><b>Phone:</b> {$phone}</p>
+            <p><b>Ship To:</b> {$address}</p>
+            <ul>{$rows}</ul>
+            <p><b>Subtotal:</b> {$subtotal}$</p>
+            <p><b>Bag:</b> {$bag}$</p>
+            <p><b>Tax:</b> {$tax}$</p>
+            <p><b>Shipping:</b> {$shipping}$</p>
+            <p><b>Total:</b> {$total}$</p>
+        </body></html>";
+        $mail->send();
+        return true;
+    } catch (Exception $e) {
+        return $e->getMessage();
+    }
+}
+
+// Partner forms
+function sendPartnerEmail($data, $mail) {
+    global $recipientEmail;
+    try {
+        $type = $data['type'] ?? 'unknown';
+        $mail->clearAddresses();
+        $mail->addAddress($recipientEmail);
+        $mail->setFrom('info@eva-tech.ca', 'EVA Carmats');
+        $mail->isHTML(false);
+        $body = "Partner request ({$type})\n" . print_r($data, true);
+        $mail->Subject = 'Partner request: ' . $type;
+        $mail->Body = $body;
+        $mail->send();
+        return true;
+    } catch (Exception $e) {
+        return $e->getMessage();
+    }
+}
+
 // Обработчик POST запросов
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
    
@@ -218,6 +358,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         case 'feedback':
             $result = sendQuestionsEmail($data, $mail);
             $successMessage = "Your message was sent successfully!";
+            break;
+        case 'oneClick':
+            $result = sendOneClickEmail($data, $mail);
+            break;
+        case 'paypal':
+            $result = sendPaypalEmail($data, $mail);
+            break;
+        case 'partner':
+            $result = sendPartnerEmail($data, $mail);
             break;
         default:
             $result = 'Invalid endpoint';

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Partners — EVA Mats</title>
+  <link rel="stylesheet" href="./static/css/style.min.css">
+  <style>
+    .wrap { max-width: 1000px; margin: 2rem auto; padding: 1rem; }
+    .grid { display:grid; grid-template-columns: 1fr 1fr; gap:2rem; }
+    form { border:1px solid #eee; border-radius:8px; padding:1rem; }
+    h2 { margin:.5rem 0 1rem; }
+    .help { color:#666; font-size:.95rem; }
+    .row { display:grid; gap:.5rem; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Partner with EVATECH</h1>
+    <p class="help">Choose a path that fits your goals. We’ll get back to you within 1–2 business days.</p>
+    <div class="grid">
+      <form id="collab-form">
+        <h2>Collaboration (license/patent)</h2>
+        <p class="help">Start your own EVA mats business under our brand and process. We provide know‑how, cutting templates, supplier list, and marketing guidance.</p>
+        <div class="row">
+          <input class="feedback-form__input form-control" name="name" placeholder="Your name" required>
+          <input class="feedback-form__input form-control" name="email" type="email" placeholder="Email" required>
+          <input class="feedback-form__input form-control" name="phone" placeholder="Phone" required>
+          <textarea class="feedback-form__message form-control" name="message" placeholder="Your location and experience (short)" required></textarea>
+          <button class="button" type="submit">Send request</button>
+        </div>
+      </form>
+      <form id="wholesale-form">
+        <h2>Wholesale (bulk orders)</h2>
+        <p class="help">Buy ready EVA mats in bulk for resale. We’ll offer tiered pricing, lead times, and delivery options.</p>
+        <div class="row">
+          <input class="feedback-form__input form-control" name="company" placeholder="Company name" required>
+          <input class="feedback-form__input form-control" name="email" type="email" placeholder="Email" required>
+          <input class="feedback-form__input form-control" name="phone" placeholder="Phone" required>
+          <textarea class="feedback-form__message form-control" name="message" placeholder="Models/quantities of interest" required></textarea>
+          <button class="button" type="submit">Send request</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    async function send(formId, type){
+      const form = document.getElementById(formId);
+      form.addEventListener('submit', async (e)=>{
+        e.preventDefault();
+        const data = Object.fromEntries(new FormData(form).entries());
+        const payload = { formName: 'partner', type, ...data };
+        try{
+          const res = await fetch('action.php', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+          if(res.ok){ alert('Sent! We will contact you shortly.'); form.reset(); }
+          else { alert('Failed to send.'); }
+        }catch(_){ alert('Failed to send.'); }
+      });
+    }
+    send('collab-form', 'collaboration');
+    send('wholesale-form', 'wholesale');
+  </script>
+  <script defer src="static/js/cart-badge.js"></script>
+</body>
+</html>
+
+

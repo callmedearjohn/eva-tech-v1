@@ -1,0 +1,54 @@
+.hero-selector { margin-top: 2rem; }
+
+.hero-selector .constructor-step__fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 0.8fr;
+  gap: 1rem;
+  align-items: center;
+}
+
+.hero-selector .nice-select,
+.hero-selector select {
+  width: 100%;
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  border: 1.5px solid rgba(255,255,255,0.8);
+  border-radius: 12px;
+  height: 56px;
+  line-height: 56px;
+  padding-left: 18px;
+}
+
+.hero-selector .nice-select.constructor-step__control { max-width: none; }
+
+.hero-selector .nice-select:after {
+  border-bottom: 3px solid #d6a846;
+  border-right: 3px solid #d6a846;
+  width: 14px;
+  height: 14px;
+  right: 18px;
+}
+
+.hero-selector .nice-select .list {
+  background: #0f121a;
+  color: #fff;
+  border-radius: 10px;
+}
+
+.hero-selector .button#hero-go {
+  background: transparent;
+  border: 1.5px solid #d6a846;
+  color: #cfcfcf;
+  height: 56px;
+  line-height: 56px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 900px) {
+  .hero-selector .constructor-step__fields { grid-template-columns: 1fr; }
+}
+
+

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - Colors</title>
+  <link rel="stylesheet" href="./static/css/style.min.css">
+  <style>
+    .admin { max-width: 900px; margin: 2rem auto; padding: 1rem; }
+    .row { display:grid; grid-template-columns: 1fr 1fr; gap:1rem; }
+    textarea { width:100%; min-height: 140px; }
+  </style>
+  <script>
+  async function loadColors(){
+    const res = await fetch('colors.php');
+    const data = await res.json();
+    document.getElementById('matColors').value = data.matColors.join(', ');
+    document.getElementById('trimColors').value = data.trimColors.join(', ');
+  }
+  async function saveColors(){
+    const key = document.getElementById('key').value.trim();
+    const mats = document.getElementById('matColors').value.split(',').map(s=>s.trim()).filter(Boolean);
+    const trims = document.getElementById('trimColors').value.split(',').map(s=>s.trim()).filter(Boolean);
+    const res = await fetch('colors.php?key='+encodeURIComponent(key), {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({matColors:mats, trimColors:trims})});
+    const data = await res.json();
+    alert(data.ok ? 'Saved' : 'Failed');
+  }
+  window.addEventListener('DOMContentLoaded', loadColors);
+  </script>
+</head>
+<body>
+  <div class="admin">
+    <h1>Colors Admin</h1>
+    <p>Enter your admin key then edit lists, comma separated. Values are case-insensitive IDs used by the configurator.</p>
+    <input id="key" type="password" placeholder="Admin key" class="feedback-form__input form-control" style="max-width: 20rem;">
+    <div class="row" style="margin:1rem 0;">
+      <div>
+        <h3>Mat colors</h3>
+        <textarea id="matColors"></textarea>
+      </div>
+      <div>
+        <h3>Trim colors</h3>
+        <textarea id="trimColors"></textarea>
+      </div>
+    </div>
+    <button class="button" onclick="saveColors()">Save</button>
+  </div>
+</body>
+</html>
+
+

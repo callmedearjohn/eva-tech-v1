@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Configurator - EVA Mats</title>
+  <link rel="stylesheet" href="./static/js/vendors/swiper/swiper-bundle.min.css">
+  <link rel="stylesheet" href="./static/js/vendors/nice-select2/nice-select2.css">
+  <link rel="stylesheet" href="./static/css/hero-selector.css">
+  <link rel="stylesheet" href="./static/css/style.min.css">
+  <link rel="stylesheet" href="./static/css/configurator.css">
+</head>
+<body>
+  <div class="wrapper">
+    <header class="header">
+      <div class="container">
+        <div class="about-info">
+          <a href="/" aria-label="Custom EVA mats for the interior of your car" class="logo about-info__logo">
+            <img class="logo__image" src="static/images/logo3_1.svg" alt="Evacode logo">
+          </a>
+          <nav class="about-info__menu">
+            <ul class="menu__nav-list">
+              <li class="nav__list-item"><a href="/" class="nav__list-link">Home</a></li>
+              <li class="nav__list-item"><a href="about-product" class="nav__list-link">What is Eva?</a></li>
+              <li class="nav__list-item"><a href="/configurator" class="nav__list-link">Configurator</a></li>
+            </ul>
+            <div class="about-info__social">
+              <a href="cart" class="about-info__link about-info__link-main" style="position:relative;">
+                Cart <span style="position:absolute; top:-8px; right:-10px; background:#d42920; color:#fff; border-radius:12px; padding:2px 6px; font-size:12px;" data-cart-count>0</span>
+              </a>
+            </div>
+          </nav>
+        </div>
+      </div>
+    </header>
+
+    <main class="content">
+      <section class="section configurator" id="configurator">
+        <div class="container configurator__grid">
+          <aside class="configurator__preview">
+            <div class="configurator__main-image">
+              <img id="preview-image" src="./static/images/price-constructor/sets/set-1.jpg" alt="Preview">
+              <div id="pattern-overlay" class="pattern-overlay"></div>
+            </div>
+            <div class="configurator__thumbnails">
+              <img src="./static/images/work-examples/1.jpg" alt="thumb">
+              <img src="./static/images/work-examples/2.jpg" alt="thumb">
+              <img src="./static/images/work-examples/3.jpg" alt="thumb">
+            </div>
+          </aside>
+
+          <div class="configurator__options">
+            <h2 class="section__title">Build your set</h2>
+
+            <div class="cfg-block">
+              <h3 class="cfg-title">Your vehicle</h3>
+              <div class="cfg-row">
+                <select id="cfg-make" class="select constructor-step__select constructor-step__control form-control select__arow"><option selected disabled>Make</option></select>
+                <select id="cfg-model" class="select constructor-step__select constructor-step__control form-control select__arow"><option selected disabled>Model</option></select>
+                <select id="cfg-year" class="select constructor-step__select constructor-step__control form-control select__arow"><option selected disabled>Year</option></select>
+              </div>
+            </div>
+
+            <div class="cfg-block">
+              <h3 class="cfg-title">Set</h3>
+              <div class="cfg-row cfg-sets">
+                <label class="cfg-radio"><input type="radio" name="set" value="front" checked><span>Front only (2 mats) — 59$</span></label>
+                <label class="cfg-radio"><input type="radio" name="set" value="full"><span>Full interior — 139$</span></label>
+                <label class="cfg-radio"><input type="radio" name="set" value="complete"><span>Complete set — 219$</span></label>
+              </div>
+              <ul class="property-list text" style="margin-top:.5rem;">
+                <li class="property-list__item">Front only: driver + passenger (2 mats)</li>
+                <li class="property-list__item">Full interior: front + rear row (4 mats)</li>
+                <li class="property-list__item">Complete set: all rows + trunk mat (full interior coverage)</li>
+                <li class="property-list__item">Heel pad: optional, free</li>
+              </ul>
+            </div>
+
+            <div class="cfg-block">
+              <h3 class="cfg-title">Pattern</h3>
+              <div class="cfg-row cfg-patterns">
+                <label class="cfg-swatch" data-pattern="honeycomb"><input type="radio" name="pattern" value="honeycomb" checked><span>CELL</span></label>
+                <label class="cfg-swatch" data-pattern="diamond"><input type="radio" name="pattern" value="diamond"><span>DIAMOND</span></label>
+              </div>
+            </div>
+
+            <div class="cfg-block">
+              <h3 class="cfg-title">Colors</h3>
+              <div class="cfg-row">
+                <label>Mat color
+                  <select id="cfg-mat-color" class="select constructor-step__select constructor-step__control form-control"></select>
+                </label>
+                <label>Trim color
+                  <select id="cfg-trim-color" class="select constructor-step__select constructor-step__control form-control"></select>
+                </label>
+              </div>
+            </div>
+
+            <div class="cfg-block">
+              <h3 class="cfg-title">Options</h3>
+              <label class="cfg-checkbox"><input type="checkbox" id="cfg-heelpad"><span>Heel pad (free)</span></label>
+              <label class="cfg-checkbox"><input type="checkbox" id="cfg-third-row"><span>3rd row (eligible models only)</span></label>
+              <p class="cfg-help" id="third-row-note" style="display:none">This car is not eligible for a 3rd row.</p>
+            </div>
+          </div>
+
+          <aside class="configurator__summary">
+            <div class="summary-card">
+              <h3>Summary</h3>
+              <p id="summary-vehicle">Vehicle: —</p>
+              <ul id="summary-list" class="property-list"></ul>
+              <div class="summary-total">
+                <p class="total-text">Subtotal</p>
+                <p class="total-price"><span id="summary-subtotal">0</span>$</p>
+              </div>
+              <div id="free-shipping" class="badge" style="display:none">Free Shipping in Canada</div>
+              <div class="summary-actions">
+                <button id="summary-add" class="button">Add to cart</button>
+                <button id="summary-buy" class="button">Buy now</button>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="about-info">
+        <a href="/" aria-label="Custom EVA mats for the interior of your car" class="logo about-info__logo">
+          <img class="logo__image" src="/static/images/logo3_1.svg" alt="Evacode logo">
+        </a>
+      </div>
+    </footer>
+  </div>
+
+  <script defer src="./static/js/vendors/nice-select2/nice-select2.js"></script>
+  <script defer src="./static/js/vendors/swiper/swiper-bundle.min.js"></script>
+  <script defer src="./static/js/configurator.js"></script>
+  <script defer src="./static/js/cart-badge.js"></script>
+</body>
+</html>
+
+

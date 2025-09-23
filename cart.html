@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Cart - EVA Mats</title>
+  <link rel="stylesheet" href="./static/css/style.min.css">
+  <style>
+    .cart { max-width: 960px; margin: 2rem auto; }
+    .cart-item { display:grid; grid-template-columns: 1fr 120px 120px 40px; gap:1rem; padding:.75rem 0; border-bottom:1px solid #eee; }
+    .cart-summary { text-align:right; margin-top:1rem; }
+    .ship { display:flex; justify-content:flex-end; gap:1rem; align-items:center; margin-top:1rem; }
+  </style>
+</head>
+<body>
+  <div class="cart">
+    <h1>Your Cart</h1>
+    <div id="cart-list"></div>
+    <div id="upsell" style="margin-top:1rem; padding:1rem; border:1px dashed #ccc; display:flex; align-items:center; justify-content:space-between; gap:1rem;">
+      <div>
+        <b>Add a storage bag</b><br>
+        Keep your mats clean and organized. Special price today.
+      </div>
+      <div style="display:flex; align-items:center; gap:1rem;">
+        <span><b>$15</b></span>
+        <label style="display:flex; align-items:center; gap:.5rem"><input type="checkbox" id="bag-toggle"> Add</label>
+      </div>
+    </div>
+    <div class="cart-summary">
+      <p class="total-text">Subtotal: <span id="cart-subtotal">0</span>$</p>
+      <div class="ship">
+        <label for="ship-country">Ship to:</label>
+        <select id="ship-country" class="select constructor-step__select constructor-step__control form-control select__arow" style="max-width:240px">
+          <option value="CA" selected>Canada</option>
+          <option value="ROW">Rest of World</option>
+        </select>
+        <span>Shipping: <b><span id="ship-price">0</span>$</b></span>
+      </div>
+      <p id="cart-freeship" style="display:none">Free Shipping in Canada</p>
+      <p class="total-text">Tax: <span id="cart-tax">0</span>$</p>
+      <p class="total-text">Total: <span id="cart-total">0</span>$</p>
+      <div style="margin-top:1rem; display:flex; gap:.5rem; justify-content:flex-end;">
+        <a href="/configurator" class="button">Continue shopping</a>
+        <button id="oneclick" class="button" style="background:#333;border-color:#333;">One‑Click (phone)</button>
+        <div id="paypal-button-container" style="min-width:200px"></div>
+        <button id="checkout" class="button">Checkout</button>
+      </div>
+    </div>
+  </div>
+  <script src="https://www.paypal.com/sdk/js?client-id=YOUR_CLIENT_ID&currency=USD"></script>
+  <script type="module">
+    import { Cart } from './static/js/cart.js';
+    const listEl = document.getElementById('cart-list');
+    const countryEl = document.getElementById('ship-country');
+    const shipPriceEl = document.getElementById('ship-price');
+    const totalEl = document.getElementById('cart-total');
+    const taxEl = document.getElementById('cart-tax');
+    let taxCfg = { type:'percent', value:0 };
+    try { const r = await fetch('static/data/tax.json'); taxCfg = await r.json(); } catch(_){ }
+    const bagToggle = document.getElementById('bag-toggle');
+    const BAG_PRICE = 15;
+    function render(){
+      const items = Cart.list();
+      listEl.innerHTML = '';
+      items.forEach((it, idx)=>{
+        const row = document.createElement('div');
+        row.className='cart-item';
+        row.innerHTML = `
+          <div>${it.make} ${it.model} ${it.year} — ${it.set} | ${it.pattern} | ${it.matColor}/${it.trimColor} ${it.thirdRow ? '| 3rd row' : ''} ${it.heelPad ? '| heel pad' : ''}</div>
+          <div>${it.subtotal}$</div>
+          <div><input type="number" min="1" value="${it.qty||1}" style="width:80px"></div>
+          <div><button data-rm>×</button></div>`;
+        row.querySelector('input').addEventListener('change', (e)=>{ Cart.update(idx, +e.target.value||1); render(); });
+        row.querySelector('[data-rm]').addEventListener('click', ()=>{ Cart.remove(idx); render(); });
+        listEl.appendChild(row);
+      });
+      const subtotal = Cart.total();
+      document.getElementById('cart-subtotal').textContent = subtotal;
+      const country = countryEl.value;
+      const shipping = country === 'CA' && subtotal >= 100 ? 0 : 22;
+      shipPriceEl.textContent = shipping;
+      const bag = bagToggle.checked ? BAG_PRICE : 0;
+      let tax = 0;
+      if (taxCfg.type === 'percent') tax = +(subtotal * (taxCfg.value||0) / 100).toFixed(2);
+      const total = subtotal + shipping + bag + tax;
+      totalEl.textContent = total;
+      if (taxEl) taxEl.textContent = tax;
+      document.getElementById('cart-freeship').style.display = (country === 'CA' && subtotal >= 100) ? 'block' : 'none';
+    }
+    countryEl.addEventListener('change', render);
+    bagToggle.addEventListener('change', render);
+    document.getElementById('checkout').addEventListener('click', ()=>{
+      const payload = { country: countryEl.value, shipping: +shipPriceEl.textContent, bag: bagToggle.checked ? BAG_PRICE : 0 };
+      localStorage.setItem('cartShipping', JSON.stringify(payload));
+      window.location.href = '/order';
+    });
+    document.getElementById('oneclick').addEventListener('click', async ()=>{
+      const phone = prompt('Enter your phone number');
+      if (!phone) return;
+      const items = Cart.list();
+      const subtotal = +document.getElementById('cart-subtotal').textContent;
+      const shipping = +shipPriceEl.textContent;
+      const bag = bagToggle.checked ? BAG_PRICE : 0;
+      const total = +totalEl.textContent;
+      const payload = { formName:'oneClick', phone, items, country: countryEl.value, shipping, subtotal, bag, total };
+      try {
+        await fetch('action.php', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload)});
+        alert('Request sent. We will contact you shortly.');
+      } catch(_) { alert('Failed to send request'); }
+    });
+    render();
+    // PayPal button
+    if (window.paypal) {
+      paypal.Buttons({
+        createOrder: function(data, actions) {
+          const items = Cart.list();
+          const subtotal = +document.getElementById('cart-subtotal').textContent;
+          const shipping = +shipPriceEl.textContent;
+          const bag = bagToggle.checked ? BAG_PRICE : 0;
+          const total = subtotal + shipping + bag;
+          return actions.order.create({
+            purchase_units: [{
+              amount: { value: total.toFixed(2), currency_code: 'USD',
+                breakdown: {
+                  item_total: { value: subtotal.toFixed(2), currency_code: 'USD' },
+                  shipping: { value: shipping.toFixed(2), currency_code: 'USD' },
+                  tax_total: { value: '0.00', currency_code: 'USD' }
+                }
+              },
+              items: items.map(i=>({
+                name: `${i.make} ${i.model} ${i.year} — ${i.set}`.slice(0,127),
+                unit_amount: { value: (i.subtotal||0).toFixed(2), currency_code: 'USD' },
+                quantity: String(i.qty||1)
+              })).concat(bag? [{ name:'Storage bag', unit_amount:{ value: BAG_PRICE.toFixed(2), currency_code:'USD' }, quantity:'1' }]: [])
+            }]
+          });
+        },
+        onApprove: function(data, actions) {
+          return actions.order.capture().then(async function(details) {
+            const items = Cart.list();
+            const subtotal = +document.getElementById('cart-subtotal').textContent;
+            const shipping = +shipPriceEl.textContent;
+            const bag = bagToggle.checked ? BAG_PRICE : 0;
+            const total = subtotal + shipping + bag;
+            const phone = prompt('Phone number for delivery (optional):') || '';
+            const payload = {
+              formName:'paypal',
+              paypalOrderId: details.id,
+              payerEmail: details.payer?.email_address || '',
+              payerName: `${details.payer?.name?.given_name||''} ${details.payer?.name?.surname||''}`.trim(),
+              shipTo: {
+                name: details.purchase_units?.[0]?.shipping?.name?.full_name || '',
+                line1: details.purchase_units?.[0]?.shipping?.address?.address_line_1 || '',
+                line2: details.purchase_units?.[0]?.shipping?.address?.address_line_2 || '',
+                city: details.purchase_units?.[0]?.shipping?.address?.admin_area_2 || '',
+                state: details.purchase_units?.[0]?.shipping?.address?.admin_area_1 || '',
+                postal: details.purchase_units?.[0]?.shipping?.address?.postal_code || '',
+                country: details.purchase_units?.[0]?.shipping?.address?.country_code || ''
+              },
+              items, subtotal, shipping, bag, tax: 0, total, phone
+            };
+            try { await fetch('action.php', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) }); } catch(_){ }
+            alert('Payment captured. Thank you!');
+          });
+        }
+      }).render('#paypal-button-container');
+    }
+  </script>
+</body>
+</html>
+
+
