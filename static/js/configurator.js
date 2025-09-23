@@ -361,14 +361,24 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     return ok;
   }
+  function ensureColorsSelected(){
+    const missing = [];
+    if (!state.matColor) missing.push('Mat color');
+    if (!state.trimColor) missing.push('Trim color');
+    if (missing.length) {
+      alert(`Please select: ${missing.join(', ')}.`);
+      return false;
+    }
+    return true;
+  }
   addBtn.addEventListener('click', async ()=>{
-    if (!ensureVehicleSelected()) return;
+    if (!ensureVehicleSelected() || !ensureColorsSelected()) return;
     const module = await import('./cart.js');
     module.Cart.add({ ...toCartItem() });
     window.location.href = '/cart.html';
   });
   buyBtn.addEventListener('click', async ()=>{
-    if (!ensureVehicleSelected()) return;
+    if (!ensureVehicleSelected() || !ensureColorsSelected()) return;
     const module = await import('./cart.js');
     module.Cart.add({ ...toCartItem() });
     window.location.href = '/order.html';

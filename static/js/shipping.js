@@ -194,8 +194,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const getStatusPromo = () => promoCheck ? 'yes' : 'no';
 
+  function isProductComplete(data){
+    return Boolean(
+      data && data.carMake && data.carModel && data.carYear &&
+      data.rugBackgroundColor && data.rugOutlineColor && data.setType
+    );
+  }
+
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
+    // Guard: ensure product configuration is complete
+    if (!isProductComplete(counstructorUserData)) {
+      alert("Please complete your product selection (make, model, year, mat color, trim color, set).");
+      return;
+    }
     const formData = new FormData(form);
     const formValues = Object.fromEntries(formData.entries());
     const userName = `${document.querySelector('#first-name').value} ${document.querySelector('#last-name').value}`;

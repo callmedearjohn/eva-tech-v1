@@ -338,6 +338,21 @@
         const cart = JSON.parse(localStorage.getItem('evatech_cart_v1')||'[]');
         const it = Array.isArray(cart) && cart[0] ? cart[0] : null;
         if (it) {
+          // Bridge cart item to legacy counstructorUserData consumers
+          (function syncLegacyUserData(){
+            try {
+              var setTypeMap = { front: 'economy', full: 'standart', complete: 'premium' };
+              var legacy = {
+                carMake: it.make || '',
+                carModel: it.model || '',
+                carYear: it.year || '',
+                rugBackgroundColor: it.matColor || '',
+                rugOutlineColor: it.trimColor || '',
+                setType: setTypeMap[it.set] || ''
+              };
+              localStorage.setItem('counstructorUserData', JSON.stringify(legacy));
+            } catch(_){ }
+          })();
           var setNameMap = { front: 'Economy', full: 'Standart', complete: 'Premium' };
           document.getElementById('orderType').textContent = setNameMap[it.set] || it.set || '—';
           document.getElementById('orderCar').textContent = it.make + ' ' + it.model;

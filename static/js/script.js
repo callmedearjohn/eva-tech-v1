@@ -61,6 +61,20 @@ document.addEventListener('DOMContentLoaded', function() {
   
   const slideTo = (toStepId) => {
     if (toStepId == 4) {
+      // Guard: ensure all selections are complete before navigating to order
+      const required = [
+        counstructorUserData.carMake,
+        counstructorUserData.carModel,
+        counstructorUserData.carYear,
+        counstructorUserData.rugBackgroundColor,
+        counstructorUserData.rugOutlineColor,
+        counstructorUserData.setType
+      ];
+      const isComplete = required.every(Boolean);
+      if (!isComplete) {
+        alert('Please complete all selections: car, colors, and set.');
+        return;
+      }
       localStorage.setItem('counstructorUserData', JSON.stringify(counstructorUserData));
       window.location.href = 'order';
       return;
