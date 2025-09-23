@@ -105,12 +105,13 @@
 
             <div class="cfg-block">
               <h3 class="cfg-title">Your vehicle</h3>
-              <div class="cfg-row">
+              <p id="cfg-vehicle-summary" class="cfg-help">Make/Model/Price: —</p>
+              
+              <div class="cfg-row-vehicle">
                 <select id="cfg-make" class="select constructor-step__select constructor-step__control form-control select__arow"><option selected disabled>Make</option></select>
                 <select id="cfg-model" class="select constructor-step__select constructor-step__control form-control select__arow"><option selected disabled>Model</option></select>
                 <select id="cfg-year" class="select constructor-step__select constructor-step__control form-control select__arow"><option selected disabled>Year</option></select>
               </div>
-              <p id="cfg-vehicle-summary" class="cfg-help">Make/Model/Price: —</p>
             </div>
 
             <div class="cfg-block">
@@ -138,13 +139,25 @@
 
             <div class="cfg-block">
               <h3 class="cfg-title">Colors</h3>
-              <div class="cfg-row">
-                <label>Mat color
-                  <select id="cfg-mat-color" class="select constructor-step__select constructor-step__control form-control"></select>
-                </label>
-                <label>Trim color
-                  <select id="cfg-trim-color" class="select constructor-step__select constructor-step__control form-control"></select>
-                </label>
+              <div class="cfg-colors">
+                <div class="color-group">
+                  <div class="color-group__head">
+                    <span class="color-group__label">Mat color:</span>
+                    <strong class="color-group__value" id="mat-color-selected">—</strong>
+                  </div>
+                  <div id="mat-swatch-list" class="swatch-list" aria-label="Mat colors"></div>
+                  <!-- keep native select for accessibility/fallback -->
+                  <select id="cfg-mat-color" class="select constructor-step__select constructor-step__control form-control cfg-select-hidden"></select>
+                </div>
+                <div class="color-group">
+                  <div class="color-group__head">
+                    <span class="color-group__label">Trim color:</span>
+                    <strong class="color-group__value" id="trim-color-selected">—</strong>
+                  </div>
+                  <div id="trim-swatch-list" class="swatch-list" aria-label="Trim colors"></div>
+                  <!-- keep native select for accessibility/fallback -->
+                  <select id="cfg-trim-color" class="select constructor-step__select constructor-step__control form-control cfg-select-hidden"></select>
+                </div>
               </div>
             </div>
 
@@ -161,10 +174,19 @@
               <h3>Summary</h3>
               <p id="summary-vehicle">Vehicle: —</p>
               <ul id="summary-list" class="property-list"></ul>
+              <div class="summary-qty">
+                <span>Quantity</span>
+                <div class="qty-control">
+                  <button type="button" id="qty-minus" aria-label="Decrease quantity">−</button>
+                  <input id="qty-input" type="number" min="1" value="1" inputmode="numeric" pattern="[0-9]*" aria-label="Quantity">
+                  <button type="button" id="qty-plus" aria-label="Increase quantity">+</button>
+                </div>
+              </div>
               <div class="summary-total">
-                <p class="total-text">Subtotal</p>
+                <p class="total-text">Total</p>
                 <p class="total-price"><span id="summary-subtotal">0</span>$</p>
               </div>
+              <p id="require-vehicle-msg" class="cfg-help cfg-error" style="display:none">Please select Make, Model and Year to continue.</p>
               <div id="free-shipping" class="badge" style="display:none">Free Shipping in Canada</div>
               <div class="summary-actions">
                 <button id="summary-add" class="button">Add to cart</button>

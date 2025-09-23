@@ -11,6 +11,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const matColorEl = $('#cfg-mat-color');
   const trimColorEl = $('#cfg-trim-color');
   const patternOverlay = document.getElementById('pattern-overlay');
+  const matSwatchList = document.getElementById('mat-swatch-list');
+  const trimSwatchList = document.getElementById('trim-swatch-list');
+  const matSelectedLabel = document.getElementById('mat-color-selected');
+  const trimSelectedLabel = document.getElementById('trim-color-selected');
 
   // Options
   const heelPadEl = $('#cfg-heelpad');
@@ -25,6 +29,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const addBtn = $('#summary-add');
   const buyBtn = $('#summary-buy');
   const vehicleSummaryEl = document.getElementById('cfg-vehicle-summary');
+  const qtyMinusBtn = document.getElementById('qty-minus');
+  const qtyPlusBtn = document.getElementById('qty-plus');
+  const qtyInput = document.getElementById('qty-input');
+  const requireVehicleMsg = document.getElementById('require-vehicle-msg');
 
   const PRICES = { front: 59, full: 139, complete: 219 };
 
@@ -33,7 +41,9 @@ document.addEventListener('DOMContentLoaded', () => {
     set: 'front', pattern: 'honeycomb',
     matColor: '', trimColor: '',
     heelPad: false, thirdRow: false,
-    thirdRowEligible: false
+    thirdRowEligible: false,
+    qty: 1,
+    subtotal: 0
   };
 
   // NiceSelect binding if available (bind once, then call update())
@@ -145,16 +155,47 @@ document.addEventListener('DOMContentLoaded', () => {
       const data = await res.json();
       matColorEl.innerHTML = '<option selected disabled>Choose</option>' + data.matColors.map(c=>`<option value="${c}">${c}</option>`).join('');
       trimColorEl.innerHTML = '<option selected disabled>Choose</option>' + data.trimColors.map(c=>`<option value="${c}">${c}</option>`).join('');
+      try { buildSwatches(matSwatchList, data.matColors, 'mat'); buildSwatches(trimSwatchList, data.trimColors, 'trim'); } catch(_){}
     } catch (e) {
       const mats = ['Black','Grey','Blue','Brown','Red','Beige'];
       const trims = ['Black','Blue','Red','Grey','Beige','Brown'];
       matColorEl.innerHTML = '<option selected disabled>Choose</option>' + mats.map(c=>`<option value="${c.toLowerCase()}">${c}</option>`).join('');
       trimColorEl.innerHTML = '<option selected disabled>Choose</option>' + trims.map(c=>`<option value="${c.toLowerCase()}">${c}</option>`).join('');
+      try { buildSwatches(matSwatchList, mats.map(c=>c.toLowerCase()), 'mat'); buildSwatches(trimSwatchList, trims.map(c=>c.toLowerCase()), 'trim'); } catch(_){}
     }
     try {
       __cfgMatNS && __cfgMatNS.update && __cfgMatNS.update();
       __cfgTrimNS && __cfgTrimNS.update && __cfgTrimNS.update();
-    } catch(_){}
+    } catch(_){ }
+  }
+
+  function buildSwatches(container, colors, type){
+    if (!container) return;
+    container.innerHTML = '';
+    const colorToHex = { black:'#000000', gray:'#d9d9d9', grey:'#d9d9d9', blue:'#2b61c8', brown:'#8a5b3c', red:'#ff1a13', beige:'#dcc48e', purple:'#6f1d8a', orange:'#ffa000', yellow:'#ffee00', sand:'#d7c190', cyan:'#4db3c8', green:'#2c7a0b', navy:'#0d2a52' };
+    colors.forEach((c)=>{
+      const sw = document.createElement('button');
+      sw.type = 'button';
+      sw.className = 'swatch';
+      sw.title = c;
+      sw.style.backgroundColor = colorToHex[c] || c;
+      sw.setAttribute('data-color', c);
+      sw.addEventListener('click', ()=>{
+        container.querySelectorAll('.swatch').forEach(s=> s.classList.remove('is-selected'));
+        sw.classList.add('is-selected');
+        if (type === 'mat') {
+          state.matColor = c;
+          matColorEl.value = c;
+          if (matSelectedLabel) matSelectedLabel.textContent = c.charAt(0).toUpperCase()+c.slice(1);
+        } else {
+          state.trimColor = c;
+          trimColorEl.value = c;
+          if (trimSelectedLabel) trimSelectedLabel.textContent = c.charAt(0).toUpperCase()+c.slice(1);
+        }
+        syncSummary();
+      });
+      container.appendChild(sw);
+    });
   }
 
   // 3rd row eligibility
@@ -189,8 +230,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (state.thirdRow && state.thirdRowEligible && state.set !== 'complete') {
       subtotal += 40; // nominal surcharge for 3rd row when not included
     }
-    summarySubtotalEl.textContent = String(subtotal);
     state.subtotal = subtotal;
+    const total = subtotal * Math.max(1, Number(state.qty || 1));
+    summarySubtotalEl.textContent = String(total);
     freeShipEl.style.display = subtotal >= 100 ? 'block' : 'none';
     if (vehicleSummaryEl) {
       const mm = [state.make, state.model, state.year].filter(Boolean).join(' ');
@@ -255,12 +297,20 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   modelEl.addEventListener('change', (e)=>{ state.model = e.target.value; updateEligibility(); syncSummary(); });
   yearEl.addEventListener('change', (e)=>{ state.year = e.target.value; syncSummary(); });
-  matColorEl.addEventListener('change', (e)=>{ state.matColor = e.target.value; syncSummary(); });
-  trimColorEl.addEventListener('change', (e)=>{ state.trimColor = e.target.value; syncSummary(); });
+  matColorEl.addEventListener('change', (e)=>{ state.matColor = e.target.value; if(matSelectedLabel) matSelectedLabel.textContent = state.matColor.charAt(0).toUpperCase()+state.matColor.slice(1); try { const c=matSwatchList?.querySelector(`[data-color="${state.matColor}"]`); matSwatchList?.querySelectorAll('.swatch').forEach(s=>s.classList.remove('is-selected')); c&&c.classList.add('is-selected'); } catch(_){ } syncSummary(); });
+  trimColorEl.addEventListener('change', (e)=>{ state.trimColor = e.target.value; if(trimSelectedLabel) trimSelectedLabel.textContent = state.trimColor.charAt(0).toUpperCase()+state.trimColor.slice(1); try { const c=trimSwatchList?.querySelector(`[data-color="${state.trimColor}"]`); trimSwatchList?.querySelectorAll('.swatch').forEach(s=>s.classList.remove('is-selected')); c&&c.classList.add('is-selected'); } catch(_){ } syncSummary(); });
   $$('input[name="set"]').forEach(r=> r.addEventListener('change', (e)=>{ state.set = e.target.value; syncSummary(); }));
   $$('input[name="pattern"]').forEach(r=> r.addEventListener('change', (e)=>{ state.pattern = e.target.value; syncSummary(); }));
   heelPadEl.addEventListener('change', (e)=>{ state.heelPad = e.target.checked; syncSummary(); });
   thirdRowEl.addEventListener('change', (e)=>{ state.thirdRow = e.target.checked; syncSummary(); });
+
+  // Quantity controls
+  if (qtyMinusBtn && qtyPlusBtn && qtyInput) {
+    const clamp = (n)=> Math.max(1, Math.min(99, Number.isFinite(n)? n : 1));
+    qtyMinusBtn.addEventListener('click', ()=>{ qtyInput.value = clamp(Number(qtyInput.value)-1); state.qty = Number(qtyInput.value); calcSubtotal(); });
+    qtyPlusBtn.addEventListener('click', ()=>{ qtyInput.value = clamp(Number(qtyInput.value)+1); state.qty = Number(qtyInput.value); calcSubtotal(); });
+    qtyInput.addEventListener('input', ()=>{ state.qty = clamp(Number(qtyInput.value)); qtyInput.value = state.qty; calcSubtotal(); });
+  }
 
   // Prefill from URL or localStorage
   (function prefill(){
@@ -304,12 +354,21 @@ document.addEventListener('DOMContentLoaded', () => {
   function toCartItem(){
     return { ...state };
   }
+  function ensureVehicleSelected(){
+    const ok = Boolean(state.make && state.model && state.year);
+    if (!ok) {
+      alert('Please select Make, Model and Year first.');
+    }
+    return ok;
+  }
   addBtn.addEventListener('click', async ()=>{
+    if (!ensureVehicleSelected()) return;
     const module = await import('./cart.js');
     module.Cart.add({ ...toCartItem() });
     window.location.href = '/cart.html';
   });
   buyBtn.addEventListener('click', async ()=>{
+    if (!ensureVehicleSelected()) return;
     const module = await import('./cart.js');
     module.Cart.add({ ...toCartItem() });
     window.location.href = '/order.html';

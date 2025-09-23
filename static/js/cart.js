@@ -8,8 +8,9 @@ export const Cart = (() => {
       const items = read();
       const key = JSON.stringify({make:item.make, model:item.model, year:item.year, set:item.set, pattern:item.pattern, matColor:item.matColor, trimColor:item.trimColor, thirdRow:item.thirdRow, heelPad:item.heelPad});
       const idx = items.findIndex(x=> JSON.stringify({make:x.make, model:x.model, year:x.year, set:x.set, pattern:x.pattern, matColor:x.matColor, trimColor:x.trimColor, thirdRow:x.thirdRow, heelPad:x.heelPad}) === key);
-      if (idx >= 0) { items[idx].qty = (items[idx].qty||1) + 1; }
-      else { items.push({...item, qty: 1}); }
+      const qtyToAdd = Number(item.qty || 1);
+      if (idx >= 0) { items[idx].qty = (items[idx].qty||1) + qtyToAdd; }
+      else { items.push({...item, qty: qtyToAdd}); }
       write(items);
     },
     list: read,

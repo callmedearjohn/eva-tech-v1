@@ -1,4 +1,5 @@
-document.addEventListener('DOMContentLoaded', function(){
+window.EvaCheckout = window.EvaCheckout || {};
+window.EvaCheckout.recomputeTotals = function(){
   try {
     const cart = JSON.parse(localStorage.getItem('evatech_cart_v1')||'[]');
     if (!Array.isArray(cart) || cart.length === 0) return;
@@ -6,7 +7,6 @@ document.addEventListener('DOMContentLoaded', function(){
     const shipCfg = JSON.parse(localStorage.getItem('cartShipping')||'{}');
     const shipping = typeof shipCfg.shipping === 'number' ? shipCfg.shipping : (subtotal >= 100 ? 0 : 22);
     const bag = typeof shipCfg.bag === 'number' ? shipCfg.bag : 0;
-    // tax config (sync: values default to 0 if fetch fails)
     let tax = 0;
     try {
       var xhr = new XMLHttpRequest();
@@ -25,6 +25,10 @@ document.addEventListener('DOMContentLoaded', function(){
     if (shipEl) shipEl.textContent = String(shipping);
     if (totalEl) totalEl.textContent = String(subtotal + shipping + bag + tax);
   } catch (e) { /* noop */ }
+}
+
+document.addEventListener('DOMContentLoaded', function(){
+  window.EvaCheckout.recomputeTotals();
 });
 
 
