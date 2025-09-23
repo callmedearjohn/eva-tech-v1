@@ -74,29 +74,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const year = yearEl.value;
     if (!makeId || !modelName || !year) return;
 
-    // Scroll to constructor
-    const target = document.getElementById('price-constructor');
-    if (target) target.scrollIntoView({ behavior: 'smooth' });
+    // Persist selection for fallback prefill
+    try {
+      const data = { carMake: makeName, carModel: modelName, carYear: year };
+      localStorage.setItem('counstructorUserData', JSON.stringify(data));
+    } catch(_) {}
 
-    // Prefill step-1 selects
-    const pcMake = document.getElementById('car-make');
-    const pcModel = document.getElementById('car-model');
-    const pcYear = document.getElementById('car-year');
-    if (!pcMake || !pcModel || !pcYear) return;
-
-    // Set year immediately
-    setSelectValue(pcYear, year);
-
-    // Set make and wait models to load via existing script
-    setSelectValue(pcMake, makeId);
-
-    // Populate model after the main script fetches models
-    const ok = await waitForOption(pcModel, modelName, 2500);
-    if (!ok) {
-      // Fallback: inject option ourselves
-      pcModel.insertAdjacentHTML('beforeend', `<option value="${modelName}">${modelName}</option>`);
-    }
-    setSelectValue(pcModel, modelName);
+    // Redirect to configurator with URL params (configurator reads these to prefill)
+    const params = new URLSearchParams({ make: makeName, model: modelName, year });
+    window.location.href = `/configurator?${params.toString()}`;
   });
 });
 
