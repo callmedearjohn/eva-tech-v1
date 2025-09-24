@@ -34,6 +34,33 @@
       .top-products img { width: 88px !important; height: 88px !important; }
       .side-products .button { padding: 6px 10px; font-size: 12px; }
     }
+    /* Promo price badges */
+    .price-line { display:inline-flex; align-items:center; gap:.35rem; }
+    .price-old { text-decoration: line-through; opacity:.6; }
+    .badge-promo { background:#d42920; color:#fff; padding:2px 6px; border-radius:4px; font-size:12px; }
+    .gift-block { display:flex; align-items:center; gap:10px; margin-top:8px; }
+    .gift-block img { width:64px; height:64px; object-fit:contain; }
+    .payments-logos { display:flex; align-items:center; gap:10px; margin-top:8px; opacity:.9; flex-wrap:wrap; }
+    .payments-logos svg { height:20px; width:auto; display:block; }
+    .summary-note { font-size:12px; color:#555; margin-top:6px; }
+
+    /* Vehicle top header */
+    .vehicle-top { background:#f8f8f8; border-bottom:1px solid #eee; }
+    .vehicle-top__content { display:flex; flex-direction:column; gap:4px; padding:12px 0; }
+    .vehicle-top__title { font-weight:700; font-size:18px; }
+    .vehicle-top__subtitle { color:#666; font-size:14px; }
+
+    /* Upsell cards */
+    .upsell { margin-top:16px; border:1px solid #eee; border-radius:8px; background:#fff; padding:12px; }
+    .upsell__title { font-weight:700; margin-bottom:8px; }
+    .upsell__list { display:flex; flex-direction:column; gap:10px; }
+    .upsell__item { display:flex; align-items:center; gap:10px; text-decoration:none; color:inherit; border:1px solid #f0f0f0; border-radius:8px; padding:8px; transition:box-shadow .2s ease, border-color .2s ease; }
+    .upsell__item:hover { border-color:#ddd; box-shadow:0 2px 8px rgba(0,0,0,.06); }
+    .upsell__thumb { width:72px; height:72px; object-fit:cover; border-radius:6px; flex:0 0 auto; }
+    .upsell__info { display:flex; flex-direction:column; gap:2px; }
+    .upsell__name { font-weight:600; line-height:1.2; }
+    .upsell__meta { font-size:12px; opacity:.8; }
+    .upsell__btn { margin-left:auto; white-space:nowrap; }
   </style>
 
 </head>
@@ -80,6 +107,16 @@
     </header>
 
     <main id="panel">
+
+      <!-- Top vehicle selection summary -->
+      <div class="vehicle-top">
+        <div class="container">
+          <div class="vehicle-top__content">
+            <div class="vehicle-top__title" id="vehicle-top-title">Select your vehicle</div>
+            <div class="vehicle-top__subtitle" id="vehicle-top-sub">Choose Make, Model, Year to see it here</div>
+          </div>
+        </div>
+      </div>
 
       <!-- Original product page content cloned from individual.html (UI/UX unchanged) -->
       <div class="goodcard goodcard181" data-category="181">
@@ -142,17 +179,34 @@
                     </div>
                     <div class="cfg-block">
                       <h3 class="cfg-title">Set</h3>
-                      <div class="cfg-row cfg-sets">
-                        <label class="cfg-radio"><input type="radio" name="set" value="front" checked><span>Front only (2 mats) — 59$</span></label>
-                        <label class="cfg-radio"><input type="radio" name="set" value="full"><span>Full interior — 139$</span></label>
-                        <label class="cfg-radio"><input type="radio" name="set" value="complete"><span>Complete set — 219$</span></label>
+                    <div class="cfg-row cfg-sets">
+                        <label class="cfg-radio">
+                          <input type="radio" name="set" value="front" checked>
+                          <span>
+                            <strong>Economy — Front row (2 mats)</strong>
+                            <span class="price-line"><span class="price-old">79$</span><span>59$</span><span class="badge-promo">Promo</span></span>
+                          </span>
+                        </label>
+                        <label class="cfg-radio">
+                          <input type="radio" name="set" value="full">
+                          <span>
+                            <strong>Standard — Front + Rear</strong>
+                            <span class="price-line"><span class="price-old">159$</span><span>139$</span><span class="badge-promo">Promo</span></span>
+                          </span>
+                        </label>
+                        <label class="cfg-radio">
+                          <input type="radio" name="set" value="complete">
+                          <span>
+                            <strong>Premium — Front + Rear + Trunk</strong>
+                            <span class="price-line"><span class="price-old">239$</span><span>219$</span><span class="badge-promo">Promo</span></span>
+                          </span>
+                        </label>
                       </div>
                     </div>
                     <div class="cfg-block">
                       <h3 class="cfg-title">Pattern</h3>
                       <div class="cfg-row cfg-patterns">
-                        <label class="cfg-swatch" data-pattern="honeycomb"><input type="radio" name="pattern" value="honeycomb"><span>CELL</span></label>
-                        <label class="cfg-swatch" data-pattern="diamond"><input type="radio" name="pattern" value="diamond" checked><span>DIAMOND</span></label>
+                        <label class="cfg-swatch" data-pattern="diamond"><input type="radio" name="pattern" value="diamond" checked><span>RHOMBUS</span></label>
                       </div>
                     </div>
                     <div class="cfg-block">
@@ -173,6 +227,13 @@
                     <div class="cfg-block">
                       <h3 class="cfg-title">Options</h3>
                       <label class="cfg-checkbox"><input type="checkbox" id="cfg-heelpad"><span>Heel pad (free)</span></label>
+                      <div class="gift-block">
+                        <img src="./static/images/price-constructor/sets/footrest.png" alt="Heel pad gift">
+                        <div>
+                          <div style="font-weight:600;">Free gift included</div>
+                          <div class="cfg-help">Heel pad is automatically added to your order.</div>
+                        </div>
+                      </div>
                       <label class="cfg-checkbox"><input type="checkbox" id="cfg-third-row"><span>3rd row (eligible models only)</span></label>
                       <p class="cfg-help" id="third-row-note" style="display:none">This car is not eligible for a 3rd row.</p>
                     </div>
@@ -181,39 +242,29 @@
                 <div class="col-md-4" id="right-panel">
                   <div class="car_pattern_block">
                     <div class="goodimage_wrapper">
-                      <div class="top-products" style="display:flex; gap:10px; margin-bottom:12px;">
-                        <a href="configurator?product=carsbag" title="EVA Carsbag" style="display:block;">
-                          <img src="./static/images/car-bags/bag-1.jpg" alt="EVA Carsbag" style="width:100px; height:100px; object-fit:cover; border-radius:6px;">
-                        </a>
-                        <a href="configurator?product=home" title="EVA Home Mat" style="display:block;">
-                          <img src="./static/images/home-mats/mat-1.jpg" alt="EVA Home Mat" style="width:100px; height:100px; object-fit:cover; border-radius:6px;">
-                        </a>
-                      </div>
-                      <div class="goodimage"><img src="./static/images/price-constructor/sets/set-1.jpg" alt="Pattern"></div>
-                      <div class="galleryincard"><div><a href="./static/images/price-constructor/sets/set-1.jpg" data-fancybox="gallery"><img src="./static/images/price-constructor/sets/set-1.jpg"><div class="zoom"></div></a></div></div>
-                      <div class="simple_pattern"><div>Sample templates</div><div>EVA Carsbag • EVA Home Mat</div></div>
-                      <div class="rating_opinion"><div class="stars_wrapper"><div class="rating5"></div></div><div class="names"><span>average customer rating</span>who bought this product</div></div>
-                      <div class="bycount">In 2 months, 112 people bought this product</div>
-                      <div class="side-products" style="margin-top:16px;">
-                        <div class="side-product" style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
-                          <a href="configurator?product=carsbag" style="display:flex; align-items:center; gap:10px; text-decoration:none; color:inherit;">
-                            <img src="./static/images/car-bags/bag-1.jpg" alt="EVA Carsbag" style="width:72px; height:72px; object-fit:cover; border-radius:6px;">
-                            <div>
-                              <div style="font-weight:600; line-height:1.2;">EVA Carsbag</div>
-                              <div style="font-size:12px; opacity:.8;">Sizes M / L</div>
-                            </div>
-                          </a>
-                          <a class="button" href="configurator?product=carsbag" style="margin-left:auto; white-space:nowrap;">Add to cart</a>
-                        </div>
-                        <div class="side-product" style="display:flex; align-items:center; gap:10px;">
-                          <a href="configurator?product=home" style="display:flex; align-items:center; gap:10px; text-decoration:none; color:inherit;">
-                            <img src="./static/images/home-mats/mat-1.jpg" alt="EVA Home Mat" style="width:72px; height:72px; object-fit:cover; border-radius:6px;">
-                            <div>
-                              <div style="font-weight:600; line-height:1.2;">EVA Home Mat</div>
-                              <div style="font-size:12px; opacity:.8;">Sizes S / M / L / XL</div>
-                            </div>
-                          </a>
-                          <a class="button" href="configurator?product=home" style="margin-left:auto; white-space:nowrap;">Add to cart</a>
+                      <div class="upsell">
+                        <div class="upsell__title">You may also like</div>
+                        <div class="upsell__list">
+                          <div class="upsell__item">
+                            <a href="configurator?product=carsbag" style="display:flex; align-items:center; gap:10px; text-decoration:none; color:inherit;">
+                              <img class="upsell__thumb" src="./static/images/car-bags/bag-1.jpg" alt="EVA Carsbag">
+                              <div class="upsell__info">
+                                <div class="upsell__name">EVA Carsbag</div>
+                                <div class="upsell__meta">Sizes M / L</div>
+                              </div>
+                            </a>
+                            <a class="button upsell__btn" href="configurator?product=carsbag">Add</a>
+                          </div>
+                          <div class="upsell__item">
+                            <a href="configurator?product=home" style="display:flex; align-items:center; gap:10px; text-decoration:none; color:inherit;">
+                              <img class="upsell__thumb" src="./static/images/home-mats/mat-1.jpg" alt="EVA Home Mat">
+                              <div class="upsell__info">
+                                <div class="upsell__name">EVA Home Mat</div>
+                                <div class="upsell__meta">Sizes S / M / L / XL</div>
+                              </div>
+                            </a>
+                            <a class="button upsell__btn" href="configurator?product=home">Add</a>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -262,6 +313,15 @@
                         <button id="summary-add" class="order_button btn">Add to cart</button>
                         <button id="summary-buy" class="oneclick btn">Buy now</button>
                       </div>
+                      <div class="payments-logos" aria-label="Accepted payment methods">
+                        <!-- Inline brand marks -->
+                        <svg viewBox="0 0 48 16" aria-label="Visa" role="img"><rect width="48" height="16" rx="2" fill="#1a1f71"/><path fill="#fff" d="M9.6 5h1.8L9.9 11H8.1L9.6 5Zm3.7 0h1.7l1.1 4.2L17.9 5h1.8l-1.8 6h-1.6l-1.2-4.3L13.9 11h-1.6l1-6Zm9.1 0c1 0 1.8.5 2 .9l-1.1.7c-.2-.2-.5-.4-1-.4-.9 0-1.5.5-1.5 1.2s.6 1.1 1.3 1.1c.6 0 .9-.2 1.3-.5l1.1.7c-.5.6-1.2 1-2.4 1-1.7 0-3-1-3-2.4s1.3-2.3 3.3-2.3Zm6.7.1h1.6l-1 6h-1.6l1-6Z"/></svg>
+                        <svg viewBox="0 0 48 16" aria-label="Mastercard" role="img"><rect width="48" height="16" rx="2" fill="#000"/><circle cx="20" cy="8" r="5" fill="#eb001b"/><circle cx="28" cy="8" r="5" fill="#f79e1b"/><path d="M24 3a5 5 0 0 0 0 10a5 5 0 0 0 0-10Z" fill="#ff5f00"/></svg>
+                        <svg viewBox="0 0 48 16" aria-label="AmEx" role="img"><rect width="48" height="16" rx="2" fill="#2e77bc"/><text x="8" y="11" font-size="8" font-family="Arial, Helvetica, sans-serif" fill="#fff">AMEX</text></svg>
+                        <svg viewBox="0 0 48 16" aria-label="PayPal" role="img"><rect width="48" height="16" rx="2" fill="#003087"/><text x="6" y="11" font-size="8" font-family="Arial, Helvetica, sans-serif" fill="#fff">PayPal</text></svg>
+                        <svg viewBox="0 0 48 16" aria-label="Interac" role="img"><rect width="48" height="16" rx="2" fill="#ffcb05"/><text x="6" y="11" font-size="8" font-family="Arial, Helvetica, sans-serif" fill="#000">Interac</text></svg>
+                      </div>
+                      <p class="summary-note">Shipping $22 if order is under $100. Free shipping on $100+.</p>
                       <!-- <li><button class="order_button btn" onclick="document.getElementById('summary-add')?.click()">Add to cart<span></span></button></li>
                       <li><a class="oneclick" href="javascript:void(0)" onclick="document.getElementById('summary-buy')?.click()">Buy in 1 click</a></li> -->
                     </ul>
@@ -303,11 +363,11 @@
       </div>
       <div class="container">
         <div class="tab-content"> <div class="tab-pane fade in active show" id="tab0" name="tab0" role="tabpanel"><p dir="ltr" id="docs-internal-guid-713fb6e4-7fff-f81a-b529-b06e5c0acb9f">
-  <strong>EVA mats production without prepayment is carried out only in grey and black</strong>. EVA car mats Audi TT III (8S) 2014–2019 are durable, convenient and versatile accessories that reliably protect your interior and trunk from dust, dirt and moisture all year round.</p>
+  <strong>Custom EVA car mats</strong> are durable, convenient and versatile accessories that protect your interior and trunk from dust, dirt and moisture all year round.</p>
 <p dir="ltr">
-  EVA accessories are perfect for autumn–spring use. They will not soften from water (unlike textile mats) and will not harden in frost, unlike rubber ones.</p>
+  EVA mats are perfect for all-season use. They do not absorb water and remain elastic in cold weather, unlike textile or classic rubber mats.</p>
 <p dir="ltr">
-  EVA mats are made from an innovative eco‑friendly material with high wear resistance, resistance to extreme temperatures (<strong>from +50°C to −50°C</strong>) and aggressive chemicals. They are <strong>4× lighter than regular rubber analogues</strong>, and the dense structure provides excellent sound insulation.</p>
+  EVA mats are made from an eco‑friendly material with high wear resistance, resistance to extreme temperatures (<strong>from +50°C to −50°C</strong>) and aggressive chemicals. They are <strong>lightweight</strong>, and the dense structure provides excellent sound insulation.</p>
 <div class="row" style="margin-top:20px;">
   <div class="col-md-6" style="margin-bottom:20px;">
     <img alt="" src="./static/images/work-examples/10.jpg" style="max-width: 100%" /></div>
@@ -315,7 +375,8 @@
     <img alt="" src="./static/images/work-examples/11.jpg" style="max-width: 100%" /></div>
 ></div>
 <p dir="ltr">
-  EVA mats have a special honeycomb structure (<strong>cell depth 8 mm</strong>) that effectively traps dirt and water, keeping footwear and interior surfaces clean. The cells are easy to rinse without special tools, including with a touchless wash.</p>
+  The surface has a special <strong>rhombus</strong> pattern that effectively localizes dirt and water, keeping footwear and interior surfaces clean. The mats are easy to rinse without special tools, including with a touchless wash.</p>
+  The mats come in many color variations and fit any style. Choose from classic tones to bright sporty combinations to give your car a unique look.</p>
 <p dir="ltr">
   The mats come in many color variations and fit any style. Choose from classic tones to bright sporty combinations to give your car a unique look.</p>
 <div style="text-align:center">
@@ -332,7 +393,7 @@
 <div class="desc">Usable year-round thanks to temperature resistance from +50°C to −50°C.</div>
 </div>  </div></li><li ><div class="" >    <div class="item">
 <img src="./static/images/work-examples/7.jpg">
-<div class="title">Honeycomb surface</div>
+<div class="title">Rhombus surface</div>
 <div class="desc">Localizes spilled liquids and debris, preventing spread across the cabin.</div>
 </div>  </div></li><li ><div class="" >    <div class="item">
 <img src="./static/images/work-examples/8.jpg">
@@ -479,7 +540,7 @@
       <!-- Popular questions -->
       <div  class="widgetblock-qevapopular181 widgetblock qanswerswrapper"><div class="container"><h2 class="wtitle">Popular questions about EVA mats</h2><ul class=""><li class="selected"><div class="" >       <noindex><div class="qansweritem">
 <div class="question">What are polymer car mats made of?</div>
-<div class="answer">We use a honeycomb material — Ethylene Vinyl Acetate (EVA). It is very light yet strong. Advantages: holds a lot of liquid, odorless, resistant to chemicals, safe for health and the environment, and retains properties in heat up to +50°C and cold down to −40°C.</div>
+<div class="answer">We use Ethylene Vinyl Acetate (EVA) with a rhombus pattern. It is very light yet strong. Advantages: holds a lot of liquid, odorless, resistant to chemicals, safe for health and the environment, and retains properties in heat up to +50°C and cold down to −40°C.</div>
 </div></noindex> </div></li><li ><div class="" >       <noindex><div class="qansweritem">
 <div class="question">What colors are available?</div>
 <div class="answer">A wide palette of mat and edging colors is available to get many combinations.</div>
@@ -497,7 +558,7 @@
 <div class="answer">All EVA mats include hook-and-loop for reliable fixation. If OEM mounts are present, the mats include compatible clips.</div>
 </div></noindex> </div></li><li ><div class="" >       <noindex><div class="qansweritem">
 <div class="question">Why are there no sidewalls?</div>
-<div class="answer">The honeycomb structure keeps water within the cells, distributing it evenly without spilling.</div>
+<div class="answer">The rhombus pattern keeps water localized, distributing it evenly without spilling.</div>
 </div></noindex> </div></li><li ><div class="" >       <noindex><div class="qansweritem">
 <div class="question">How do they perform in winter?</div>
 <div class="answer">They remain elastic down to −50°C, do not get dirty quickly, and do not emit unpleasant odors.</div>
@@ -690,6 +751,34 @@
       }
       document.addEventListener('DOMContentLoaded', move);
       window.addEventListener('resize', move);
+    })();
+  </script>
+  <script>
+    // Sync top vehicle title with selection
+    (function syncVehicleTitle(){
+      function update(){
+        try {
+          var make = document.getElementById('cfg-make');
+          var model = document.getElementById('cfg-model');
+          var year = document.getElementById('cfg-year');
+          var t = document.getElementById('vehicle-top-title');
+          var s = document.getElementById('vehicle-top-sub');
+          if (!t || !s) return;
+          var makeTxt = make && make.options[make.selectedIndex] ? make.options[make.selectedIndex].textContent : '';
+          var modelTxt = model && model.value ? model.value : '';
+          var yearTxt = year && year.value ? year.value : '';
+          var has = makeTxt && modelTxt && yearTxt;
+          t.textContent = has ? (makeTxt + ' ' + modelTxt + ' ' + yearTxt) : 'Select your vehicle';
+          s.textContent = has ? 'Preview and options below' : 'Choose Make, Model, Year to see it here';
+        } catch(_) {}
+      }
+      document.addEventListener('DOMContentLoaded', function(){
+        ['cfg-make','cfg-model','cfg-year'].forEach(function(id){
+          var el = document.getElementById(id);
+          if (el) el.addEventListener('change', update);
+        });
+        setTimeout(update, 1200);
+      });
     })();
   </script>
   <script>

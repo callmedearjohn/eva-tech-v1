@@ -6542,9 +6542,9 @@ footer .makecall:HOVER {
         display: none;
     }
 
-    .goodcardhome #image_container_constructor img {
+    /* .goodcardhome #image_container_constructor img {
         max-height: 350px;
-    }
+    } */
 
     .preimcardnew ul, .homepreimbig ul {
         overflow: scroll;
@@ -7706,9 +7706,9 @@ footer .makecall:HOVER {
         margin-bottom: 10px;
     }
 
-    #image_container_constructor img {
+    /* #image_container_constructor img {
         max-height: 220px;
-    }
+    } */
 
     .galleryincard .row {
         margin-left: 0px;
