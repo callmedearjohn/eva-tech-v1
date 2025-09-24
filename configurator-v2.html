@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Configurator - EVA Mats</title>
+  <link rel="stylesheet" href="./static/js/vendors/swiper/swiper-bundle.min.css">
+  <link rel="stylesheet" href="./static/js/vendors/nice-select2/nice-select2.css">
+  <link rel="stylesheet" href="./static/css/hero-selector.css">
+  <link rel="stylesheet" href="./static/css/style.min.css">
+  <link rel="stylesheet" href="./static/css/configurator.css">
+  <link rel="stylesheet" href="./static/js/vendors/tingle/tingle.min.css">
+</head>
+<body>
+  <div class="wrapper" id="home">
+    <header class="header">
+      <div class="container">
+        <div class="about-info">
+          <a href="/" aria-label="Custom EVA mats for the interior of your car" class="logo about-info__logo">
+            <img class="logo__image" src="./static/images/logo3_1.svg" loading="lazy" alt="Evacode logo">
+          </a>
+          <nav class="about-info__menu">
+            <ul class="menu__nav-list">
+              <li class="nav__list-item">
+                <a href="#home" class="nav__list-link">Home</a>
+              </li>
+              <li class="nav__list-item">
+                <a href="about-product" class="nav__list-link">What is Eva?</a>
+              </li>
+              <li class="nav__list-item">
+                <a href="/#products" class="nav__list-link">Products</a>
+              </li>
+              <li class="nav__list-item">
+                <a href="warantly" class="nav__list-link">Warranty</a>
+              </li>
+              <li class="nav__list-item">
+                <a href="delivery" class="nav__list-link">Delivery</a>
+              </li>
+              <li class="nav__list-item">
+                <a href="about-us" class="nav__list-link">About us</a>
+              </li>
+              <li class="nav__list-item">
+                <a href="partners" class="nav__list-link">Partners</a>
+              </li>
+            </ul>
+            <div class="about-info__social">
+              <a href="cart" class="about-info__link about-info__link-main" style="position:relative;">
+                Cart
+                <span style="position:absolute; top:-8px; right:-10px; background:#d42920; color:#fff; border-radius:12px; padding:2px 6px; font-size:12px;" data-cart-count>0</span>
+              </a>
+              <button class="social-btn social-btn-main">Contact Us
+                <svg id="arow" width="12" height="7" viewBox="0 0 12 7" fill="none"
+                  xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd" clip-rule="evenodd"
+                    d="M0 1.40051L5.96734 7.00272L6.00006 6.97063L6.031 7.00097L12 1.40051L10.5718 0.000421405L5.99867 4.2912L1.42778 0L0 1.40051Z"
+                    fill="white" />
+                </svg>
+              </button>
+              <div class="social__list social__list-main fadeOut">
+                <a aria-label="Custom EVA mats phone" href="tel:+16139857956" target="_blank"
+                  class="about-info__link about-info__text about-info__text-main">
+                  +1 613-214-1621
+                </a>
+                <a aria-label="Custom EVA mats gmail" href="mailto:info.evatech.ca@gmail.com"
+                  target="_blank" class="about-info__link about-info__text about-info__text-main">
+                  info.evatech.ca@gmail.com
+                </a>
+                <div class="about__info-icon">
+                  <a aria-label="Custom EVA mats facebook"
+                    href="https://www.facebook.com/people/VI-CarMats/61556124253098/?mibextid=sCpJLy"
+                    target="_blank" class="about-info__link about-info__link-main">
+                    <i class="icon-facebook"></i>
+                  </a>
+                  <a aria-label="Custom EVA mats instagram" href="
+                                        https://www.instagram.com/evatech.ca/" target="_blank"
+                    class="about-info__link about-info__link-main">
+                    <i class="icon-instagram"></i>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </nav>
+          <img class="burger-btn" src="static/images/burgerBtn.svg" alt="" loading="lazy">
+        </div>
+      </div>
+    </header>
+
+    <main class="content">
+      <section class="section configurator" id="configurator">
+        <div class="container configurator__grid">
+          <aside class="configurator__preview">
+            <div class="configurator__main-image">
+              <img id="preview-image" src="./static/images/price-constructor/sets/set-1.jpg" alt="Preview">
+              <div id="pattern-overlay" class="pattern-overlay"></div>
+            </div>
+            <div class="configurator__thumbnails">
+              <img src="./static/images/work-examples/1.jpg" alt="thumb">
+              <img src="./static/images/work-examples/2.jpg" alt="thumb">
+              <img src="./static/images/work-examples/3.jpg" alt="thumb">
+            </div>
+          </aside>
+
+          <div class="configurator__options">
+            <h2 class="section__title">Build your set</h2>
+
+            <div class="cfg-block">
+              <h3 class="cfg-title">Your vehicle</h3>
+              <p id="cfg-vehicle-summary" class="cfg-help">Make/Model/Price: —</p>
+              
+              <div class="cfg-row-vehicle">
+                <select id="cfg-make" class="select constructor-step__select constructor-step__control form-control select__arow"><option selected disabled>Make</option></select>
+                <select id="cfg-model" class="select constructor-step__select constructor-step__control form-control select__arow"><option selected disabled>Model</option></select>
+                <select id="cfg-year" class="select constructor-step__select constructor-step__control form-control select__arow"><option selected disabled>Year</option></select>
+              </div>
+            </div>
+
+            <div class="cfg-block">
+              <h3 class="cfg-title">Set</h3>
+              <div class="cfg-row cfg-sets">
+                <label class="cfg-radio"><input type="radio" name="set" value="front" checked><span>Front only (2 mats) — 59$</span></label>
+                <label class="cfg-radio"><input type="radio" name="set" value="full"><span>Full interior — 139$</span></label>
+                <label class="cfg-radio"><input type="radio" name="set" value="complete"><span>Complete set — 219$</span></label>
+              </div>
+              <ul class="property-list text" style="margin-top:.5rem;">
+                <li class="property-list__item">Front only: driver + passenger (2 mats)</li>
+                <li class="property-list__item">Full interior: front + rear row (4 mats)</li>
+                <li class="property-list__item">Complete set: all rows + trunk mat (full interior coverage)</li>
+                <li class="property-list__item">Heel pad: optional, free</li>
+              </ul>
+            </div>
+
+            <div class="cfg-block">
+              <h3 class="cfg-title">Pattern</h3>
+              <div class="cfg-row cfg-patterns">
+                <label class="cfg-swatch" data-pattern="honeycomb"><input type="radio" name="pattern" value="honeycomb" checked><span>CELL</span></label>
+                <label class="cfg-swatch" data-pattern="diamond"><input type="radio" name="pattern" value="diamond"><span>DIAMOND</span></label>
+              </div>
+            </div>
+
+            <div class="cfg-block">
+              <h3 class="cfg-title">Colors</h3>
+              <div class="cfg-colors">
+                <div class="color-group">
+                  <div class="color-group__head">
+                    <span class="color-group__label">Mat color:</span>
+                    <strong class="color-group__value" id="mat-color-selected">—</strong>
+                  </div>
+                  <div id="mat-swatch-list" class="swatch-list" aria-label="Mat colors"></div>
+                  <!-- keep native select for accessibility/fallback -->
+                  <select id="cfg-mat-color" class="select constructor-step__select constructor-step__control form-control cfg-select-hidden"></select>
+                </div>
+                <div class="color-group">
+                  <div class="color-group__head">
+                    <span class="color-group__label">Trim color:</span>
+                    <strong class="color-group__value" id="trim-color-selected">—</strong>
+                  </div>
+                  <div id="trim-swatch-list" class="swatch-list" aria-label="Trim colors"></div>
+                  <!-- keep native select for accessibility/fallback -->
+                  <select id="cfg-trim-color" class="select constructor-step__select constructor-step__control form-control cfg-select-hidden"></select>
+                </div>
+              </div>
+            </div>
+
+            <div class="cfg-block">
+              <h3 class="cfg-title">Options</h3>
+              <label class="cfg-checkbox"><input type="checkbox" id="cfg-heelpad"><span>Heel pad (free)</span></label>
+              <label class="cfg-checkbox"><input type="checkbox" id="cfg-third-row"><span>3rd row (eligible models only)</span></label>
+              <p class="cfg-help" id="third-row-note" style="display:none">This car is not eligible for a 3rd row.</p>
+            </div>
+          </div>
+
+          <aside class="configurator__summary">
+            <div class="summary-card">
+              <h3>Summary</h3>
+              <p id="summary-vehicle">Vehicle: —</p>
+              <ul id="summary-list" class="property-list"></ul>
+              <div class="summary-qty">
+                <span>Quantity</span>
+                <div class="qty-control">
+                  <button type="button" id="qty-minus" aria-label="Decrease quantity">−</button>
+                  <input id="qty-input" type="number" min="1" value="1" inputmode="numeric" pattern="[0-9]*" aria-label="Quantity">
+                  <button type="button" id="qty-plus" aria-label="Increase quantity">+</button>
+                </div>
+              </div>
+              <div class="summary-total">
+                <p class="total-text">Total</p>
+                <p class="total-price"><span id="summary-subtotal">0</span>$</p>
+              </div>
+              <p id="require-vehicle-msg" class="cfg-help cfg-error" style="display:none">Please select Make, Model and Year to continue.</p>
+              <div id="free-shipping" class="badge" style="display:none">Free Shipping in Canada</div>
+              <div class="summary-actions">
+                <button id="summary-add" class="button">Add to cart</button>
+                <button id="summary-buy" class="button">Buy now</button>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="about-info">
+        <a href="/" aria-label="Custom EVA mats for the interior of your car" class="logo about-info__logo">
+          <img class="logo__image" src="/static/images/logo3_1.svg" loading="lazy" alt="Evacode logo">
+        </a>
+        <div class="about-info__social">
+          <a aria-label="Custom EVA mats facebook"
+            href="https://www.facebook.com/people/VI-CarMats/61556124253098/?mibextid=sCpJLy"
+            target="_blank" class="about-info__link about-info__link-main">
+            <i class="icon-facebook"></i>
+          </a>
+          <a aria-label="Custom EVA mats instagram" href="
+                          https://www.instagram.com/evatech.ca" target="_blank"
+            class="about-info__link about-info__link-main">
+            <i class="icon-instagram"></i>
+          </a>
+          <a aria-label="Custom EVA mats gmail" href="mailto:info.evatech.ca@gmail.com" target="_blank"
+            class="about-info__link about-info__text-main">
+            <i class="icon-mail"></i>
+            info.evatech.ca@gmail.com
+          </a>
+          <a aria-label="Custom EVA mats phone" href="tel:+16139857956" target="_blank"
+            class="about-info__link about-info__text-main">
+            <i class="icon-call-in"></i>
+            +1 613-214-1621
+          </a>
+          <p class="about-info__text about-info__text-main about-info__location">Our Location: Kingston, ON
+          </p>
+        </div>
+      </div>
+    </footer>
+  </div>
+  <div class="header__menu-mobile">
+    <div class="header__menu-top">
+      <a href="/" aria-label="Custom EVA mats for the interior of your car" class="logo header__menu-logo">
+        <img loading="lazy" src="static/images/logo2 1.svg" alt="Evacode logo">
+      </a>
+      <img class="close-btn" src="static/images/xmark-solid.svg" loading="lazy" alt="">
+    </div>
+    <nav class="header__menu-nav">
+      <ul class="header__menu-items">
+        <li class="header__menu-item">
+          <a href="#home">Home</a>
+        </li>
+        <li class="header__menu-item">
+          <a href="about-product">What is Eva?</a>
+        </li>
+        <li class="header__menu-item">
+          <a href="/#products">Products</a>
+        </li>
+        <li class="header__menu-item">
+          <a href="warantly">Warranty</a>
+        </li>
+        <li class="header__menu-item">
+          <a href="delivery">Delivery</a>
+        </li>
+        <li class="header__menu-item">
+          <a href="about-us">About us</a>
+        </li>
+        <li class="header__menu-item">
+          <a href="partners">Partners</a>
+        </li>
+      </ul>
+      <div class="header__menu-social">
+        <div class="header__menu-icon">
+          <a aria-label="Custom EVA mats facebook"
+            href="https://www.facebook.com/people/VI-CarMats/61556124253098/?mibextid=sCpJLy"
+            target="_blank" class="header_menu-link">
+            <i class="icon-facebook"></i>
+          </a>
+          <a aria-label="Custom EVA mats instagram" href="
+                  https://www.instagram.com/evatech.ca/" target="_blank"
+            class="header_menu-link">
+            <i class="icon-instagram"></i>
+          </a>
+        </div>
+        <a aria-label="Custom EVA mats phone" href="tel:+16139857956" target="_blank"
+          class="header_menu-link about-info__text-main">
+          +1 613-214-1621
+        </a>
+        <a aria-label="Custom EVA mats gmail" href="mailto:info.evatech.ca@gmail.com" target="_blank"
+          class="header_menu-link about-info__text-main">
+          info.evatech.ca@gmail.com
+        </a>
+        <p class="header_menu-text">Our Location: Kingston, ON</p>
+      </div>
+    </nav>
+  </div>
+
+  <script defer src="./static/js/vendors/nice-select2/nice-select2.js"></script>
+  <script defer src="./static/js/vendors/swiper/swiper-bundle.min.js"></script>
+  <script defer src="./static/js/vendors/tingle/tingle.min.js"></script>
+  <script defer src="./static/js/configurator.js"></script>
+  <script defer src="./static/js/cart-badge.js"></script>
+  <script src="static/js/dist/burger.bundle.js"></script>
+</body>
+</html>
+
+

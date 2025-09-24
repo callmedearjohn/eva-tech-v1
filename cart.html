@@ -7,9 +7,21 @@
   <link rel="stylesheet" href="./static/css/style.min.css">
   <style>
     .cart { max-width: 960px; margin: 2rem auto; }
-    .cart-item { display:grid; grid-template-columns: 1fr 120px 120px 40px; gap:1rem; padding:.75rem 0; border-bottom:1px solid #eee; }
+    .cart-item { display:grid; grid-template-columns: 80px 1fr 120px 120px 40px; gap:1rem; padding:.75rem 0; border-bottom:1px solid #eee; }
+    .cart-item__img { width:80px; height:60px; object-fit:cover; border:1px solid #eee; border-radius:6px; }
     .cart-summary { text-align:right; margin-top:1rem; }
     .ship { display:flex; justify-content:flex-end; gap:1rem; align-items:center; margin-top:1rem; }
+    .note { color:#666; font-size:14px; margin:.25rem 0 0; }
+    .upsell { margin-top:1rem; padding:1rem; border:1px dashed #ccc; display:flex; flex-wrap:wrap; align-items:center; gap:1rem; justify-content:space-between; }
+    .upsell__item { display:flex; align-items:center; gap:.5rem; }
+    .upsell__thumb { width:56px; height:42px; object-fit:cover; border:1px solid #eee; border-radius:6px; }
+    .recommend-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:16px; width:100%; }
+    .recommend-card { border:1px solid #eee; border-radius:10px; padding:12px; display:flex; flex-direction:column; gap:10px; }
+    .recommend-card img { width:100%; height:140px; object-fit:cover; border-radius:8px; border:1px solid #eee; }
+    .recommend-title { font-size:14px; line-height:1.3; color:#111; min-height:36px; }
+    .recommend-price { display:flex; align-items:center; gap:8px; }
+    .recommend-old { color:#999; text-decoration:line-through; font-size:14px; }
+    .recommend-buy { display:inline-flex; align-items:center; justify-content:center; gap:6px; padding:8px 14px; background:#ffcc33; color:#111; border-radius:8px; text-decoration:none; font-weight:600; }
   </style>
 </head>
 <body>
@@ -56,14 +68,24 @@
   <div class="cart">
     <h1>Your Cart</h1>
     <div id="cart-list"></div>
-    <div id="upsell" style="margin-top:1rem; padding:1rem; border:1px dashed #ccc; display:flex; align-items:center; justify-content:space-between; gap:1rem;">
-      <div>
-        <b>Add a storage bag</b><br>
-        Keep your mats clean and organized. Special price today.
-      </div>
-      <div style="display:flex; align-items:center; gap:1rem;">
-        <span><b>$15</b></span>
-        <label style="display:flex; align-items:center; gap:.5rem"><input type="checkbox" id="bag-toggle"> Add</label>
+    <div id="upsell" class="upsell">
+      <div style="min-width:220px"><b>Recommend purchasing together</b><br><span class="note">Cheaper together</span></div>
+      <!-- Keep hidden checkboxes for legacy totals logic (safe-guarded in JS) -->
+      <label class="upsell__item" style="display:none"><input type="checkbox" id="addon-carsbag"> Carsbag M — <b>$45</b></label>
+      <label class="upsell__item" style="display:none"><input type="checkbox" id="addon-home"> Home M mat — <b>$25</b></label>
+      <div class="recommend-grid">
+        <div class="recommend-card">
+          <img src="./static/images/car-bags/bag-1.jpg" alt="Cars Bags">
+          <div class="recommend-title">Cars Bag (M)</div>
+          <div class="recommend-price"><strong>$45</strong> <span class="recommend-old">$49</span></div>
+          <div><a class="recommend-buy" href="/configurator?product=carsbag">BUY</a></div>
+        </div>
+        <div class="recommend-card">
+          <img src="./static/images/home-mats/mat-1.jpg" alt="Home Mats">
+          <div class="recommend-title">Home Mat (M)</div>
+          <div class="recommend-price"><strong>$25</strong> <span class="recommend-old">$29</span></div>
+          <div><a class="recommend-buy" href="/configurator?product=home">BUY</a></div>
+        </div>
       </div>
     </div>
     <div class="cart-summary">
@@ -77,13 +99,12 @@
         <span>Shipping: <b><span id="ship-price">0</span>$</b></span>
       </div>
       <p id="cart-freeship" style="display:none">Free Shipping in Canada</p>
-      <p class="total-text">Tax: <span id="cart-tax">0</span>$</p>
+      <p id="ship-note" class="note" style="display:none">Orders under $100 before tax ship for a flat $22 within Canada.</p>
+      <p class="total-text">Tax (13%): <span id="cart-tax">0</span>$</p>
       <p class="total-text">Total: <span id="cart-total">0</span>$</p>
       <div style="margin-top:1rem; display:flex; gap:.5rem; justify-content:flex-end;">
         <a href="/configurator" class="button">Continue shopping</a>
-        <button id="oneclick" class="button" style="background:#333;border-color:#333;">One‑Click (phone)</button>
         <div id="paypal-button-container" style="min-width:200px"></div>
-        <button id="checkout" class="button">Checkout</button>
       </div>
     </div>
   </div>
@@ -140,57 +161,69 @@
     const taxEl = document.getElementById('cart-tax');
     let taxCfg = { type:'percent', value:0 };
     try { const r = await fetch('static/data/tax.json'); taxCfg = await r.json(); } catch(_){ }
-    const bagToggle = document.getElementById('bag-toggle');
-    const BAG_PRICE = 15;
+    const addonCarsbagEl = document.getElementById('addon-carsbag');
+    const addonHomeEl = document.getElementById('addon-home');
+    const ADDON_CARSBAG_PRICE = 45;
+    const ADDON_HOME_PRICE = 25;
+    const FREE_SHIP_THRESHOLD = 100;
     function render(){
       const items = Cart.list();
       listEl.innerHTML = '';
       items.forEach((it, idx)=>{
         const row = document.createElement('div');
         row.className='cart-item';
+        const imgSrc = it.product === 'carsbag' ? './static/images/car-bags/bag-1.jpg' : (it.product === 'home' ? './static/images/home-mats/mat-1.jpg' : `./static/images/price-constructor/color-combinations/${it.matColor}-${it.trimColor||it.matColor}.jpg`);
+        const title = `${it.make||''} ${it.model||''} ${it.year||''}`.trim();
+        const isSimple = it.product === 'carsbag' || it.product === 'home';
+        const sizeMap = it.product === 'carsbag' ? { front:'M', full:'L' } : { front:'S', full:'M', complete:'L', xl:'XL' };
+        const productName = it.product === 'carsbag' ? 'Cars Bag' : (it.product === 'home' ? 'Home Mat' : 'EVA Car Mats');
+        const detail = isSimple
+          ? `${productName} — Size: ${sizeMap[it.set] || it.set} | Color: ${it.matColor || '—'}`
+          : `${title || productName} — ${it.set} | ${it.pattern} | ${it.matColor}/${it.trimColor||it.matColor} ${it.thirdRow ? '| 3rd row' : ''} ${it.heelPad ? '| heel pad' : ''}`;
         row.innerHTML = `
-          <div>${it.make} ${it.model} ${it.year} — ${it.set} | ${it.pattern} | ${it.matColor}/${it.trimColor} ${it.thirdRow ? '| 3rd row' : ''} ${it.heelPad ? '| heel pad' : ''}</div>
-          <div>${it.subtotal}$</div>
+          <div><img class="cart-item__img" src="${imgSrc}" alt="${productName}"></div>
+          <div>${detail}</div>
+          <div>${(it.subtotal||0)}$</div>
           <div><input type="number" min="1" value="${it.qty||1}" style="width:80px"></div>
           <div><button data-rm>×</button></div>`;
         row.querySelector('input').addEventListener('change', (e)=>{ Cart.update(idx, +e.target.value||1); render(); });
         row.querySelector('[data-rm]').addEventListener('click', ()=>{ Cart.remove(idx); render(); });
         listEl.appendChild(row);
       });
+      // Hide upsell if both Cars Bag and Home Mat are already in cart
+      const hasCarsbag = items.some(i=> i.product === 'carsbag');
+      const hasHome = items.some(i=> i.product === 'home');
+      const upsell = document.getElementById('upsell');
+      if (upsell) {
+        if (hasCarsbag && hasHome) {
+          // clear add-on checkboxes to avoid affecting totals
+          if (addonCarsbagEl) addonCarsbagEl.checked = false;
+          if (addonHomeEl) addonHomeEl.checked = false;
+          upsell.style.display = 'none';
+        } else {
+          upsell.style.display = '';
+        }
+      }
       const subtotal = Cart.total();
       document.getElementById('cart-subtotal').textContent = subtotal;
       const country = countryEl.value;
-      const shipping = country === 'CA' && subtotal >= 100 ? 0 : 22;
+      const addonsTotal = (addonCarsbagEl.checked? ADDON_CARSBAG_PRICE : 0) + (addonHomeEl.checked? ADDON_HOME_PRICE : 0);
+      const shipping = country === 'CA' && (subtotal + addonsTotal) >= FREE_SHIP_THRESHOLD ? 0 : 22;
       shipPriceEl.textContent = shipping;
-      const bag = bagToggle.checked ? BAG_PRICE : 0;
       let tax = 0;
-      if (taxCfg.type === 'percent') tax = +(subtotal * (taxCfg.value||0) / 100).toFixed(2);
-      const total = subtotal + shipping + bag + tax;
+      if (taxCfg.type === 'percent') tax = +(((subtotal + addonsTotal) * (taxCfg.value||0) / 100)).toFixed(2);
+      const total = subtotal + addonsTotal + shipping + tax;
       totalEl.textContent = total;
       if (taxEl) taxEl.textContent = tax;
-      document.getElementById('cart-freeship').style.display = (country === 'CA' && subtotal >= 100) ? 'block' : 'none';
+      const free = (country === 'CA' && (subtotal + addonsTotal) >= FREE_SHIP_THRESHOLD);
+      document.getElementById('cart-freeship').style.display = free ? 'block' : 'none';
+      const shipNote = document.getElementById('ship-note');
+      shipNote.style.display = free ? 'none' : 'block';
     }
     countryEl.addEventListener('change', render);
-    bagToggle.addEventListener('change', render);
-    document.getElementById('checkout').addEventListener('click', ()=>{
-      const payload = { country: countryEl.value, shipping: +shipPriceEl.textContent, bag: bagToggle.checked ? BAG_PRICE : 0 };
-      localStorage.setItem('cartShipping', JSON.stringify(payload));
-      window.location.href = '/order';
-    });
-    document.getElementById('oneclick').addEventListener('click', async ()=>{
-      const phone = prompt('Enter your phone number');
-      if (!phone) return;
-      const items = Cart.list();
-      const subtotal = +document.getElementById('cart-subtotal').textContent;
-      const shipping = +shipPriceEl.textContent;
-      const bag = bagToggle.checked ? BAG_PRICE : 0;
-      const total = +totalEl.textContent;
-      const payload = { formName:'oneClick', phone, items, country: countryEl.value, shipping, subtotal, bag, total };
-      try {
-        await fetch('action.php', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload)});
-        alert('Request sent. We will contact you shortly.');
-      } catch(_) { alert('Failed to send request'); }
-    });
+    addonCarsbagEl.addEventListener('change', render);
+    addonHomeEl.addEventListener('change', render);
+    // No one-click or manual checkout – use PayPal directly
     render();
     // PayPal button
     if (window.paypal) {
@@ -199,22 +232,26 @@
           const items = Cart.list();
           const subtotal = +document.getElementById('cart-subtotal').textContent;
           const shipping = +shipPriceEl.textContent;
-          const bag = bagToggle.checked ? BAG_PRICE : 0;
-          const total = subtotal + shipping + bag;
+          const addons = [];
+          if (addonCarsbagEl.checked) addons.push({ name:'Carsbag M', price: ADDON_CARSBAG_PRICE });
+          if (addonHomeEl.checked) addons.push({ name:'Home M mat', price: ADDON_HOME_PRICE });
+          const addonsTotal = addons.reduce((s,a)=> s + a.price, 0);
+          const tax = +( (((subtotal + addonsTotal) * (taxCfg.value||0)) / 100).toFixed(2) );
+          const total = subtotal + addonsTotal + shipping + tax;
           return actions.order.create({
             purchase_units: [{
               amount: { value: total.toFixed(2), currency_code: 'CAD',
                 breakdown: {
-                  item_total: { value: subtotal.toFixed(2), currency_code: 'CAD' },
+                  item_total: { value: (subtotal + addonsTotal).toFixed(2), currency_code: 'CAD' },
                   shipping: { value: shipping.toFixed(2), currency_code: 'CAD' },
-                  tax_total: { value: '0.00', currency_code: 'CAD' }
+                  tax_total: { value: tax.toFixed(2), currency_code: 'CAD' }
                 }
               },
               items: items.map(i=>({
                 name: `${i.make} ${i.model} ${i.year} — ${i.set}`.slice(0,127),
                 unit_amount: { value: (i.subtotal||0).toFixed(2), currency_code: 'CAD' },
                 quantity: String(i.qty||1)
-              })).concat(bag? [{ name:'Storage bag', unit_amount:{ value: BAG_PRICE.toFixed(2), currency_code:'CAD' }, quantity:'1' }]: [])
+              })).concat(addons.map(a=>({ name: a.name, unit_amount:{ value: a.price.toFixed(2), currency_code:'CAD' }, quantity:'1' })))
             }]
           });
         },
@@ -223,8 +260,12 @@
             const items = Cart.list();
             const subtotal = +document.getElementById('cart-subtotal').textContent;
             const shipping = +shipPriceEl.textContent;
-            const bag = bagToggle.checked ? BAG_PRICE : 0;
-            const total = subtotal + shipping + bag;
+            const addons = [];
+            if (addonCarsbagEl.checked) addons.push({ name:'Carsbag M', price: ADDON_CARSBAG_PRICE });
+            if (addonHomeEl.checked) addons.push({ name:'Home M mat', price: ADDON_HOME_PRICE });
+            const addonsTotal = addons.reduce((s,a)=> s + a.price, 0);
+            const tax = +( (((subtotal + addonsTotal) * (taxCfg.value||0)) / 100).toFixed(2) );
+            const total = subtotal + addonsTotal + shipping + tax;
             const phone = prompt('Phone number for delivery (optional):') || '';
             const payload = {
               formName:'paypal',
@@ -240,7 +281,7 @@
                 postal: details.purchase_units?.[0]?.shipping?.address?.postal_code || '',
                 country: details.purchase_units?.[0]?.shipping?.address?.country_code || ''
               },
-              items, subtotal, shipping, bag, tax: 0, total, phone
+              items, subtotal, shipping, addons, addonsTotal, tax, total, phone
             };
             try { await fetch('action.php', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) }); } catch(_){ }
             alert('Payment captured. Thank you!');

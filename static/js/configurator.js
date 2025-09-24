@@ -34,11 +34,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const qtyInput = document.getElementById('qty-input');
   const requireVehicleMsg = document.getElementById('require-vehicle-msg');
 
-  const PRICES = { front: 59, full: 139, complete: 219 };
+  let PRICES = { front: 59, full: 139, complete: 219 };
 
   const state = {
     make: '', model: '', year: '',
-    set: 'front', pattern: 'honeycomb',
+    set: 'front', pattern: 'diamond',
     matColor: '', trimColor: '',
     heelPad: false, thirdRow: false,
     thirdRowEligible: false,
@@ -53,12 +53,67 @@ document.addEventListener('DOMContentLoaded', () => {
   if (simpleMode) {
     try { const titleEl = document.querySelector('.section__title'); if (titleEl) titleEl.textContent = `Configure ${productLabel}`; } catch(_){ }
     try { const vehicleBlock = document.getElementById('cfg-make')?.closest('.cfg-block'); if (vehicleBlock) vehicleBlock.style.display = 'none'; if (requireVehicleMsg) requireVehicleMsg.style.display='none'; } catch(_){ }
-    try { const setBlock = document.querySelector('.cfg-sets')?.closest('.cfg-block'); const setTitle = setBlock?.querySelector('.cfg-title'); if (setTitle) setTitle.textContent = 'Configuration size'; } catch(_){ }
+    try {
+      const setBlock = document.querySelector('.cfg-sets')?.closest('.cfg-block');
+      const setTitle = setBlock?.querySelector('.cfg-title');
+      if (setTitle) setTitle.textContent = 'Configuration size';
+      const setRow = document.querySelector('.cfg-sets');
+      if (setRow) {
+        const sizeParam = (new URLSearchParams(location.search).get('size')||'').toLowerCase();
+        if (paramsProduct === 'carsbag') {
+          // Cars Bags: 2 sizes (M, L)
+          PRICES = { front: 49, full: 69 };
+          const initial = (sizeParam==='full' ? 'full' : 'front');
+          state.set = initial;
+          setRow.innerHTML = [
+            `<label class="cfg-radio"><input type="radio" name="set" value="front" ${initial==='front'?'checked':''}><span>M — 49$</span></label>`,
+            `<label class="cfg-radio"><input type="radio" name="set" value="full" ${initial==='full'?'checked':''}><span>L — 69$</span></label>`
+          ].join('');
+        } else if (paramsProduct === 'home') {
+          // Home mats: 4 sizes (S, M, L, XL)
+          PRICES = { front: 24, full: 29, complete: 34, xl: 39 };
+          const allowed = ['front','full','complete','xl'];
+          const initial = allowed.includes(sizeParam) ? sizeParam : 'front';
+          state.set = initial;
+          setRow.innerHTML = [
+            `<label class="cfg-radio"><input type="radio" name="set" value="front" ${initial==='front'?'checked':''}><span>S (11.5 × 19.5) — 24$</span></label>`,
+            `<label class="cfg-radio"><input type="radio" name="set" value="full" ${initial==='full'?'checked':''}><span>M (15.5 × 23.5) — 29$</span></label>`,
+            `<label class="cfg-radio"><input type="radio" name="set" value="complete" ${initial==='complete'?'checked':''}><span>L (19.5 × 26) — 34$</span></label>`,
+            `<label class="cfg-radio"><input type="radio" name="set" value="xl" ${initial==='xl'?'checked':''}><span>XL (24 × 32) — 39$</span></label>`
+          ].join('');
+        }
+        // Rebind listeners for newly injected radios
+        document.querySelectorAll('input[name="set"]').forEach(r=> r.addEventListener('change', (e)=>{ state.set = e.target.value; syncSummary(); }));
+      }
+    } catch(_){ }
     try { const patternBlock = document.querySelector('.cfg-patterns')?.closest('.cfg-block'); if (patternBlock) patternBlock.style.display='none'; } catch(_){ }
     try { const optionsBlock = document.getElementById('cfg-heelpad')?.closest('.cfg-block'); if (optionsBlock) optionsBlock.style.display='none'; } catch(_){ }
     try { const trimGroup = document.getElementById('cfg-trim-color')?.closest('.color-group'); if (trimGroup) trimGroup.style.display='none'; } catch(_){ }
     try { if (summaryVehicleEl) summaryVehicleEl.textContent = `Product: ${productLabel}`; if (vehicleSummaryEl) vehicleSummaryEl.textContent = `${productLabel}`; } catch(_){ }
-    try { const preview = document.getElementById('preview-image'); const thumbs = document.querySelectorAll('.configurator__thumbnails img'); const imgSrc = paramsProduct === 'carsbag' ? './static/images/work-examples/2.jpg' : './static/images/work-examples/3.jpg'; if (preview) preview.src = imgSrc; thumbs.forEach(t=> t.src = imgSrc); if (patternOverlay) patternOverlay.style.display='none'; } catch(_){ }
+    try {
+      const preview = document.getElementById('preview-image');
+      const thumbsWrap = document.querySelector('.configurator__thumbnails');
+      const carsbagImgs = [
+        './static/images/car-bags/bag-1.jpg',
+        './static/images/car-bags/bag-2.jpg',
+        './static/images/car-bags/bag-3.jpg',
+        './static/images/car-bags/bag-4.jpg',
+        './static/images/car-bags/bag-5.jpg',
+        './static/images/car-bags/bag-6.jpg'
+      ];
+      const homeImgs = [
+        './static/images/home-mats/mat-1.jpg',
+        './static/images/home-mats/mat-2.jpg',
+        './static/images/home-mats/mat-3.jpg',
+        './static/images/home-mats/mat-4.jpg'
+      ];
+      const imgs = paramsProduct === 'carsbag' ? carsbagImgs : homeImgs;
+      if (preview) preview.src = imgs[0];
+      if (thumbsWrap) {
+        thumbsWrap.innerHTML = imgs.map(src=>`<img src="${src}" alt="thumb">`).join('');
+      }
+      if (patternOverlay) patternOverlay.style.display='none';
+    } catch(_){ }
   }
 
   // NiceSelect binding if available (bind once, then call update())
@@ -251,7 +306,7 @@ document.addEventListener('DOMContentLoaded', () => {
     freeShipEl.style.display = subtotal >= 100 ? 'block' : 'none';
     if (vehicleSummaryEl) {
       const mm = [state.make, state.model, state.year].filter(Boolean).join(' ');
-      vehicleSummaryEl.textContent = `Make/Model/Price: ${mm || '—'}${mm? ' — ' : ''}${subtotal}$`;
+      vehicleSummaryEl.textContent = `Make/Model/Price: ${mm || '—'}${mm? ' - ' : ''}${subtotal}$`;
     }
   }
 
@@ -262,7 +317,11 @@ document.addEventListener('DOMContentLoaded', () => {
       summaryVehicleEl.textContent = `Vehicle: ${state.make || '—'} ${state.model || ''} ${state.year || ''}`.trim();
     }
     summaryListEl.innerHTML = '';
-    const setNames = simpleMode ? { front: 'Size: Small', full: 'Size: Medium', complete: 'Size: Large' } : { front: 'Front only (2 mats)', full: 'Full interior', complete: 'Complete set' };
+    const setNames = simpleMode
+      ? (paramsProduct === 'carsbag'
+          ? { front: 'Size: M', full: 'Size: L' }
+          : { front: 'Size: S (11.5 × 19.5)', full: 'Size: M (15.5 × 23.5)', complete: 'Size: L (19.5 × 26)', xl: 'Size: XL (24 × 32)' })
+      : { front: 'Front only (2 mats)', full: 'Full interior', complete: 'Complete set' };
     const items = [];
     items.push(`${setNames[state.set]}`);
     if (!simpleMode) {
@@ -297,16 +356,18 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     } catch(_){}
 
-    // gallery swap by color
-    try {
-      const mainImg = document.getElementById('preview-image');
-      const thumbs = document.querySelectorAll('.configurator__thumbnails img');
-      if (state.matColor) {
-        const base = `./static/images/price-constructor/color-combinations/${state.matColor}-${state.trimColor||state.matColor}.jpg`;
-        if (mainImg) mainImg.src = base;
-        thumbs.forEach((t, idx)=>{ t.src = base.replace('.jpg', idx===0? '.jpg' : idx===1? '.jpg' : '.jpg'); });
-      }
-    } catch(_) {}
+    // gallery swap by color (only for car mats)
+    if (!simpleMode) {
+      try {
+        const mainImg = document.getElementById('preview-image');
+        const thumbs = document.querySelectorAll('.configurator__thumbnails img');
+        if (state.matColor) {
+          const base = `./static/images/price-constructor/color-combinations/${state.matColor}-${state.trimColor||state.matColor}.jpg`;
+          if (mainImg) mainImg.src = base;
+          thumbs.forEach((t, idx)=>{ t.src = base.replace('.jpg', idx===0? '.jpg' : idx===1? '.jpg' : '.jpg'); });
+        }
+      } catch(_) {}
+    }
   }
 
   // Listeners
@@ -339,43 +400,67 @@ document.addEventListener('DOMContentLoaded', () => {
   (function prefill(){
     const params = new URLSearchParams(location.search);
     const ls = JSON.parse(localStorage.getItem('counstructorUserData')||'{}');
-    state.make = params.get('make') || ls.carMake || state.make;
-    state.model = params.get('model') || ls.carModel || state.model;
-    state.year = params.get('year') || ls.carYear || state.year;
+    // Prefer each URL param if provided, fallback to localStorage
+    const urlMake = params.get('make');
+    const urlModel = params.get('model');
+    const urlYear = params.get('year');
+    state.make = urlMake || ls.carMake || state.make;
+    state.model = urlModel || ls.carModel || state.model;
+    state.year = urlYear || ls.carYear || state.year;
     if (state.year) {
       yearEl.value = state.year;
       try { __cfgYearNS && __cfgYearNS.update && __cfgYearNS.update(); } catch(_){}
     }
     loadMakes().then(()=>{
-      const homepageMake = document.getElementById('car-make');
-      if (homepageMake) {
-        // find makeId by text
-        const option = Array.from(makeEl.options).find(o=>o.textContent===state.make);
-        if (option) {
-          makeEl.value = option.value;
-          const evt = new Event('change', {bubbles:true});
-          makeEl.dispatchEvent(evt);
-          // after models load, set model
-          setTimeout(()=>{
-            if (state.model) {
-              modelEl.value = state.model;
-              try { __cfgModelNS && __cfgModelNS.update && __cfgModelNS.update(); } catch(_){ }
-              const ev2 = new Event('change', { bubbles: true });
-              modelEl.dispatchEvent(ev2);
+      const normalize = (s)=> String(s||'').toLowerCase().trim();
+      // Select make by visible text (preferred) or by value fallback
+      let makeOpt = Array.from(makeEl.options).find(o=> normalize(o.textContent)===normalize(state.make))
+        || Array.from(makeEl.options).find(o=> normalize(o.value)===normalize(state.make));
+      if (makeOpt) {
+        makeEl.value = makeOpt.value;
+        try { __cfgMakeNS && __cfgMakeNS.update && __cfgMakeNS.update(); } catch(_){ }
+        // Fire change so dependent logic runs
+        makeEl.dispatchEvent(new Event('change', { bubbles: true }));
+        // Ensure models for this make are loaded, then pick model
+        Promise.resolve(loadModelsByMake(makeOpt.value)).then(()=>{
+          if (state.model) {
+            let modelOpt = Array.from(modelEl.options).find(o=> normalize(o.textContent)===normalize(state.model))
+              || Array.from(modelEl.options).find(o=> normalize(o.value)===normalize(state.model));
+            if (!modelOpt) {
+              // Inject the model if API didn't return it yet
+              modelEl.insertAdjacentHTML('beforeend', `<option value="${state.model}">${state.model}</option>`);
+              modelOpt = Array.from(modelEl.options).find(o=> normalize(o.value)===normalize(state.model));
             }
-          }, 800);
-        }
+            if (modelOpt) {
+              modelEl.value = modelOpt.value || modelOpt.textContent;
+              try { __cfgModelNS && __cfgModelNS.update && __cfgModelNS.update(); } catch(_){ }
+              modelEl.dispatchEvent(new Event('change', { bubbles: true }));
+              try { __cfgModelNS && __cfgModelNS.update && __cfgModelNS.update(); } catch(_){ }
+            }
+          }
+        });
       }
     });
   })();
 
   loadColors();
+  // Heel pad gift preselected
+  try { heelPadEl.checked = true; state.heelPad = true; } catch(_){}
   loadEligibility();
   syncSummary();
 
   // Cart actions
   function toCartItem(){
-    return { product: simpleMode ? paramsProduct : 'mats', ...state };
+    if (simpleMode) {
+      return {
+        product: paramsProduct,
+        set: state.set,
+        matColor: state.matColor || '',
+        qty: Math.max(1, Number(state.qty||1)),
+        subtotal: PRICES[state.set] || 0
+      };
+    }
+    return { product: 'mats', ...state };
   }
   function ensureVehicleSelected(){
     if (simpleMode) return true;
@@ -387,7 +472,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   function ensureColorsSelected(){
     const missing = [];
-    if (!state.matColor) missing.push('Mat color');
+    if (!simpleMode && !state.matColor) missing.push('Mat color');
     if (!simpleMode && !state.trimColor) missing.push('Trim color');
     if (missing.length) {
       alert(`Please select: ${missing.join(', ')}.`);

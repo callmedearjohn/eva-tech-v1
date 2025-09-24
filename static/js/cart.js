@@ -6,8 +6,9 @@ export const Cart = (() => {
   return {
     add(item){
       const items = read();
-      const key = JSON.stringify({make:item.make, model:item.model, year:item.year, set:item.set, pattern:item.pattern, matColor:item.matColor, trimColor:item.trimColor, thirdRow:item.thirdRow, heelPad:item.heelPad});
-      const idx = items.findIndex(x=> JSON.stringify({make:x.make, model:x.model, year:x.year, set:x.set, pattern:x.pattern, matColor:x.matColor, trimColor:x.trimColor, thirdRow:x.thirdRow, heelPad:x.heelPad}) === key);
+      // Include product in the grouping key to avoid merging different product types
+      const key = JSON.stringify({product:item.product, make:item.make, model:item.model, year:item.year, set:item.set, pattern:item.pattern, matColor:item.matColor, trimColor:item.trimColor, thirdRow:item.thirdRow, heelPad:item.heelPad});
+      const idx = items.findIndex(x=> JSON.stringify({product:x.product, make:x.make, model:x.model, year:x.year, set:x.set, pattern:x.pattern, matColor:x.matColor, trimColor:x.trimColor, thirdRow:x.thirdRow, heelPad:x.heelPad}) === key);
       const qtyToAdd = Number(item.qty || 1);
       if (idx >= 0) { items[idx].qty = (items[idx].qty||1) + qtyToAdd; }
       else { items.push({...item, qty: qtyToAdd}); }

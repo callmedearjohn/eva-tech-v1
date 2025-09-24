@@ -262,7 +262,8 @@ function sendPaypalEmail($data, $mail) {
         $subtotal = $data['subtotal'] ?? 0;
         $tax = $data['tax'] ?? 0;
         $total = $data['total'] ?? 0;
-        $bag = $data['bag'] ?? 0;
+        $addons = $data['addons'] ?? [];
+        $addonsTotal = $data['addonsTotal'] ?? 0;
         $paypalId = $data['paypalOrderId'] ?? '';
         $payerEmail = $data['payerEmail'] ?? '';
         $payerName = $data['payerName'] ?? '';
@@ -289,6 +290,14 @@ function sendPaypalEmail($data, $mail) {
             $rows .= "<li>{$make} {$model} {$year} — {$set} | {$pattern} | {$mat}/{$trim} | 3rd row: {$third} | heel pad: {$heel} | price: {$price}$ × {$qty}</li>";
         }
 
+        if (!empty($addons)) {
+            foreach ($addons as $a) {
+                $aname = $a['name'] ?? 'Add‑on';
+                $aprice = $a['price'] ?? 0;
+                $rows .= "<li>{$aname} — {$aprice}$ × 1</li>";
+            }
+        }
+
         $address = '';
         if (!empty($shipTo)) {
             $name = $shipTo['name'] ?? '';
@@ -310,7 +319,7 @@ function sendPaypalEmail($data, $mail) {
             <p><b>Ship To:</b> {$address}</p>
             <ul>{$rows}</ul>
             <p><b>Subtotal:</b> {$subtotal}$</p>
-            <p><b>Bag:</b> {$bag}$</p>
+            <p><b>Add-ons:</b> {$addonsTotal}$</p>
             <p><b>Tax:</b> {$tax}$</p>
             <p><b>Shipping:</b> {$shipping}$</p>
             <p><b>Total:</b> {$total}$</p>

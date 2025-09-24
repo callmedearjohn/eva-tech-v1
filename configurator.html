@@ -3,15 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Configurator - EVA Mats</title>
+  <title>Configurator Clone - EVA Mats</title>
+  <link rel="shortcut icon" href="favicon.ico">
   <link rel="stylesheet" href="./static/js/vendors/swiper/swiper-bundle.min.css">
   <link rel="stylesheet" href="./static/js/vendors/nice-select2/nice-select2.css">
+  <link rel="stylesheet" href="./static/js/vendors/tingle/tingle.min.css">
   <link rel="stylesheet" href="./static/css/hero-selector.css">
   <link rel="stylesheet" href="./static/css/style.min.css">
   <link rel="stylesheet" href="./static/css/configurator.css">
-  <link rel="stylesheet" href="./static/js/vendors/tingle/tingle.min.css">
+  <link rel="stylesheet" href="./individual.css">
+  <link rel="stylesheet" href="./widget.css">
+  <script type="text/javascript" src="https://www.prime-avto.ru/assets/top.js?ver=fe96abef9e3c147f44af97f20cb47252"></script>
+
 </head>
-<body>
+<body class="body-catalogueeva">
   <div class="wrapper" id="home">
     <header class="header">
       <div class="container">
@@ -21,61 +26,29 @@
           </a>
           <nav class="about-info__menu">
             <ul class="menu__nav-list">
-              <li class="nav__list-item">
-                <a href="#home" class="nav__list-link">Home</a>
-              </li>
-              <li class="nav__list-item">
-                <a href="about-product" class="nav__list-link">What is Eva?</a>
-              </li>
-              <li class="nav__list-item">
-                <a href="/#products" class="nav__list-link">Products</a>
-              </li>
-              <li class="nav__list-item">
-                <a href="warantly" class="nav__list-link">Warranty</a>
-              </li>
-              <li class="nav__list-item">
-                <a href="delivery" class="nav__list-link">Delivery</a>
-              </li>
-              <li class="nav__list-item">
-                <a href="about-us" class="nav__list-link">About us</a>
-              </li>
-              <li class="nav__list-item">
-                <a href="partners" class="nav__list-link">Partners</a>
-              </li>
+              <li class="nav__list-item"><a href="#home" class="nav__list-link">Home</a></li>
+              <li class="nav__list-item"><a href="about-product" class="nav__list-link">What is Eva?</a></li>
+              <li class="nav__list-item"><a href="/#products" class="nav__list-link">Products</a></li>
+              <li class="nav__list-item"><a href="warantly" class="nav__list-link">Warranty</a></li>
+              <li class="nav__list-item"><a href="delivery" class="nav__list-link">Delivery</a></li>
+              <li class="nav__list-item"><a href="about-us" class="nav__list-link">About us</a></li>
+              <li class="nav__list-item"><a href="partners" class="nav__list-link">Partners</a></li>
             </ul>
             <div class="about-info__social">
-              <a href="cart" class="about-info__link about-info__link-main" style="position:relative;">
-                Cart
+              <a href="cart" class="about-info__link about-info__link-main" style="position:relative;">Cart
                 <span style="position:absolute; top:-8px; right:-10px; background:#d42920; color:#fff; border-radius:12px; padding:2px 6px; font-size:12px;" data-cart-count>0</span>
               </a>
               <button class="social-btn social-btn-main">Contact Us
-                <svg id="arow" width="12" height="7" viewBox="0 0 12 7" fill="none"
-                  xmlns="http://www.w3.org/2000/svg">
-                  <path fill-rule="evenodd" clip-rule="evenodd"
-                    d="M0 1.40051L5.96734 7.00272L6.00006 6.97063L6.031 7.00097L12 1.40051L10.5718 0.000421405L5.99867 4.2912L1.42778 0L0 1.40051Z"
-                    fill="white" />
+                <svg id="arow" width="12" height="7" viewBox="0 0 12 7" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd" clip-rule="evenodd" d="M0 1.40051L5.96734 7.00272L6.00006 6.97063L6.031 7.00097L12 1.40051L10.5718 0.000421405L5.99867 4.2912L1.42778 0L0 1.40051Z" fill="white" />
                 </svg>
               </button>
               <div class="social__list social__list-main fadeOut">
-                <a aria-label="Custom EVA mats phone" href="tel:+16139857956" target="_blank"
-                  class="about-info__link about-info__text about-info__text-main">
-                  +1 613-214-1621
-                </a>
-                <a aria-label="Custom EVA mats gmail" href="mailto:info.evatech.ca@gmail.com"
-                  target="_blank" class="about-info__link about-info__text about-info__text-main">
-                  info.evatech.ca@gmail.com
-                </a>
+                <a aria-label="Custom EVA mats phone" href="tel:+16139857956" target="_blank" class="about-info__link about-info__text about-info__text-main">+1 613-214-1621</a>
+                <a aria-label="Custom EVA mats gmail" href="mailto:info.evatech.ca@gmail.com" target="_blank" class="about-info__link about-info__text about-info__text-main">info.evatech.ca@gmail.com</a>
                 <div class="about__info-icon">
-                  <a aria-label="Custom EVA mats facebook"
-                    href="https://www.facebook.com/people/VI-CarMats/61556124253098/?mibextid=sCpJLy"
-                    target="_blank" class="about-info__link about-info__link-main">
-                    <i class="icon-facebook"></i>
-                  </a>
-                  <a aria-label="Custom EVA mats instagram" href="
-                                        https://www.instagram.com/evatech.ca/" target="_blank"
-                    class="about-info__link about-info__link-main">
-                    <i class="icon-instagram"></i>
-                  </a>
+                  <a aria-label="Custom EVA mats facebook" href="https://www.facebook.com/people/VI-CarMats/61556124253098/?mibextid=sCpJLy" target="_blank" class="about-info__link about-info__link-main"><i class="icon-facebook"></i></a>
+                  <a aria-label="Custom EVA mats instagram" href=" https://www.instagram.com/evatech.ca/" target="_blank" class="about-info__link about-info__link-main"><i class="icon-instagram"></i></a>
                 </div>
               </div>
             </div>
@@ -85,117 +58,536 @@
       </div>
     </header>
 
-    <main class="content">
-      <section class="section configurator" id="configurator">
-        <div class="container configurator__grid">
-          <aside class="configurator__preview">
-            <div class="configurator__main-image">
-              <img id="preview-image" src="./static/images/price-constructor/sets/set-1.jpg" alt="Preview">
-              <div id="pattern-overlay" class="pattern-overlay"></div>
-            </div>
-            <div class="configurator__thumbnails">
-              <img src="./static/images/work-examples/1.jpg" alt="thumb">
-              <img src="./static/images/work-examples/2.jpg" alt="thumb">
-              <img src="./static/images/work-examples/3.jpg" alt="thumb">
-            </div>
-          </aside>
+    <main id="panel">
 
-          <div class="configurator__options">
-            <h2 class="section__title">Build your set</h2>
-
-            <div class="cfg-block">
-              <h3 class="cfg-title">Your vehicle</h3>
-              <p id="cfg-vehicle-summary" class="cfg-help">Make/Model/Price: —</p>
-              
-              <div class="cfg-row-vehicle">
-                <select id="cfg-make" class="select constructor-step__select constructor-step__control form-control select__arow"><option selected disabled>Make</option></select>
-                <select id="cfg-model" class="select constructor-step__select constructor-step__control form-control select__arow"><option selected disabled>Model</option></select>
-                <select id="cfg-year" class="select constructor-step__select constructor-step__control form-control select__arow"><option selected disabled>Year</option></select>
-              </div>
-            </div>
-
-            <div class="cfg-block">
-              <h3 class="cfg-title">Set</h3>
-              <div class="cfg-row cfg-sets">
-                <label class="cfg-radio"><input type="radio" name="set" value="front" checked><span>Front only (2 mats) — 59$</span></label>
-                <label class="cfg-radio"><input type="radio" name="set" value="full"><span>Full interior — 139$</span></label>
-                <label class="cfg-radio"><input type="radio" name="set" value="complete"><span>Complete set — 219$</span></label>
-              </div>
-              <ul class="property-list text" style="margin-top:.5rem;">
-                <li class="property-list__item">Front only: driver + passenger (2 mats)</li>
-                <li class="property-list__item">Full interior: front + rear row (4 mats)</li>
-                <li class="property-list__item">Complete set: all rows + trunk mat (full interior coverage)</li>
-                <li class="property-list__item">Heel pad: optional, free</li>
-              </ul>
-            </div>
-
-            <div class="cfg-block">
-              <h3 class="cfg-title">Pattern</h3>
-              <div class="cfg-row cfg-patterns">
-                <label class="cfg-swatch" data-pattern="honeycomb"><input type="radio" name="pattern" value="honeycomb" checked><span>CELL</span></label>
-                <label class="cfg-swatch" data-pattern="diamond"><input type="radio" name="pattern" value="diamond"><span>DIAMOND</span></label>
-              </div>
-            </div>
-
-            <div class="cfg-block">
-              <h3 class="cfg-title">Colors</h3>
-              <div class="cfg-colors">
-                <div class="color-group">
-                  <div class="color-group__head">
-                    <span class="color-group__label">Mat color:</span>
-                    <strong class="color-group__value" id="mat-color-selected">—</strong>
+      <!-- Original product page content cloned from individual.html (UI/UX unchanged) -->
+      <div class="goodcard goodcard181" data-category="181">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-4 col-xl-4">
+              <div class="mobile_container" data-fromclass="car_pattern_block"></div>
+              <div class="image_container_constructor">
+                <div id="image_container_constructor">
+                  <div class="allinnone">
+                    <img id="constructorimage1" src="" style="display: none;">
+                    <img id="constructorimage2" src="" style="display: none;">
+                    <img id="shild" style="display: none;" src="./static/images/logo3_1.svg">
+                    <img id="podp" style="display: none;" src="">
+                    <img id="podp2" style="display: none;" src="">
                   </div>
-                  <div id="mat-swatch-list" class="swatch-list" aria-label="Mat colors"></div>
-                  <!-- keep native select for accessibility/fallback -->
-                  <select id="cfg-mat-color" class="select constructor-step__select constructor-step__control form-control cfg-select-hidden"></select>
-                </div>
-                <div class="color-group">
-                  <div class="color-group__head">
-                    <span class="color-group__label">Trim color:</span>
-                    <strong class="color-group__value" id="trim-color-selected">—</strong>
+                  <!-- Configurator preview injected here so configurator.js updates are visible -->
+                  <div class="configurator__main-image">
+                    <img id="preview-image" src="./static/images/price-constructor/sets/set-1.jpg" alt="Preview">
+                    <div id="pattern-overlay" class="pattern-overlay"></div>
                   </div>
-                  <div id="trim-swatch-list" class="swatch-list" aria-label="Trim colors"></div>
-                  <!-- keep native select for accessibility/fallback -->
-                  <select id="cfg-trim-color" class="select constructor-step__select constructor-step__control form-control cfg-select-hidden"></select>
+                  <div class="configurator__thumbnails">
+                    <img src="./static/images/work-examples/1.jpg" alt="thumb">
+                    <img src="./static/images/work-examples/2.jpg" alt="thumb">
+                    <img src="./static/images/work-examples/3.jpg" alt="thumb">
+                  </div>
                 </div>
               </div>
+              <div class="block-info">
+                <div class="title-block-info">Образец материала:</div>
+                <div class="block-constr-mat">
+                  <div class="block-constr-mat-item">
+                    <div class="block-constr-mat-item-title">Тип:</div>
+                    <div class="block-constr-mat-item-val" id="tekstilnyekovry_material_text"></div>
+                  </div>
+                  <div class="block-constr-mat-item">
+                    <div class="block-constr-mat-item-title">Цвет:</div>
+                    <div class="block-constr-mat-item-val" id="tekstilnyekovry_color_text"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="addimages_wrapper"></div>
+              <div class="addimages_wrapper_otstrtype"></div>
+              <!-- <div class="row galleryincard"><div class="col-md-3 col-xl-3"><div class="gallery-item"><a href="./static/images/work-examples/1.jpg" data-fancybox="gallery"><img src="./static/images/work-examples/1.jpg"><div class="zoom"></div></a></div></div><div class="col-md-3 col-xl-3"><div class="gallery-item"><a href="./static/images/work-examples/2.jpg" data-fancybox="gallery"><img src="./static/images/work-examples/2.jpg"><div class="zoom"></div></a></div></div><div class="col-md-3 col-xl-3"><div class="gallery-item"><a href="./static/images/work-examples/3.jpg" data-fancybox="gallery"><img src="./static/images/work-examples/3.jpg"><div class="zoom"></div></a></div></div><div class="col-md-3 col-xl-3"><div class="gallery-item"><a href="./static/images/work-examples/4.jpg" data-fancybox="gallery"><img src="./static/images/work-examples/4.jpg"><div class="zoom"></div></a></div></div></div> -->
             </div>
-
-            <div class="cfg-block">
-              <h3 class="cfg-title">Options</h3>
-              <label class="cfg-checkbox"><input type="checkbox" id="cfg-heelpad"><span>Heel pad (free)</span></label>
-              <label class="cfg-checkbox"><input type="checkbox" id="cfg-third-row"><span>3rd row (eligible models only)</span></label>
-              <p class="cfg-help" id="third-row-note" style="display:none">This car is not eligible for a 3rd row.</p>
+            <div class="col-md-4 col-xl-8">
+              <div class="row mt-5">
+                <div class="col-md-8">
+                  <div class="card_title">Сформируйте свой заказ</div>
+                  <div class="configurator__options params_wrapper">
+                    <div class="cfg-rating"><div class="stars">★★★★★</div><div class="reviews-count">Based on 120+ reviews</div></div>
+                    <div class="cfg-block">
+                      <h3 class="cfg-title">Your vehicle</h3>
+                      <p id="cfg-vehicle-summary" class="cfg-help">Make/Model/Price: —</p>
+                      <div class="cfg-row-vehicle">
+                        <select id="cfg-make" class="select constructor-step__select constructor-step__control form-control select__arow"><option selected disabled>Make</option></select>
+                        <select id="cfg-model" class="select constructor-step__select constructor-step__control form-control select__arow"><option selected disabled>Model</option></select>
+                        <select id="cfg-year" class="select constructor-step__select constructor-step__control form-control select__arow"><option selected disabled>Year</option></select>
+                      </div>
+                    </div>
+                    <div class="cfg-block">
+                      <h3 class="cfg-title">Set</h3>
+                      <div class="cfg-row cfg-sets">
+                        <label class="cfg-radio"><input type="radio" name="set" value="front" checked><span>Front only (2 mats) — 59$</span></label>
+                        <label class="cfg-radio"><input type="radio" name="set" value="full"><span>Full interior — 139$</span></label>
+                        <label class="cfg-radio"><input type="radio" name="set" value="complete"><span>Complete set — 219$</span></label>
+                      </div>
+                    </div>
+                    <div class="cfg-block">
+                      <h3 class="cfg-title">Pattern</h3>
+                      <div class="cfg-row cfg-patterns">
+                        <label class="cfg-swatch" data-pattern="honeycomb"><input type="radio" name="pattern" value="honeycomb"><span>CELL</span></label>
+                        <label class="cfg-swatch" data-pattern="diamond"><input type="radio" name="pattern" value="diamond" checked><span>DIAMOND</span></label>
+                      </div>
+                    </div>
+                    <div class="cfg-block">
+                      <h3 class="cfg-title">Colors</h3>
+                      <div class="cfg-colors">
+                        <div class="color-group">
+                          <div class="color-group__head"><span class="color-group__label">Mat color:</span><strong class="color-group__value" id="mat-color-selected">—</strong></div>
+                          <div id="mat-swatch-list" class="swatch-list" aria-label="Mat colors"></div>
+                          <select id="cfg-mat-color" class="select constructor-step__select constructor-step__control form-control cfg-select-hidden"></select>
+                        </div>
+                        <div class="color-group">
+                          <div class="color-group__head"><span class="color-group__label">Trim color:</span><strong class="color-group__value" id="trim-color-selected">—</strong></div>
+                          <div id="trim-swatch-list" class="swatch-list" aria-label="Trim colors"></div>
+                          <select id="cfg-trim-color" class="select constructor-step__select constructor-step__control form-control cfg-select-hidden"></select>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="cfg-block">
+                      <h3 class="cfg-title">Options</h3>
+                      <label class="cfg-checkbox"><input type="checkbox" id="cfg-heelpad"><span>Heel pad (free)</span></label>
+                      <label class="cfg-checkbox"><input type="checkbox" id="cfg-third-row"><span>3rd row (eligible models only)</span></label>
+                      <p class="cfg-help" id="third-row-note" style="display:none">This car is not eligible for a 3rd row.</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="car_pattern_block">
+                    <div class="goodimage_wrapper">
+                      <div class="top-products" style="display:flex; gap:10px; margin-bottom:12px;">
+                        <a href="configurator?product=carsbag" title="EVA Carsbag" style="display:block;">
+                          <img src="./static/images/car-bags/bag-1.jpg" alt="EVA Carsbag" style="width:100px; height:100px; object-fit:cover; border-radius:6px;">
+                        </a>
+                        <a href="configurator?product=home" title="EVA Home Mat" style="display:block;">
+                          <img src="./static/images/home-mats/mat-1.jpg" alt="EVA Home Mat" style="width:100px; height:100px; object-fit:cover; border-radius:6px;">
+                        </a>
+                      </div>
+                      <div class="goodimage"><img src="./static/images/price-constructor/sets/set-1.jpg" alt="Pattern"></div>
+                      <div class="galleryincard"><div><a href="./static/images/price-constructor/sets/set-1.jpg" data-fancybox="gallery"><img src="./static/images/price-constructor/sets/set-1.jpg"><div class="zoom"></div></a></div></div>
+                      <div class="simple_pattern"><div>Sample templates</div><div>EVA Carsbag • EVA Home Mat</div></div>
+                      <div class="rating_opinion"><div class="stars_wrapper"><div class="rating5"></div></div><div class="names"><span>средняя оценка клиентов</span>купивших этот товар</div></div>
+                      <div class="bycount">За 2 месяца этот товар купили 112 человек </div>
+                      <div class="side-products" style="margin-top:16px;">
+                        <div class="side-product" style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
+                          <a href="configurator?product=carsbag" style="display:flex; align-items:center; gap:10px; text-decoration:none; color:inherit;">
+                            <img src="./static/images/car-bags/bag-1.jpg" alt="EVA Carsbag" style="width:72px; height:72px; object-fit:cover; border-radius:6px;">
+                            <div>
+                              <div style="font-weight:600; line-height:1.2;">EVA Carsbag</div>
+                              <div style="font-size:12px; opacity:.8;">Sizes M / L</div>
+                            </div>
+                          </a>
+                          <a class="button" href="configurator?product=carsbag" style="margin-left:auto; white-space:nowrap;">Add to cart</a>
+                        </div>
+                        <div class="side-product" style="display:flex; align-items:center; gap:10px;">
+                          <a href="configurator?product=home" style="display:flex; align-items:center; gap:10px; text-decoration:none; color:inherit;">
+                            <img src="./static/images/home-mats/mat-1.jpg" alt="EVA Home Mat" style="width:72px; height:72px; object-fit:cover; border-radius:6px;">
+                            <div>
+                              <div style="font-weight:600; line-height:1.2;">EVA Home Mat</div>
+                              <div style="font-size:12px; opacity:.8;">Sizes S / M / L / XL</div>
+                            </div>
+                          </a>
+                          <a class="button" href="configurator?product=home" style="margin-left:auto; white-space:nowrap;">Add to cart</a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4 col-xl-4">
+              <div class="preim3_block">
+                <div class="preim3"><div  class="widgetblock-cardpreim widgetblock cardpreim"><ul class=""><li class="selected"><a class="cashback"  href="/cashback/" target="_blank">    <noindex><div class="preim_item" style="background:url(https://www.prime-avto.ru/images/html_content/5d95f7f81871d.jpg)"><div class="name">КэшБэк до 500 р. за отзыв</div><div class="desc">сделай фото и оставь отзыв на один из наших товаров и получи до 500 р.</div></div></noindex>  </a></li><li ><a class=""  href="/dostavkaioplata/" target="_blank">    <noindex><div class="preim_item" style="background:url(https://www.prime-avto.ru/images/html_content/5d298d0100b6c.png)"><div class="name">Быстрая доставка</div><div class="desc">отправка заказа осуществляется в день оформления</div></div></noindex>  </a></li><li ><div class="" >    <noindex><div class="preim_item" style="background:url(https://www.prime-avto.ru/images/html_content/5d298c95c11cc.png)"><div class="name">Гарантия высокого качества</div><div class="desc">все товары представленные на сайте имеют гарантировано высокое качество</div></div></noindex>  </div></li></ul></div></div>
+              </div>
+            </div>
+            <div class="col-md-8 col-xl-8" style="position: relative;">
+              <div class="orderplate" data-good="mats" data-baseprice="0" data-discountprice="0" data-count="1">
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="price-content-wrapper"><div class="price-content">
+                      <div class="price">
+                        <span id="summary-subtotal">0</span> $
+                      </div>
+                      <div class="underprice">order total</div>
+                    </div></div>
+                    <ul class="ul order_buttons">
+                      <li><button class="order_button btn" onclick="document.getElementById('summary-add')?.click()">Add to cart<span></span></button></li>
+                      <li><a class="oneclick" href="javascript:void(0)" onclick="document.getElementById('summary-buy')?.click()">Buy in 1 click</a></li>
+                    </ul>
+                  </div>
+                  <div class="col-md-6">
+                    <aside class="configurator__summary">
+                      <div class="summary-card">
+                        <h3>Summary</h3>
+                        <p id="summary-vehicle">Vehicle: —</p>
+                        <ul id="summary-list" class="property-list"></ul>
+                        <div class="summary-qty">
+                          <span>Quantity</span>
+                          <div class="qty-control">
+                            <button type="button" id="qty-minus" aria-label="Decrease quantity">−</button>
+                            <input id="qty-input" type="number" min="1" value="1" inputmode="numeric" pattern="[0-9]*" aria-label="Quantity">
+                            <button type="button" id="qty-plus" aria-label="Increase quantity">+</button>
+                          </div>
+                        </div>
+                        <div class="summary-total">
+                          <p class="total-text">Total</p>
+                          <p class="total-price"><span id="summary-subtotal-hidden">0</span>$</p>
+                        </div>
+                        <p id="require-vehicle-msg" class="cfg-help cfg-error" style="display:none">Please select Make, Model and Year to continue.</p>
+                        <div id="free-shipping" class="badge" style="display:none">Free Shipping in Canada</div>
+                        <div class="summary-actions">
+                          <button id="summary-add" class="button">Add to cart</button>
+                          <button id="summary-buy" class="button">Buy now</button>
+                        </div>
+                      </div>
+                    </aside>
+                    <div id="ordercontent"></div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
+        </div>
+      </div>
 
-          <aside class="configurator__summary">
-            <div class="summary-card">
-              <h3>Summary</h3>
-              <p id="summary-vehicle">Vehicle: —</p>
-              <ul id="summary-list" class="property-list"></ul>
-              <div class="summary-qty">
-                <span>Quantity</span>
-                <div class="qty-control">
-                  <button type="button" id="qty-minus" aria-label="Decrease quantity">−</button>
-                  <input id="qty-input" type="number" min="1" value="1" inputmode="numeric" pattern="[0-9]*" aria-label="Quantity">
-                  <button type="button" id="qty-plus" aria-label="Increase quantity">+</button>
+      <!-- Tabs: Описание / Характеристики / Преимущества / Установка подпятника -->
+      <div class="tabs_wrapper">
+        <div class="container">
+          <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#tab0" role="tab">Описание</a></li><li class="nav-item"><a class="nav-link " data-toggle="tab" href="#tab1" role="tab">Характеристики</a></li><li class="nav-item"><a class="nav-link " data-toggle="tab" href="#tab2" role="tab">Преимущества</a></li><li class="nav-item"><a class="nav-link " data-toggle="tab" href="#tab3" role="tab">Установка подпятника</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="container">
+        <div class="tab-content"> <div class="tab-pane fade in active show" id="tab0" name="tab0" role="tabpanel"><p dir="ltr" id="docs-internal-guid-713fb6e4-7fff-f81a-b529-b06e5c0acb9f">
+  <strong>Производство EVA ковриков без предоплаты осуществляется только серого и черного цвета</strong>. Автомобильные коврики EVA Audi TT III (8S) 2014-2019 &ndash; это долговечные, удобные и универсальные аксессуары, которые помогут надежно защитить салон и багажник вашего авто от пыли, грязи и влаги в любое время года.</p>
+<p dir="ltr">
+  Все аксессуары EVA прекрасно подходят для использования в осенне &ndash; весенний сезон. Они не размякнут от воды (в отличие от текстильных ковриков), которой будет много от частых дождей, и не задубеют на морозе, что случается с резиновыми.</p>
+<p dir="ltr">
+  Автоковрики EVA производятся из инновационного экологически чистого материала, обладающего высочайшей износостойкостью, устойчивостью к экстремальным температурам (<strong>от +50 С до -50 С</strong>) и агрессивным химреагентам. Они <strong>в 4 раза легче обычных резиновых аналогов</strong>, а чрезвычайно плотная структура обеспечивает им безупречную - и шумоизоляцию!</p>
+<div class="row" style="margin-top:20px;">
+  <div class="col-md-6" style="margin-bottom:20px;">
+    <img alt="" src="./static/images/work-examples/10.jpg" style="max-width: 100%" /></div>
+  <div class="col-md-6" style="margin-bottom:20px;">
+    <img alt="" src="./static/images/work-examples/11.jpg" style="max-width: 100%" /></div>
+></div>
+<p dir="ltr">
+  Коврики EVA имеют специальную ячеистую структуру (<strong>ячейки глубиной 8 мм</strong>), которая эффективно задерживает грязь и воду, оставляя вашу обувь и поверхность обивки салона или багажника абсолютно чистыми. Также эти ячейки очень легко и быстро очищаются без применения специальных инструментов, в том числе, при помощи бесконтактной мойки.</p>
+<p dir="ltr">
+  Коврики доступны в массе цветовых вариаций:&nbsp;они отлично вписываются в любой стиль и дополняют вид вашего салона. Вы всегда можете выбрать вариации от классических строгих тонов до ярких спортивных сочетаний, предать индивидуальный стиль салону вашего автомобиля.</p>
+<div style="text-align:center">
+  &nbsp;</div>
+<p>
+  &nbsp;</p>
+<div  class="widgetblock-preimdesc181 widgetblock preim4"><ul class=""><li class="selected"><div class="" >    <div class="item">
+<img src="./static/images/work-examples/5.jpg">
+<div class="title">Дополнительные крепления</div>
+<div class="desc">Выполнены из контактной ленты (липучка) и фиксируют коврики по всему периметру, что повышает уровень их фиксации</div>
+</div>  </div></li><li ><div class="" >    <div class="item">
+<img src="./static/images/work-examples/6.jpg">
+<div class="title">Все сезонное использование </div>
+<div class="desc">Коврики можно использовать круглый год, т.к. материал из которого они изготовлены выдерживает перепады температуры от +50 С до -50 С</div>
+</div>  </div></li><li ><div class="" >    <div class="item">
+<img src="./static/images/work-examples/7.jpg">
+<div class="title">Ячеистая структура поверхности</div>
+<div class="desc">Позволяет локализовать пролитые жидкости или мусор и не давать распространятся ему по салону автомобиля</div>
+</div>  </div></li><li ><div class="" >    <div class="item">
+<img src="./static/images/work-examples/8.jpg">
+<div class="title">Оригинальные крепления</div>
+<div class="desc">Если в модели вашего автомобиля предусмотрены штатные крепления к кузову, то мы установим их на коврики</div>
+</div>  </div></li></ul></div></div><div class="tab-pane fade in  show" id="tab1" name="tab1" role="tabpanel"><div  class="widgetblock-char181 widgetblock "><table class="table table-striped">
+  <tbody>
+    <tr>
+      <td>
+        Производитель материала</td>
+      <td>
+        <strong>Россия</strong></td>
+    </tr>
+    <tr>
+      <td>
+        Толщина материала</td>
+      <td>
+        <strong>10-12 мм</strong></td>
+    </tr>
+    <tr>
+      <td>
+        Глубина ячеек</td>
+      <td>
+        <strong>7-8 мм</strong></td>
+    </tr>
+    <tr>
+      <td>
+        Водопоглощение</td>
+      <td>
+        <strong>3,5 литра на 1 кв.м.</strong></td>
+    </tr>
+    <tr>
+      <td>
+        Водонепроницаемость</td>
+      <td>
+        <strong>100%</strong></td>
+    </tr>
+    <tr>
+      <td>
+        Сезонность</td>
+      <td>
+        <strong>всесезонные</strong></td>
+    </tr>
+    <tr>
+      <td>
+        Рабочие температуры</td>
+      <td>
+        <strong>от -50&nbsp;&deg;С до&nbsp;+50&nbsp;&deg;С</strong></td>
+    </tr>
+    <tr>
+      <td>
+        Габариты упаковки</td>
+      <td>
+        <strong>70см x 50см x 5см</strong></td>
+    </tr>
+    <tr>
+      <td>
+        Вес комплекта ковриков</td>
+      <td>
+        <strong>2 кг</strong></td>
+    </tr>
+  </tbody>
+</table>
+<p>
+  &nbsp;</p>
+</div></div><div class="tab-pane fade in  show" id="tab2" name="tab2" role="tabpanel"><div  class="widgetblock-preim181 widgetblock "><noindex><p dir="ltr">
+  <strong>Преимущества ковриков Ева</strong></p>
+<p dir="ltr">
+  - Ячейки ковриков надежно удерживают воду. Чтобы ее вылить, изделие требуется держать практически вертикально. Это гарантирует, что вода в салоне не будет расплескиваться, как может происходить с резиновыми изделиями.</p>
+<p dir="ltr">
+  -Материал экологичен и безвреден. Не имеет запаха, гипоаллергенен.</p>
+<p dir="ltr">
+  -Всесезонное использование. Сохраняют эластичность при температуре <strong>-50 / +50</strong></p>
+<p dir="ltr">
+  -Возможность выбора цвета  коврика и окантовочной ленты</p>
+<p dir="ltr">
+  -Коврики максимально закрывают  пол салона автомобиля</p>
+<p dir="ltr">
+  -Надежные крепления на оригинальные клипсы и дополнительно липучки к полу</p>
+<p dir="ltr">
+  -Легко чистятся под струей воды из ячеек вымывается вся накопившаяся грязь</p>
+<p dir="ltr">
+  -Мы гарантируем высокое качество продукции</p>
+</noindex></div></div><div class="tab-pane fade in  show" id="tab3" name="tab3" role="tabpanel"><div  class="widgetblock-installbearing widgetblock installbearing"><div class="container"><div class="row "><div class="col-md-6 col-xl-4"><div class="" >         <noindex><div class="item">
+<div class="img_wrapper"><img src="./static/images/price-constructor/sets/footrest.png"></div>
+<div ><div class="name">Шаг 1</div><div class="desc">Подберите удобное для вас расположение подпятника на водительском коврике и зафиксируйте его.</div></div>
+</div></noindex></div></div><div class="col-md-6 col-xl-4"><div class="" >         <noindex><div class="item">
+<div class="img_wrapper"><img src="./static/images/price-constructor/sets/footrest.png"></div>
+<div ><div class="name">Шаг 2</div><div class="desc">Крепко приложите подпятник с обратной стороны коврика, чтоб зафиксировать местоположение отверстий под крепежные болты.</div></div>
+</div></noindex></div></div><div class="col-md-6 col-xl-4"><div class="" >         <noindex><div class="item">
+<div class="img_wrapper"><img src="./static/images/price-constructor/sets/footrest.png"></div>
+<div ><div class="name">Шаг 3</div><div class="desc">Пробейте материал с обратной (!) стороны коврика пробойником или любым острым предметом диаметром 3-5 мм.</div></div>
+</div></noindex></div></div><div class="col-md-6 col-xl-4"><div class="" >         <noindex><div class="item">
+<div class="img_wrapper"><img src="./static/images/price-constructor/sets/footrest.png"></div>
+<div ><div class="name">Шаг 4</div><div class="desc">Вставьте подпятник с лицевой стороны в прибитые отверстия</div></div>
+</div></noindex></div></div><div class="col-md-6 col-xl-4"><div class="" >         <noindex><div class="item">
+<div class="img_wrapper"><img src="./static/images/price-constructor/sets/footrest.png"></div>
+<div ><div class="name">Шаг 5</div><div class="desc">С обратной стороны коврика вставьте в отверстия крепежные болты и закрутите их</div></div>
+</div></noindex></div></div><div class="col-md-6 col-xl-4"><div class="" >         <noindex><div class="item">
+<div class="img_wrapper"><img src="./static/images/price-constructor/sets/footrest.png"></div>
+<div ><div class="name">Подпятник установлен и готов к использованию</div><div class="desc"></div></div>
+</div></noindex></div></div></div></div></div></div></div>
+      </div>
+
+      <!-- Видео про EVA коврики -->
+      <div  class="widgetblock-cardvideo181 widgetblock videoblock"><div class="container"><h2 class="wtitle">Видео про EVA коврики</h2><ul class=""><li class="selected"><div class="" > <div class="item">
+<a data-fancybox="" data-type="iframe" data-src="https://rutube.ru/play/embed/d6aa6af238fdf284f2fcee4cedd1347b/" href="javascript:;"><img src="https://www.prime-avto.ru/images/html_content/62987a13b91bf.jpg"></a>
+<div class="title">EVA-коврики – идеальный порядок в салоне до и после поездки</div>
+</div>     </div></li><li ><div class="" > <div class="item">
+<a data-fancybox="" data-type="iframe" data-src="https://rutube.ru/play/embed/6bf9021c16b308c93f894c1882aedbd0/" href="javascript:;"><img src="https://www.prime-avto.ru/images/html_content/62985e4f7987b.jpg"></a>
+<div class="title">EVA-коврики: стиль и защита вашего авто до и после установки</div>
+</div>     </div></li><li ><div class="" > <div class="item">
+<a data-fancybox="" data-type="iframe" data-src="https://rutube.ru/play/embed/ba9d9f67d9fecc414904550cd47067a5/" href="javascript:;"><img src="https://www.prime-avto.ru/images/html_content/62987a529fcbb.jpg"></a>
+<div class="title">До и после: как EVA-коврики меняют интерьер автомобиля</div>
+</div>     </div></li></ul></div></div>
+
+      <!-- Цитата: Дмитрий Песцов -->
+      <div  class="widgetblock-blockreviewdmitrypestsov widgetblock block-review-dmitry-pestsov-item"><div class="container"><div class="block-rev-pesk">
+  <div class="row">
+    <div class="col-md-6">
+      <p>
+        <a data-fancybox="" data-type="iframe" data-src="https://vk.com/video_ext.php?oid=-178751764&id=456240370" href="javascript:;"><img alt="" src="https://www.prime-avto.ru/images/video-otz-pesk.png" style="max-width: 100%;" /></a></p>
+    </div>
+    <div class="col-md-6">
+      <div class="block-content-data">
+        <p>
+          Товарищи! Дорогие мои мастера золотые руки! Я&nbsp;обращаюсь к&nbsp;тем, кто работает в&nbsp;фирме под названием Прайм Авто. Вы&nbsp;мне сделали прекрасные коврики! Вы&nbsp;знаете, ездить стало гораздо приятней.</p>
+        <p>
+          Это прекрасно, когда вот люди так вот с&nbsp;любовью относятся к&nbsp;своему делу и&nbsp;к&nbsp;своим клиентам!</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div></div>
+
+      <!-- Разница до и после -->
+      <div  class="widgetblock-beforeafter181 widgetblock evabeforeafter"><div class="container"><h2 class="wtitle">Разница до и после покупки EVA ковриков</h2><div class="row "><div class="col-md-3 col-xl-3"><div class="" >     <div class="container_before_after">
+ <img src="https://www.prime-avto.ru/images/html_content/62988020c5e2c.jpg" />
+<img src="https://www.prime-avto.ru/images/html_content/62988020c5f08.jpg" />
+ </div>   </div></div><div class="col-md-3 col-xl-3"><div class="" >     <div class="container_before_after">
+ <img src="https://www.prime-avto.ru/images/html_content/629880f2d314e.jpg" />
+<img src="https://www.prime-avto.ru/images/html_content/629880f2d31d7.jpg" />
+ </div>   </div></div><div class="col-md-3 col-xl-3"><div class="" >     <div class="container_before_after">
+ <img src="https://www.prime-avto.ru/images/html_content/629882e504fa4.jpg" />
+<img src="https://www.prime-avto.ru/images/html_content/629882e505041.jpg" />
+ </div>   </div></div><div class="col-md-3 col-xl-3"><div class="" >     <div class="container_before_after">
+ <img src="https://www.prime-avto.ru/images/html_content/6298818dac92d.jpg" />
+<img src="https://www.prime-avto.ru/images/html_content/6298818dac9a5.jpg" />
+ </div>   </div></div></div></div></div>
+
+      <!-- Популярные вопросы -->
+      <div  class="widgetblock-qevapopular181 widgetblock qanswerswrapper"><div class="container"><h2 class="wtitle">Популярные вопросы про EVA коврики</h2><ul class=""><li class="selected"><div class="" >       <noindex><div class="qansweritem">
+<div class="question">Из чего сделаны полимерные автоковрики?</div>
+<div class="answer">Для изготовления ковриков мы используется материал с ячеистой структурой – Ethylene Vinyl Acetate (EVA или севилен). Он очень легкий и в то же время прочный. Среди преимуществ этого материала: способность удерживать большое количество жидкости, отсутствие запаха, стойкость к химическим реагентам, абсолютная безопасность для здоровья и окружающей среды, сохранение всех характеристик и при жаре +50°С, и в холоде -40°С.</div>
+</div></noindex> </div></li><li ><div class="" >       <noindex><div class="qansweritem">
+<div class="question">Какого цвета бывают ковры?</div>
+<div class="answer">Выпускаются в самой широкой палитре цветов материала и окантовки, позволяющих получить большой ассортимент цветовых сочетаний!</div>
+</div></noindex> </div></li><li ><div class="" >       <noindex><div class="qansweritem">
+<div class="question">Какая толщина ковриков, глубина ячеек?</div>
+<div class="answer">Толщина материала составляет 10-11мм., глубина ячеек: 5-7 мм</div>
+</div></noindex> </div></li><li ><div class="" >       <noindex><div class="qansweritem">
+<div class="question">Автоковрики впитывают воду? </div>
+<div class="answer">Коврики из данного материала не впитывают воду.</div>
+</div></noindex> </div></li><li ><div class="" >       <noindex><div class="qansweritem">
+<div class="question">Как за ними ухаживать</div>
+<div class="answer">Коврики рассчитаны на мойку струей воды под давлением. Под ее напором вся скопившаяся грязь в ячейках моментально вымывается. Они не боятся автошампуней и моющих средств.</div>
+</div></noindex> </div></li><li ><div class="" >       <noindex><div class="qansweritem">
+<div class="question">Как коврики крепятся к полу автомобиля?</div>
+<div class="answer">Ко всем коврикам EVA пришивается "липучка", надёжно фиксирующая коврики на полу. При наличии штатных креплений коврики комплектуются соотвествтующими клипсами</div>
+</div></noindex> </div></li><li ><div class="" >       <noindex><div class="qansweritem">
+<div class="question">Почему нет бортиков?</div>
+<div class="answer">У данных ковриков ячеистая структура. Поэтому вода, попавшая на поверхность, далее не переливается, равномерно распределяясь в соседних ячейках.</div>
+</div></noindex> </div></li><li ><div class="" >       <noindex><div class="qansweritem">
+<div class="question">Как себя ведут зимой? </div>
+<div class="answer">Коврики сохраняют эластичность при температурах до -50 градусов, не пачкаются и не источают неприятных запахов.</div>
+</div></noindex> </div></li></ul></div></div>
+
+      <!-- Отзывы наших покупателей -->
+      <section class="reviews">
+        <div class="container">
+          <h2 class="reviews__title">Отзывы наших покупателей</h2>
+          <div class="swiper reviews__swiper">
+            <div class="swiper-wrapper">
+              <div class="swiper-slide">
+                <div class="slide__inner">
+                  <div class="reviews__item-headline">
+                    <div class="headline__inner">
+                      <img class="headline__inner-avatar" src="static/images/about-product/reviews/ava-1.png" loading="lazy" alt="">
+                      <div class="headline__inner-text">
+                        <h5 class="headline__inner-user">Emma</h5>
+                        <p class="headline__inner-date">20/06/2024</p>
+                      </div>
+                    </div>
+                    <img class="headline-photo" src="static/images/about-product/reviews/photo-1.jpg" loading="lazy" data-fancybox="" alt="">
+                  </div>
+                  <p class="reviews__item-text">
+                    Absolutely love these car mats! They fit my vehicle perfectly and the color options allowed me to match my interior just right. The customer service was exceptional, answering all my questions promptly. Delivery was quick, and I couldn't be happier with my purchase. I highly recommend EvaTech to anyone looking for high-quality car mats
+                  </p>
                 </div>
               </div>
-              <div class="summary-total">
-                <p class="total-text">Total</p>
-                <p class="total-price"><span id="summary-subtotal">0</span>$</p>
+              <div class="swiper-slide">
+                <div class="slide__inner">
+                  <div class="reviews__item-headline">
+                    <div class="headline__inner">
+                      <img class="headline__inner-avatar" src="static/images/about-product/reviews/ava-2.png" alt="" loading="lazy">
+                      <div class="headline__inner-text">
+                        <h5 class="headline__inner-user">Viktoriia</h5>
+                        <p class="headline__inner-date">29/05/2024</p>
+                      </div>
+                    </div>
+                    <img class="headline-photo" src="static/images/about-product/reviews/photo-2.jpg" loading="lazy" alt="" data-fancybox="">
+                  </div>
+                  <p class="reviews__item-text">
+                    EvaTech's mats are a game-changer for my car! The design and quality are top-notch, and they've held up beautifully even with daily use. The ordering process was smooth, and the customer service team was incredibly helpful. I'll definitely be purchasing more in the future.
+                  </p>
+                </div>
               </div>
-              <p id="require-vehicle-msg" class="cfg-help cfg-error" style="display:none">Please select Make, Model and Year to continue.</p>
-              <div id="free-shipping" class="badge" style="display:none">Free Shipping in Canada</div>
-              <div class="summary-actions">
-                <button id="summary-add" class="button">Add to cart</button>
-                <button id="summary-buy" class="button">Buy now</button>
+              <div class="swiper-slide">
+                <div class="slide__inner">
+                  <div class="reviews__item-headline">
+                    <div class="headline__inner">
+                      <img class="headline__inner-avatar" src="static/images/about-product/reviews/ava-3.png" loading="lazy" alt="">
+                      <div class="headline__inner-text">
+                        <h5 class="headline__inner-user">Java</h5>
+                        <p class="headline__inner-date">16/05/2024</p>
+                      </div>
+                    </div>
+                    <img class="headline-photo" src="static/images/about-product/reviews/photo-3.jpg" loading="lazy" data-fancybox alt="">
+                  </div>
+                  <p class="reviews__item-text">
+                    I found EvaTech on Instagram and was intrigued by their custom mats. I decided to place an order. The mats arrived quickly and exceeded my expectations in terms of quality and fit. Their team was attentive to every detail, making the experience enjoyable. Highly recommend!
+                  </p>
+                </div>
+              </div>
+              <div class="swiper-slide">
+                <div class="slide__inner">
+                  <div class="reviews__item-headline">
+                    <div class="headline__inner">
+                      <img class="headline__inner-avatar" src="static/images/about-product/reviews/ava-4.jpg" loading="lazy" alt="">
+                      <div class="headline__inner-text">
+                        <h5 class="headline__inner-user">Jerry</h5>
+                        <p class="headline__inner-date">03/05/2024</p>
+                      </div>
+                    </div>
+                    <img class="headline-photo" src="static/images/about-product/reviews/photo-4.jpg" loading="lazy" data-fancybox alt="">
+                  </div>
+                  <p class="reviews__item-text">
+                    These mats are fantastic! Lightweight, durable, and they fit my car perfectly. The customer service was top-notch, ensuring that my order was processed and shipped quickly. I'm so pleased with my purchase that I'm planning to order another set for my husband's car.
+                  </p>
+                </div>
+              </div>
+              <div class="swiper-slide">
+                <div class="slide__inner">
+                  <div class="reviews__item-headline">
+                    <div class="headline__inner">
+                      <img class="headline__inner-avatar" src="static/images/about-product/reviews/ava-5.jpg" loading="lazy" alt="">
+                      <div class="headline__inner-text">
+                        <h5 class="headline__inner-user">Vitalii</h5>
+                        <p class="headline__inner-date">25/04/2024</p>
+                      </div>
+                    </div>
+                    <img class="headline-photo" src="static/images/about-product/reviews/photo-5.jpg" loading="lazy" data-fancybox alt="">
+                  </div>
+                  <p class="reviews__item-text">
+                    The mats from EvaTech are exactly what I was looking for. They fit my car perfectly and the material is both lightweight and durable. The customer service was very helpful and the shipping was fast. I'm very satisfied with my purchase.
+                  </p>
+                </div>
+              </div>
+              <div class="swiper-slide">
+                <div class="slide__inner">
+                  <div class="reviews__item-headline">
+                    <div class="headline__inner">
+                      <img class="headline__inner-avatar" src="static/images/about-product/reviews/ava-6.jpg" loading="lazy" alt="">
+                      <div class="headline__inner-text">
+                        <h5 class="headline__inner-user">Mike</h5>
+                        <p class="headline__inner-date">21/04/2024</p>
+                      </div>
+                    </div>
+                    <img class="headline-photo" src="static/images/about-product/reviews/photo-6.jpg" loading="lazy" data-fancybox alt="">
+                  </div>
+                  <p class="reviews__item-text">
+                    These car mats are top-notch! They fit my vehicle perfectly and the quality is evident. The mats arrived quickly and have held up well so far. I highly recommend EvaTech for their excellent products and service.
+                  </p>
+                </div>
               </div>
             </div>
-          </aside>
+            <div class="swiper-button-prev about-btn"></div>
+            <div class="swiper-button-next about-btn"></div>
+          </div>
         </div>
       </section>
+      <!-- Tabs and additional sections preserved from individual.html could be appended here as needed -->
     </main>
 
     <footer class="footer">
@@ -204,32 +596,16 @@
           <img class="logo__image" src="/static/images/logo3_1.svg" loading="lazy" alt="Evacode logo">
         </a>
         <div class="about-info__social">
-          <a aria-label="Custom EVA mats facebook"
-            href="https://www.facebook.com/people/VI-CarMats/61556124253098/?mibextid=sCpJLy"
-            target="_blank" class="about-info__link about-info__link-main">
-            <i class="icon-facebook"></i>
-          </a>
-          <a aria-label="Custom EVA mats instagram" href="
-                          https://www.instagram.com/evatech.ca" target="_blank"
-            class="about-info__link about-info__link-main">
-            <i class="icon-instagram"></i>
-          </a>
-          <a aria-label="Custom EVA mats gmail" href="mailto:info.evatech.ca@gmail.com" target="_blank"
-            class="about-info__link about-info__text-main">
-            <i class="icon-mail"></i>
-            info.evatech.ca@gmail.com
-          </a>
-          <a aria-label="Custom EVA mats phone" href="tel:+16139857956" target="_blank"
-            class="about-info__link about-info__text-main">
-            <i class="icon-call-in"></i>
-            +1 613-214-1621
-          </a>
-          <p class="about-info__text about-info__text-main about-info__location">Our Location: Kingston, ON
-          </p>
+          <a aria-label="Custom EVA mats facebook" href="https://www.facebook.com/people/VI-CarMats/61556124253098/?mibextid=sCpJLy" target="_blank" class="about-info__link about-info__link-main"><i class="icon-facebook"></i></a>
+          <a aria-label="Custom EVA mats instagram" href=" https://www.instagram.com/evatech.ca" target="_blank" class="about-info__link about-info__link-main"><i class="icon-instagram"></i></a>
+          <a aria-label="Custom EVA mats gmail" href="mailto:info.evatech.ca@gmail.com" target="_blank" class="about-info__link about-info__text-main"><i class="icon-mail"></i> info.evatech.ca@gmail.com</a>
+          <a aria-label="Custom EVA mats phone" href="tel:+16139857956" target="_blank" class="about-info__link about-info__text-main"><i class="icon-call-in"></i> +1 613-214-1621</a>
+          <p class="about-info__text about-info__text-main about-info__location">Our Location: Kingston, ON</p>
         </div>
       </div>
     </footer>
   </div>
+
   <div class="header__menu-mobile">
     <div class="header__menu-top">
       <a href="/" aria-label="Custom EVA mats for the interior of your car" class="logo header__menu-logo">
@@ -239,53 +615,27 @@
     </div>
     <nav class="header__menu-nav">
       <ul class="header__menu-items">
-        <li class="header__menu-item">
-          <a href="#home">Home</a>
-        </li>
-        <li class="header__menu-item">
-          <a href="about-product">What is Eva?</a>
-        </li>
-        <li class="header__menu-item">
-          <a href="/#products">Products</a>
-        </li>
-        <li class="header__menu-item">
-          <a href="warantly">Warranty</a>
-        </li>
-        <li class="header__menu-item">
-          <a href="delivery">Delivery</a>
-        </li>
-        <li class="header__menu-item">
-          <a href="about-us">About us</a>
-        </li>
-        <li class="header__menu-item">
-          <a href="partners">Partners</a>
-        </li>
+        <li class="header__menu-item"><a href="#home">Home</a></li>
+        <li class="header__menu-item"><a href="about-product">What is Eva?</a></li>
+        <li class="header__menu-item"><a href="/#products">Products</a></li>
+        <li class="header__menu-item"><a href="warantly">Warranty</a></li>
+        <li class="header__menu-item"><a href="delivery">Delivery</a></li>
+        <li class="header__menu-item"><a href="about-us">About us</a></li>
+        <li class="header__menu-item"><a href="partners">Partners</a></li>
       </ul>
       <div class="header__menu-social">
         <div class="header__menu-icon">
-          <a aria-label="Custom EVA mats facebook"
-            href="https://www.facebook.com/people/VI-CarMats/61556124253098/?mibextid=sCpJLy"
-            target="_blank" class="header_menu-link">
-            <i class="icon-facebook"></i>
-          </a>
-          <a aria-label="Custom EVA mats instagram" href="
-                  https://www.instagram.com/evatech.ca/" target="_blank"
-            class="header_menu-link">
-            <i class="icon-instagram"></i>
-          </a>
+          <a aria-label="Custom EVA mats facebook" href="https://www.facebook.com/people/VI-CarMats/61556124253098/?mibextid=sCpJLy" target="_blank" class="header_menu-link"><i class="icon-facebook"></i></a>
+          <a aria-label="Custom EVA mats instagram" href=" https://www.instagram.com/evatech.ca/" target="_blank" class="header_menu-link"><i class="icon-instagram"></i></a>
         </div>
-        <a aria-label="Custom EVA mats phone" href="tel:+16139857956" target="_blank"
-          class="header_menu-link about-info__text-main">
-          +1 613-214-1621
-        </a>
-        <a aria-label="Custom EVA mats gmail" href="mailto:info.evatech.ca@gmail.com" target="_blank"
-          class="header_menu-link about-info__text-main">
-          info.evatech.ca@gmail.com
-        </a>
+        <a aria-label="Custom EVA mats phone" href="tel:+16139857956" target="_blank" class="header_menu-link about-info__text-main">+1 613-214-1621</a>
+        <a aria-label="Custom EVA mats gmail" href="mailto:info.evatech.ca@gmail.com" target="_blank" class="header_menu-link about-info__text-main">info.evatech.ca@gmail.com</a>
         <p class="header_menu-text">Our Location: Kingston, ON</p>
       </div>
     </nav>
   </div>
+
+  <script src="./static/js/configurator-individual.js"></script>
 
   <script defer src="./static/js/vendors/nice-select2/nice-select2.js"></script>
   <script defer src="./static/js/vendors/swiper/swiper-bundle.min.js"></script>
@@ -293,6 +643,150 @@
   <script defer src="./static/js/configurator.js"></script>
   <script defer src="./static/js/cart-badge.js"></script>
   <script src="static/js/dist/burger.bundle.js"></script>
+  <script defer src="static/js/dist/main.bundle.js"></script>
+  <script>
+    // Ensure default colors are selected so Add/Buy works without exposing extra UI
+    (function ensureDefaults(){
+      function trySelect() {
+        try {
+          var mat = document.getElementById('cfg-mat-color');
+          if (mat && mat.options.length > 1) {
+            if (mat.selectedIndex < 1) { mat.selectedIndex = 1; mat.dispatchEvent(new Event('change', { bubbles: true })); }
+          }
+          var trim = document.getElementById('cfg-trim-color');
+          if (trim && trim.options.length > 1) {
+            if (trim.selectedIndex < 1) { trim.selectedIndex = 1; trim.dispatchEvent(new Event('change', { bubbles: true })); }
+          }
+        } catch(_) {}
+        // Keep visible price in sync if hidden hooks compute it
+        try {
+          var hiddenSubtotal = document.getElementById('summary-subtotal-hidden');
+          var visibleSubtotal = document.getElementById('summary-subtotal');
+          if (hiddenSubtotal && visibleSubtotal) {
+            var sync = function(){ visibleSubtotal.textContent = hiddenSubtotal.textContent; };
+            new MutationObserver(sync).observe(hiddenSubtotal, { childList: true, characterData: true, subtree: true });
+            sync();
+          }
+        } catch(_) {}
+      }
+      document.addEventListener('DOMContentLoaded', function(){ setTimeout(trySelect, 800); });
+    })();
+    // Prefill vehicle only when no URL params are provided (avoid overriding URL selections)
+    (function prefillVehicle(){
+      var paramsGuard = new URLSearchParams(location.search);
+      if (paramsGuard.get('make') || paramsGuard.get('model') || paramsGuard.get('year')) {
+        return; // URL has explicit selection → do not auto-pick
+      }
+      function dispatch(el){ try { el && el.dispatchEvent(new Event('change', { bubbles: true })); } catch(_){} }
+      function pickFirst(select){
+        if (!select) return false;
+        for (var i=0;i<select.options.length;i++){
+          var o = select.options[i];
+          if (!o.disabled && o.value) { select.selectedIndex = i; return true; }
+        }
+        return false;
+      }
+      function selectYear(){
+        var y = document.getElementById('cfg-year');
+        if (!y || y.options.length < 2) return false;
+        y.selectedIndex = y.options.length - 1; // latest year
+        dispatch(y);
+        return true;
+      }
+      function tryPrefill(){
+        var make = document.getElementById('cfg-make');
+        var model = document.getElementById('cfg-model');
+        if (!make || !model) return;
+        var makeOk = pickFirst(make);
+        if (makeOk) dispatch(make);
+        // wait for models to load
+        var tries = 0;
+        var t = setInterval(function(){
+          tries++;
+          if (model.options && model.options.length > 1) {
+            clearInterval(t);
+            pickFirst(model);
+            dispatch(model);
+            selectYear();
+          }
+          if (tries > 40) { // ~8s max
+            clearInterval(t);
+            selectYear();
+          }
+        }, 200);
+      }
+      document.addEventListener('DOMContentLoaded', function(){ setTimeout(tryPrefill, 1000); });
+    })();
+  </script>
+  <script>
+    // FAQ: toggle qansweritem answers in Популярные вопросы про EVA коврики
+    (function enableFaq(){
+      function init(){
+        try {
+          var items = document.querySelectorAll('.qanswerswrapper .qansweritem');
+          if (!items.length) return;
+          items.forEach(function(item, index){
+            var q = item.querySelector('.question');
+            var a = item.querySelector('.answer');
+            var li = item.closest('li');
+            var isSelected = li && li.classList.contains('selected');
+            if (a) a.style.display = isSelected ? '' : 'none';
+            if (q) q.style.cursor = 'pointer';
+            if (q) q.addEventListener('click', function(){
+              // accordion behavior: close others
+              items.forEach(function(it){
+                var aa = it.querySelector('.answer');
+                var lli = it.closest('li');
+                if (aa) aa.style.display = 'none';
+                if (lli) lli.classList.remove('selected');
+              });
+              if (a) a.style.display = '';
+              if (li) li.classList.add('selected');
+            });
+          });
+        } catch(_) {}
+      }
+      document.addEventListener('DOMContentLoaded', init);
+    })();
+  </script>
+  <script>
+    // Lightweight tabs handler for .nav.nav-tabs with data-toggle="tab"
+    (function enableTabs(){
+      function activateTab(id){
+        try {
+          var links = document.querySelectorAll('.nav.nav-tabs [data-toggle="tab"]');
+          var panes = document.querySelectorAll('.tab-content .tab-pane');
+          links.forEach(function(a){
+            var isActive = a.getAttribute('href') === ('#' + id);
+            a.classList.toggle('active', isActive);
+          });
+          panes.forEach(function(p){
+            var match = p.id === id;
+            p.classList.toggle('active', match);
+            p.classList.toggle('show', match);
+            p.classList.toggle('in', match);
+          });
+        } catch(_) {}
+      }
+      document.addEventListener('DOMContentLoaded', function(){
+        try {
+          var links = document.querySelectorAll('.nav.nav-tabs [data-toggle="tab"]');
+          links.forEach(function(a){
+            a.addEventListener('click', function(e){
+              e.preventDefault();
+              var target = (this.getAttribute('href') || '').replace('#','');
+              if (target) activateTab(target);
+            });
+          });
+          var current = document.querySelector('.nav.nav-tabs .nav-link.active') || links[0];
+          if (current) {
+            var id = (current.getAttribute('href') || '').replace('#','');
+            if (id) activateTab(id);
+          }
+        } catch(_) {}
+      });
+    })();
+  </script>
 </body>
 </html>
 
