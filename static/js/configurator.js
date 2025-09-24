@@ -484,13 +484,13 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!ensureVehicleSelected() || !ensureColorsSelected()) return;
     const module = await import('./cart.js');
     module.Cart.add({ ...toCartItem() });
-    window.location.href = '/cart.html';
+    window.location.href = '/cart';
   });
   buyBtn.addEventListener('click', async ()=>{
     if (!ensureVehicleSelected() || !ensureColorsSelected()) return;
     const module = await import('./cart.js');
     module.Cart.add({ ...toCartItem() });
-    window.location.href = '/order.html';
+    window.location.href = '/order';
   });
 
   // modal open on thumbnail click
