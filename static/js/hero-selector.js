@@ -12,12 +12,13 @@ document.addEventListener('DOMContentLoaded', () => {
       window.__heroMakeNS = window.NiceSelect.bind(makeEl);
       window.__heroModelNS = window.NiceSelect.bind(modelEl);
       window.__heroYearNS = window.NiceSelect.bind(yearEl);
+      // reduce visual spacing a bit on mobile by shrinking height
+      document.querySelectorAll('.nice-select').forEach(el=>{ el.style.height='50px'; el.style.lineHeight='50px'; });
     }
   } catch (_) {}
 
-  // preload years
-  const now = new Date();
-  for (let i = 1990; i <= now.getFullYear(); i++) {
+  // preload years: 2026 down to 1990
+  for (let i = 2026; i >= 1990; i--) {
     yearEl.insertAdjacentHTML('beforeend', `<option value="${i}">${i}</option>`);
   }
   try { window.__heroYearNS && window.__heroYearNS.update && window.__heroYearNS.update(); } catch(_){ }

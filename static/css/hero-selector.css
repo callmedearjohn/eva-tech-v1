@@ -3,7 +3,7 @@
 .hero-selector .constructor-step__fields {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 0.8fr;
-  gap: 1rem;
+  gap: 0.5rem;
   align-items: center;
 }
 

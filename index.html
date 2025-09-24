@@ -78,7 +78,7 @@
                                 <a href="about-product" class="nav__list-link">What is Eva?</a>
                             </li>
                             <li class="nav__list-item">
-                                <a href="#price-constructor" class="nav__list-link">Price</a>
+                                <a href="#products" class="nav__list-link">Products</a>
                             </li>
                             <li class="nav__list-item">
                                 <a href="warantly" class="nav__list-link">Warranty</a>
@@ -149,10 +149,7 @@
                             High quality guaranteed
                         </p>
                         <div class="hero-scroll-down">
-                            <a aria-label="Get a price for the order" href="#price-constructor"
-                                class="button hero__button">GET A QUOTE</a>
-                            <a aria-label="Open configurator" href="configurator" class="button hero__button" style="margin-top:10px">OPEN CONFIGURATOR</a>
-                            <a aria-label="Get a price for the order" href="#price-constructor"
+                            <a aria-label="Scroll to products" href="#products"
                                 class="hero-scroll-down__arrows">
                                 <div class="hero-scroll-down__arrow"><i class="icon-arrow-down"></i></div>
                                 <div class="hero-scroll-down__arrow"><i class="icon-arrow-down"></i></div>
@@ -161,7 +158,7 @@
                         </div>
                     </div>
                     <!-- Hero Make/Year/Model selector -->
-                    <form id="hero-selector" class="hero-selector" action="#price-constructor">
+                    <form id="hero-selector" class="hero-selector" action="#products">
                         <div class="constructor-step__fields">
                             <div class="constructor-step__field form-field">
                                 <select aria-label="Car make" required
@@ -246,8 +243,8 @@
                     </form>
                 </div>
             </section>
-            <!-- Free shipping badge (dynamic) -->
-            <div id="free-ship-home" style="display:none; text-align:center; padding:.5rem; color:#0c7; font-weight:700;">Free Shipping in Canada is active (cart ≥ $100)</div>
+            <!-- Free shipping note (plain) -->
+            <p style="text-align:center; padding:.5rem;">Free shipping across Canada.</p>
             <section class="advantages section">
                 <div class="container">
                     <h2 class="section__title advantages__title">
@@ -311,58 +308,25 @@
                             </div>
                         </div>
                         <div class="advantage__item" style="text-align:center;">
-                            <img loading="lazy" src="static/images/work-examples/2.jpg" alt="Storage Bag">
+                            <img loading="lazy" src="static/images/work-examples/2.jpg" alt="EVA Carsbag">
                             <div class="advantage__item-desc" style="opacity:1; position:relative; background:#fff; color:#000;">
-                                <h3>Storage Bag</h3>
-                                <p>Keep mats clean and organized.</p>
-                                <button class="button" data-add-bag style="margin-top:.5rem;">Add to cart — $15</button>
+                                <h3>EVA Carsbag</h3>
+                                <p>Simple storage bag made from EVA. Choose size and colour.</p>
+                                <a href="configurator?product=carsbag" class="button" style="margin-top:.5rem;">Configure</a>
                             </div>
                         </div>
                         <div class="advantage__item" style="text-align:center;">
-                            <img loading="lazy" src="static/images/work-examples/3.jpg" alt="Home Mat">
+                            <img loading="lazy" src="static/images/work-examples/3.jpg" alt="EVA Home Mat">
                             <div class="advantage__item-desc" style="opacity:1; position:relative; background:#fff; color:#000;">
-                                <h3>Home Mat</h3>
-                                <p>Durable EVA doormat for home and garage.</p>
-                                <button class="button" data-add-home style="margin-top:.5rem;">Add to cart — $39</button>
-                            </div>
-                        </div>
-                        <div class="advantage__item" style="text-align:center;">
-                            <img loading="lazy" src="static/images/work-examples/4.jpg" alt="Gift">
-                            <div class="advantage__item-desc" style="opacity:1; position:relative; background:#fff; color:#000;">
-                                <h3>Gift</h3>
-                                <p>Give a set of EVA mats — pick car and colors.</p>
-                                <a href="configurator" class="button" style="margin-top:.5rem;">Choose car</a>
+                                <h3>EVA Home Mat</h3>
+                                <p>Durable EVA mat for home or garage. Choose size and colour.</p>
+                                <a href="configurator?product=home" class="button" style="margin-top:.5rem;">Configure</a>
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
-            <section class="get-gift section">
-                <div class="get-gift__inner">
-                    <div class="get-gift__timer">
-                        <div>
-                            <span class="days"></span>
-                            <p class="timer__text">d :</p>
-                        </div>
-                        <div>
-                            <span class="hours"></span>
-                            <p class="timer__text">h :</p>
-                        </div>
-                        <div>
-                            <span class="minutes"></span>
-                            <p class="timer__text">m :</p>
-                        </div>
-                        <div>
-                            <span class="seconds"></span>
-                            <p class="timer__text">s</p>
-                        </div>
-                    </div>
-                    <h2 class="get-gift__title section__title">Get Your Fall Gift!
-                    </h2>
-                    <p class="get-gift__text">Buy now our product and get a complimentary heel pad</p>
-                    <button class="get-gift__button" data-modal-id="footrest-modal-gift">Get gift</button>
-                </div>
-            </section>
+            
             <section class="section work-examples">
                 <h2 class="title section__title work-examples__title">Mats in interior</span>
                 </h2>
@@ -422,6 +386,8 @@
                     <div class="swiper-pagination work-examples-swiper__pagination"></div>
                 </div>
             </section>
+            <!-- price constructor removed -->
+            <!--
             <section class="section price-constructor" id="price-constructor">
                 <div class="container">
                     <h2 class="section__title price-constructor__title">Car Mat Customization
@@ -585,7 +551,7 @@
                                             <option value="orange">Orange</option>-->
                                         </select>
                                     </div>
-                                    <div class="constructor-step__field form-field">
+                                    <!-- <div class="constructor-step__field form-field">
                                         <select aria-label="Trim color" required
                                             class="select constructor-step__select constructor-step__control form-control select__arow"
                                             name="rugOutlineColor" id="rug-outline-color">
@@ -595,16 +561,16 @@
                                             <option value="red">Red</option>
                                             <option value="gray">Grey</option>
                                             <option value="beige">Bejge</option>
-                                            <option value="brown">Brown</option>
+                                            <option value="brown">Brown</option> -->
                                             <!--
                                             <option value="white">White</option>
                                             <option value="orange">Orange</option>
                                             <option value="green">Green</option>
                                             <option value="yellow">Yellow</option>-->
-                                        </select>
+                                        <!-- </select>
                                     </div>
                                     <button data-step-id="3" type="submit" class="constructor-step__button button">Next
-                                        step</button>
+                                        step</button> -->
                                 </div>
                             </form>
                         </div>
@@ -753,7 +719,7 @@
                                         <h3 class="modal__title">Price: <span class="text-line-through">15 $</span> 0$</h3>
                                     </ul>
                                 </div>
-                                <button class="shopNow-btn"><a href="#price-constructor" class="shohNow-link">Show
+                                <button class="shopNow-btn"><a href="#products" class="shohNow-link">Show
                                         now</a></button>
                             </div>
 
@@ -1116,7 +1082,7 @@
                     <a href="about-product">What is Eva?</a>
                 </li>
                 <li class="header__menu-item">
-                    <a href="#price-constructor">Price</a>
+                    <a href="#products">Products</a>
                 </li>
                 <li class="header__menu-item">
                     <a href="warantly">Warranty</a>
@@ -1162,7 +1128,7 @@
     <script defer src="./static/js/vendors/nice-select2/nice-select2.js"></script>
     <script defer src="./static/js/vendors/swiper/swiper-bundle.min.js"></script>
     <script defer src="static/js/hero-selector.js"></script>
-    <script defer src="static/js/home-free-shipping.js"></script>
+    
     <script type="module" defer src="static/js/home-products.js"></script>
     <script defer src="static/js/cart-badge.js"></script>
     <script defer src="static/js/dist/main.bundle.js"></script>

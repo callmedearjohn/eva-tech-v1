@@ -45,6 +45,21 @@ document.addEventListener('DOMContentLoaded', () => {
     qty: 1,
     subtotal: 0
   };
+  // Simple modes for non-vehicle products (EVA Carsbag / EVA Home Mat)
+  const paramsProduct = new URLSearchParams(location.search).get('product');
+  const simpleMode = paramsProduct === 'carsbag' || paramsProduct === 'home';
+  const productLabel = paramsProduct === 'carsbag' ? 'EVA Carsbag' : paramsProduct === 'home' ? 'EVA Home Mat' : 'EVA Car Mats';
+
+  if (simpleMode) {
+    try { const titleEl = document.querySelector('.section__title'); if (titleEl) titleEl.textContent = `Configure ${productLabel}`; } catch(_){ }
+    try { const vehicleBlock = document.getElementById('cfg-make')?.closest('.cfg-block'); if (vehicleBlock) vehicleBlock.style.display = 'none'; if (requireVehicleMsg) requireVehicleMsg.style.display='none'; } catch(_){ }
+    try { const setBlock = document.querySelector('.cfg-sets')?.closest('.cfg-block'); const setTitle = setBlock?.querySelector('.cfg-title'); if (setTitle) setTitle.textContent = 'Configuration size'; } catch(_){ }
+    try { const patternBlock = document.querySelector('.cfg-patterns')?.closest('.cfg-block'); if (patternBlock) patternBlock.style.display='none'; } catch(_){ }
+    try { const optionsBlock = document.getElementById('cfg-heelpad')?.closest('.cfg-block'); if (optionsBlock) optionsBlock.style.display='none'; } catch(_){ }
+    try { const trimGroup = document.getElementById('cfg-trim-color')?.closest('.color-group'); if (trimGroup) trimGroup.style.display='none'; } catch(_){ }
+    try { if (summaryVehicleEl) summaryVehicleEl.textContent = `Product: ${productLabel}`; if (vehicleSummaryEl) vehicleSummaryEl.textContent = `${productLabel}`; } catch(_){ }
+    try { const preview = document.getElementById('preview-image'); const thumbs = document.querySelectorAll('.configurator__thumbnails img'); const imgSrc = paramsProduct === 'carsbag' ? './static/images/work-examples/2.jpg' : './static/images/work-examples/3.jpg'; if (preview) preview.src = imgSrc; thumbs.forEach(t=> t.src = imgSrc); if (patternOverlay) patternOverlay.style.display='none'; } catch(_){ }
+  }
 
   // NiceSelect binding if available (bind once, then call update())
   let __cfgMakeNS, __cfgModelNS, __cfgYearNS, __cfgMatNS, __cfgTrimNS;
@@ -241,16 +256,24 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function syncSummary() {
-    summaryVehicleEl.textContent = `Vehicle: ${state.make || '—'} ${state.model || ''} ${state.year || ''}`.trim();
+    if (simpleMode) {
+      summaryVehicleEl.textContent = `Product: ${productLabel}`;
+    } else {
+      summaryVehicleEl.textContent = `Vehicle: ${state.make || '—'} ${state.model || ''} ${state.year || ''}`.trim();
+    }
     summaryListEl.innerHTML = '';
-    const setNames = { front: 'Front only (2 mats)', full: 'Full interior', complete: 'Complete set' };
+    const setNames = simpleMode ? { front: 'Size: Small', full: 'Size: Medium', complete: 'Size: Large' } : { front: 'Front only (2 mats)', full: 'Full interior', complete: 'Complete set' };
     const items = [];
     items.push(`${setNames[state.set]}`);
-    if (state.thirdRow && state.set !== 'complete') items.push('3rd row add-on');
-    items.push(`Pattern: ${state.pattern}`);
+    if (!simpleMode) {
+      if (state.thirdRow && state.set !== 'complete') items.push('3rd row add-on');
+      items.push(`Pattern: ${state.pattern}`);
+    }
     items.push(`Mat: ${state.matColor || '—'}`);
-    items.push(`Trim: ${state.trimColor || '—'}`);
-    if (state.heelPad) items.push('Heel pad (free)');
+    if (!simpleMode) {
+      items.push(`Trim: ${state.trimColor || '—'}`);
+      if (state.heelPad) items.push('Heel pad (free)');
+    }
     items.forEach(t=>{ const li=document.createElement('li'); li.className='property-list__item'; li.textContent=t; summaryListEl.appendChild(li); });
     calcSubtotal();
 
@@ -352,9 +375,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Cart actions
   function toCartItem(){
-    return { ...state };
+    return { product: simpleMode ? paramsProduct : 'mats', ...state };
   }
   function ensureVehicleSelected(){
+    if (simpleMode) return true;
     const ok = Boolean(state.make && state.model && state.year);
     if (!ok) {
       alert('Please select Make, Model and Year first.');
@@ -364,7 +388,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function ensureColorsSelected(){
     const missing = [];
     if (!state.matColor) missing.push('Mat color');
-    if (!state.trimColor) missing.push('Trim color');
+    if (!simpleMode && !state.trimColor) missing.push('Trim color');
     if (missing.length) {
       alert(`Please select: ${missing.join(', ')}.`);
       return false;
