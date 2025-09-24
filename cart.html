@@ -130,7 +130,7 @@
     </nav>
   </div>
   <script src="static/js/dist/burger.bundle.js"></script>
-  <script src="https://www.paypal.com/sdk/js?client-id=YOUR_CLIENT_ID&currency=USD"></script>
+  <script src="https://www.paypal.com/sdk/js?client-id=AaBE5ZhNo7yifhXrlvBV1Qr2vfe1CU86vXfKxnFp_apuhzhXaf0BHhvimPaZzrYXcpCQ1nYqIKSEqc0G&currency=CAD"></script>
   <script type="module">
     import { Cart } from './static/js/cart.js';
     const listEl = document.getElementById('cart-list');
@@ -203,18 +203,18 @@
           const total = subtotal + shipping + bag;
           return actions.order.create({
             purchase_units: [{
-              amount: { value: total.toFixed(2), currency_code: 'USD',
+              amount: { value: total.toFixed(2), currency_code: 'CAD',
                 breakdown: {
-                  item_total: { value: subtotal.toFixed(2), currency_code: 'USD' },
-                  shipping: { value: shipping.toFixed(2), currency_code: 'USD' },
-                  tax_total: { value: '0.00', currency_code: 'USD' }
+                  item_total: { value: subtotal.toFixed(2), currency_code: 'CAD' },
+                  shipping: { value: shipping.toFixed(2), currency_code: 'CAD' },
+                  tax_total: { value: '0.00', currency_code: 'CAD' }
                 }
               },
               items: items.map(i=>({
                 name: `${i.make} ${i.model} ${i.year} — ${i.set}`.slice(0,127),
-                unit_amount: { value: (i.subtotal||0).toFixed(2), currency_code: 'USD' },
+                unit_amount: { value: (i.subtotal||0).toFixed(2), currency_code: 'CAD' },
                 quantity: String(i.qty||1)
-              })).concat(bag? [{ name:'Storage bag', unit_amount:{ value: BAG_PRICE.toFixed(2), currency_code:'USD' }, quantity:'1' }]: [])
+              })).concat(bag? [{ name:'Storage bag', unit_amount:{ value: BAG_PRICE.toFixed(2), currency_code:'CAD' }, quantity:'1' }]: [])
             }]
           });
         },
