@@ -305,8 +305,9 @@ document.addEventListener('DOMContentLoaded', () => {
     summarySubtotalEl.textContent = String(total);
     freeShipEl.style.display = subtotal >= 100 ? 'block' : 'none';
     if (vehicleSummaryEl) {
-      const mm = [state.make, state.model, state.year].filter(Boolean).join(' ');
-      vehicleSummaryEl.textContent = `Make/Model/Price: ${mm || '—'}${mm? ' - ' : ''}${subtotal}$`;
+      const hasVehicle = Boolean(state.make && state.model && state.year);
+      const mm = hasVehicle ? [state.make, state.model, state.year].join(' ') : '—';
+      vehicleSummaryEl.textContent = `Make/Model/Price: ${mm}${hasVehicle? ' - ' : ' '}${hasVehicle? subtotal+'$' : ''}`.trim();
     }
   }
 
@@ -396,17 +397,15 @@ document.addEventListener('DOMContentLoaded', () => {
     qtyInput.addEventListener('input', ()=>{ state.qty = clamp(Number(qtyInput.value)); qtyInput.value = state.qty; calcSubtotal(); });
   }
 
-  // Prefill from URL or localStorage
+  // Prefill from URL only (do not use localStorage; cart/order uses it)
   (function prefill(){
     const params = new URLSearchParams(location.search);
-    const ls = JSON.parse(localStorage.getItem('counstructorUserData')||'{}');
-    // Prefer each URL param if provided, fallback to localStorage
     const urlMake = params.get('make');
     const urlModel = params.get('model');
     const urlYear = params.get('year');
-    state.make = urlMake || ls.carMake || state.make;
-    state.model = urlModel || ls.carModel || state.model;
-    state.year = urlYear || ls.carYear || state.year;
+    state.make = urlMake || '';
+    state.model = urlModel || '';
+    state.year = urlYear || '';
     if (state.year) {
       yearEl.value = state.year;
       try { __cfgYearNS && __cfgYearNS.update && __cfgYearNS.update(); } catch(_){}

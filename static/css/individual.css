@@ -7212,10 +7212,6 @@ footer .makecall:HOVER {
         padding-bottom: 120px;
     }
 
-    body {
-        padding-top: 90px;
-    }
-
     .menu_wrapper, .head-line1, .catmenu_wrapper {
         display: none;
     }
@@ -8084,10 +8080,6 @@ footer .makecall:HOVER {
     }
 
     .wrap_top2 {
-        display: none;
-    }
-
-    header {
         display: none;
     }
 

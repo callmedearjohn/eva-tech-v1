@@ -15,6 +15,27 @@
   <link rel="stylesheet" href="./static/css/widget.css">
   <script type="text/javascript" src="https://www.prime-avto.ru/assets/top.js?ver=fe96abef9e3c147f44af97f20cb47252"></script>
 
+  <style>
+    @media (max-width: 768px) {
+      .goodcard .row > [class*="col-md-"],
+      .goodcard .row > [class*="col-xl-"] {
+        width: 100% !important;
+        max-width: 100% !important;
+      }
+      .image_container_constructor,
+      #image_container_constructor,
+      .configurator__main-image { display:block !important; }
+      .configurator__main-image { margin-bottom: 10px; }
+      .configurator__main-image img#preview-image { width: 100%; height: auto; display:block; }
+      .configurator__thumbnails { display: flex; gap: 8px; overflow-x: auto; padding: 8px 0; }
+      .configurator__thumbnails img { width: 96px; height: 72px; object-fit: cover; flex: 0 0 auto; }
+      .configurator__main-image img { width: 100%; height: auto; }
+      .summary-card { margin-top: 16px; }
+      .top-products img { width: 88px !important; height: 88px !important; }
+      .side-products .button { padding: 6px 10px; font-size: 12px; }
+    }
+  </style>
+
 </head>
 <body class="body-catalogueeva">
   <div class="wrapper" id="home">
@@ -88,14 +109,14 @@
                 </div>
               </div>
               <div class="block-info">
-                <div class="title-block-info">Образец материала:</div>
+                <div class="title-block-info">Material sample:</div>
                 <div class="block-constr-mat">
                   <div class="block-constr-mat-item">
-                    <div class="block-constr-mat-item-title">Тип:</div>
+                    <div class="block-constr-mat-item-title">Type:</div>
                     <div class="block-constr-mat-item-val" id="tekstilnyekovry_material_text"></div>
                   </div>
                   <div class="block-constr-mat-item">
-                    <div class="block-constr-mat-item-title">Цвет:</div>
+                    <div class="block-constr-mat-item-title">Color:</div>
                     <div class="block-constr-mat-item-val" id="tekstilnyekovry_color_text"></div>
                   </div>
                 </div>
@@ -106,8 +127,8 @@
             </div>
             <div class="col-md-4 col-xl-8">
               <div class="row mt-5">
-                <div class="col-md-8">
-                  <div class="card_title">Сформируйте свой заказ</div>
+            <div class="col-md-8" id="build-order">
+                  <div class="card_title">Build your order</div>
                   <div class="configurator__options params_wrapper">
                     <div class="cfg-rating"><div class="stars">★★★★★</div><div class="reviews-count">Based on 120+ reviews</div></div>
                     <div class="cfg-block">
@@ -157,7 +178,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4" id="right-panel">
                   <div class="car_pattern_block">
                     <div class="goodimage_wrapper">
                       <div class="top-products" style="display:flex; gap:10px; margin-bottom:12px;">
@@ -171,8 +192,8 @@
                       <div class="goodimage"><img src="./static/images/price-constructor/sets/set-1.jpg" alt="Pattern"></div>
                       <div class="galleryincard"><div><a href="./static/images/price-constructor/sets/set-1.jpg" data-fancybox="gallery"><img src="./static/images/price-constructor/sets/set-1.jpg"><div class="zoom"></div></a></div></div>
                       <div class="simple_pattern"><div>Sample templates</div><div>EVA Carsbag • EVA Home Mat</div></div>
-                      <div class="rating_opinion"><div class="stars_wrapper"><div class="rating5"></div></div><div class="names"><span>средняя оценка клиентов</span>купивших этот товар</div></div>
-                      <div class="bycount">За 2 месяца этот товар купили 112 человек </div>
+                      <div class="rating_opinion"><div class="stars_wrapper"><div class="rating5"></div></div><div class="names"><span>average customer rating</span>who bought this product</div></div>
+                      <div class="bycount">In 2 months, 112 people bought this product</div>
                       <div class="side-products" style="margin-top:16px;">
                         <div class="side-product" style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
                           <a href="configurator?product=carsbag" style="display:flex; align-items:center; gap:10px; text-decoration:none; color:inherit;">
@@ -202,7 +223,28 @@
             </div>
             <div class="col-md-4 col-xl-4">
               <div class="preim3_block">
-                <div class="preim3"><div  class="widgetblock-cardpreim widgetblock cardpreim"><ul class=""><li class="selected"><a class="cashback"  href="/cashback/" target="_blank">    <noindex><div class="preim_item" style="background:url(https://www.prime-avto.ru/images/html_content/5d95f7f81871d.jpg)"><div class="name">КэшБэк до 500 р. за отзыв</div><div class="desc">сделай фото и оставь отзыв на один из наших товаров и получи до 500 р.</div></div></noindex>  </a></li><li ><a class=""  href="/dostavkaioplata/" target="_blank">    <noindex><div class="preim_item" style="background:url(https://www.prime-avto.ru/images/html_content/5d298d0100b6c.png)"><div class="name">Быстрая доставка</div><div class="desc">отправка заказа осуществляется в день оформления</div></div></noindex>  </a></li><li ><div class="" >    <noindex><div class="preim_item" style="background:url(https://www.prime-avto.ru/images/html_content/5d298c95c11cc.png)"><div class="name">Гарантия высокого качества</div><div class="desc">все товары представленные на сайте имеют гарантировано высокое качество</div></div></noindex>  </div></li></ul></div></div>
+                <div class="preim3"><div  class="widgetblock-cardpreim widgetblock cardpreim"><ul class="">
+                  <li>
+                    <a class="" href="/dostavkaioplata/" target="_blank">
+                      <noindex>
+                        <div class="preim_item" style="background:url(https://www.prime-avto.ru/images/html_content/5d298d0100b6c.png)">
+                          <div class="name">Fast delivery</div>
+                          <div class="desc">Orders are shipped the same day.</div>
+                        </div>
+                      </noindex>
+                    </a>
+                  </li>
+                  <li>
+                    <div class="">
+                      <noindex>
+                        <div class="preim_item" style="background:url(https://www.prime-avto.ru/images/html_content/5d298c95c11cc.png)">
+                          <div class="name">Quality guaranteed</div>
+                          <div class="desc">All products on the site are guaranteed high quality.</div>
+                        </div>
+                      </noindex>
+                    </div>
+                  </li>
+                </ul></div></div>
               </div>
             </div>
             <div class="col-md-8 col-xl-8" style="position: relative;">
@@ -216,12 +258,16 @@
                       <div class="underprice">order total</div>
                     </div></div>
                     <ul class="ul order_buttons">
-                      <li><button class="order_button btn" onclick="document.getElementById('summary-add')?.click()">Add to cart<span></span></button></li>
-                      <li><a class="oneclick" href="javascript:void(0)" onclick="document.getElementById('summary-buy')?.click()">Buy in 1 click</a></li>
+                      <div class="summary-actions">
+                        <button id="summary-add" class="order_button btn">Add to cart</button>
+                        <button id="summary-buy" class="oneclick btn">Buy now</button>
+                      </div>
+                      <!-- <li><button class="order_button btn" onclick="document.getElementById('summary-add')?.click()">Add to cart<span></span></button></li>
+                      <li><a class="oneclick" href="javascript:void(0)" onclick="document.getElementById('summary-buy')?.click()">Buy in 1 click</a></li> -->
                     </ul>
                   </div>
                   <div class="col-md-6">
-                    <aside class="configurator__summary">
+                    <aside>
                       <div class="summary-card">
                         <h3>Summary</h3>
                         <p id="summary-vehicle">Vehicle: —</p>
@@ -234,16 +280,8 @@
                             <button type="button" id="qty-plus" aria-label="Increase quantity">+</button>
                           </div>
                         </div>
-                        <div class="summary-total">
-                          <p class="total-text">Total</p>
-                          <p class="total-price"><span id="summary-subtotal-hidden">0</span>$</p>
-                        </div>
                         <p id="require-vehicle-msg" class="cfg-help cfg-error" style="display:none">Please select Make, Model and Year to continue.</p>
                         <div id="free-shipping" class="badge" style="display:none">Free Shipping in Canada</div>
-                        <div class="summary-actions">
-                          <button id="summary-add" class="button">Add to cart</button>
-                          <button id="summary-buy" class="button">Buy now</button>
-                        </div>
                       </div>
                     </aside>
                     <div id="ordercontent"></div>
@@ -255,21 +293,21 @@
         </div>
       </div>
 
-      <!-- Tabs: Описание / Характеристики / Преимущества / Установка подпятника -->
+      <!-- Tabs: Description / Specifications / Advantages / Footrest installation -->
       <div class="tabs_wrapper">
         <div class="container">
           <ul class="nav nav-tabs" role="tablist">
-            <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#tab0" role="tab">Описание</a></li><li class="nav-item"><a class="nav-link " data-toggle="tab" href="#tab1" role="tab">Характеристики</a></li><li class="nav-item"><a class="nav-link " data-toggle="tab" href="#tab2" role="tab">Преимущества</a></li><li class="nav-item"><a class="nav-link " data-toggle="tab" href="#tab3" role="tab">Установка подпятника</a></li>
+            <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#tab0" role="tab">Description</a></li><li class="nav-item"><a class="nav-link " data-toggle="tab" href="#tab1" role="tab">Specifications</a></li><li class="nav-item"><a class="nav-link " data-toggle="tab" href="#tab2" role="tab">Advantages</a></li><li class="nav-item"><a class="nav-link " data-toggle="tab" href="#tab3" role="tab">Footrest installation</a></li>
           </ul>
         </div>
       </div>
       <div class="container">
         <div class="tab-content"> <div class="tab-pane fade in active show" id="tab0" name="tab0" role="tabpanel"><p dir="ltr" id="docs-internal-guid-713fb6e4-7fff-f81a-b529-b06e5c0acb9f">
-  <strong>Производство EVA ковриков без предоплаты осуществляется только серого и черного цвета</strong>. Автомобильные коврики EVA Audi TT III (8S) 2014-2019 &ndash; это долговечные, удобные и универсальные аксессуары, которые помогут надежно защитить салон и багажник вашего авто от пыли, грязи и влаги в любое время года.</p>
+  <strong>EVA mats production without prepayment is carried out only in grey and black</strong>. EVA car mats Audi TT III (8S) 2014–2019 are durable, convenient and versatile accessories that reliably protect your interior and trunk from dust, dirt and moisture all year round.</p>
 <p dir="ltr">
-  Все аксессуары EVA прекрасно подходят для использования в осенне &ndash; весенний сезон. Они не размякнут от воды (в отличие от текстильных ковриков), которой будет много от частых дождей, и не задубеют на морозе, что случается с резиновыми.</p>
+  EVA accessories are perfect for autumn–spring use. They will not soften from water (unlike textile mats) and will not harden in frost, unlike rubber ones.</p>
 <p dir="ltr">
-  Автоковрики EVA производятся из инновационного экологически чистого материала, обладающего высочайшей износостойкостью, устойчивостью к экстремальным температурам (<strong>от +50 С до -50 С</strong>) и агрессивным химреагентам. Они <strong>в 4 раза легче обычных резиновых аналогов</strong>, а чрезвычайно плотная структура обеспечивает им безупречную - и шумоизоляцию!</p>
+  EVA mats are made from an innovative eco‑friendly material with high wear resistance, resistance to extreme temperatures (<strong>from +50°C to −50°C</strong>) and aggressive chemicals. They are <strong>4× lighter than regular rubber analogues</strong>, and the dense structure provides excellent sound insulation.</p>
 <div class="row" style="margin-top:20px;">
   <div class="col-md-6" style="margin-bottom:20px;">
     <img alt="" src="./static/images/work-examples/10.jpg" style="max-width: 100%" /></div>
@@ -277,141 +315,133 @@
     <img alt="" src="./static/images/work-examples/11.jpg" style="max-width: 100%" /></div>
 ></div>
 <p dir="ltr">
-  Коврики EVA имеют специальную ячеистую структуру (<strong>ячейки глубиной 8 мм</strong>), которая эффективно задерживает грязь и воду, оставляя вашу обувь и поверхность обивки салона или багажника абсолютно чистыми. Также эти ячейки очень легко и быстро очищаются без применения специальных инструментов, в том числе, при помощи бесконтактной мойки.</p>
+  EVA mats have a special honeycomb structure (<strong>cell depth 8 mm</strong>) that effectively traps dirt and water, keeping footwear and interior surfaces clean. The cells are easy to rinse without special tools, including with a touchless wash.</p>
 <p dir="ltr">
-  Коврики доступны в массе цветовых вариаций:&nbsp;они отлично вписываются в любой стиль и дополняют вид вашего салона. Вы всегда можете выбрать вариации от классических строгих тонов до ярких спортивных сочетаний, предать индивидуальный стиль салону вашего автомобиля.</p>
+  The mats come in many color variations and fit any style. Choose from classic tones to bright sporty combinations to give your car a unique look.</p>
 <div style="text-align:center">
   &nbsp;</div>
 <p>
   &nbsp;</p>
 <div  class="widgetblock-preimdesc181 widgetblock preim4"><ul class=""><li class="selected"><div class="" >    <div class="item">
 <img src="./static/images/work-examples/5.jpg">
-<div class="title">Дополнительные крепления</div>
-<div class="desc">Выполнены из контактной ленты (липучка) и фиксируют коврики по всему периметру, что повышает уровень их фиксации</div>
+<div class="title">Additional fasteners</div>
+<div class="desc">Hook-and-loop fasteners hold the mats around the perimeter for better fixation.</div>
 </div>  </div></li><li ><div class="" >    <div class="item">
 <img src="./static/images/work-examples/6.jpg">
-<div class="title">Все сезонное использование </div>
-<div class="desc">Коврики можно использовать круглый год, т.к. материал из которого они изготовлены выдерживает перепады температуры от +50 С до -50 С</div>
+<div class="title">All-season use</div>
+<div class="desc">Usable year-round thanks to temperature resistance from +50°C to −50°C.</div>
 </div>  </div></li><li ><div class="" >    <div class="item">
 <img src="./static/images/work-examples/7.jpg">
-<div class="title">Ячеистая структура поверхности</div>
-<div class="desc">Позволяет локализовать пролитые жидкости или мусор и не давать распространятся ему по салону автомобиля</div>
+<div class="title">Honeycomb surface</div>
+<div class="desc">Localizes spilled liquids and debris, preventing spread across the cabin.</div>
 </div>  </div></li><li ><div class="" >    <div class="item">
 <img src="./static/images/work-examples/8.jpg">
-<div class="title">Оригинальные крепления</div>
-<div class="desc">Если в модели вашего автомобиля предусмотрены штатные крепления к кузову, то мы установим их на коврики</div>
+<div class="title">OEM mounts</div>
+<div class="desc">If your car has factory mounts, we install compatible clips on the mats.</div>
 </div>  </div></li></ul></div></div><div class="tab-pane fade in  show" id="tab1" name="tab1" role="tabpanel"><div  class="widgetblock-char181 widgetblock "><table class="table table-striped">
   <tbody>
     <tr>
       <td>
-        Производитель материала</td>
+        Material origin</td>
       <td>
-        <strong>Россия</strong></td>
+        <strong>Russia</strong></td>
     </tr>
     <tr>
       <td>
-        Толщина материала</td>
+        Material thickness</td>
       <td>
-        <strong>10-12 мм</strong></td>
+        <strong>10–12 mm</strong></td>
     </tr>
     <tr>
       <td>
-        Глубина ячеек</td>
+        Cell depth</td>
       <td>
-        <strong>7-8 мм</strong></td>
+        <strong>7–8 mm</strong></td>
     </tr>
     <tr>
       <td>
-        Водопоглощение</td>
+        Water absorption</td>
       <td>
-        <strong>3,5 литра на 1 кв.м.</strong></td>
+        <strong>3.5 L per 1 m²</strong></td>
     </tr>
     <tr>
       <td>
-        Водонепроницаемость</td>
+        Waterproofing</td>
       <td>
         <strong>100%</strong></td>
     </tr>
     <tr>
       <td>
-        Сезонность</td>
+        Seasonality</td>
       <td>
-        <strong>всесезонные</strong></td>
+        <strong>all-season</strong></td>
     </tr>
     <tr>
       <td>
-        Рабочие температуры</td>
+        Operating temperatures</td>
       <td>
-        <strong>от -50&nbsp;&deg;С до&nbsp;+50&nbsp;&deg;С</strong></td>
+        <strong>from −50&nbsp;°C to&nbsp;+50&nbsp;°C</strong></td>
     </tr>
     <tr>
       <td>
-        Габариты упаковки</td>
+        Package dimensions</td>
       <td>
-        <strong>70см x 50см x 5см</strong></td>
+        <strong>70 × 50 × 5 cm</strong></td>
     </tr>
     <tr>
       <td>
-        Вес комплекта ковриков</td>
+        Set weight</td>
       <td>
-        <strong>2 кг</strong></td>
+        <strong>2 kg</strong></td>
     </tr>
   </tbody>
 </table>
 <p>
   &nbsp;</p>
 </div></div><div class="tab-pane fade in  show" id="tab2" name="tab2" role="tabpanel"><div  class="widgetblock-preim181 widgetblock "><noindex><p dir="ltr">
-  <strong>Преимущества ковриков Ева</strong></p>
-<p dir="ltr">
-  - Ячейки ковриков надежно удерживают воду. Чтобы ее вылить, изделие требуется держать практически вертикально. Это гарантирует, что вода в салоне не будет расплескиваться, как может происходить с резиновыми изделиями.</p>
-<p dir="ltr">
-  -Материал экологичен и безвреден. Не имеет запаха, гипоаллергенен.</p>
-<p dir="ltr">
-  -Всесезонное использование. Сохраняют эластичность при температуре <strong>-50 / +50</strong></p>
-<p dir="ltr">
-  -Возможность выбора цвета  коврика и окантовочной ленты</p>
-<p dir="ltr">
-  -Коврики максимально закрывают  пол салона автомобиля</p>
-<p dir="ltr">
-  -Надежные крепления на оригинальные клипсы и дополнительно липучки к полу</p>
-<p dir="ltr">
-  -Легко чистятся под струей воды из ячеек вымывается вся накопившаяся грязь</p>
-<p dir="ltr">
-  -Мы гарантируем высокое качество продукции</p>
+  <strong>Advantages of EVA mats</strong></p>
+<p dir="ltr">- The cells reliably hold water. To pour it out, hold the mat almost vertically. This prevents water from splashing like with rubber mats.</p>
+<p dir="ltr">- Eco-friendly and safe material. Odorless and hypoallergenic.</p>
+<p dir="ltr">- All-season use. Remains elastic at <strong>−50 / +50</strong>.</p>
+<p dir="ltr">- Choice of mat and edging colors.</p>
+<p dir="ltr">- Maximum floor coverage.</p>
+<p dir="ltr">- Reliable fastening to OEM clips plus extra hook-and-loop to the floor.</p>
+<p dir="ltr">- Easy to clean with a stream of water — dirt rinses out from the cells.</p>
+<p dir="ltr">- We guarantee high product quality.</p>
 </noindex></div></div><div class="tab-pane fade in  show" id="tab3" name="tab3" role="tabpanel"><div  class="widgetblock-installbearing widgetblock installbearing"><div class="container"><div class="row "><div class="col-md-6 col-xl-4"><div class="" >         <noindex><div class="item">
 <div class="img_wrapper"><img src="./static/images/price-constructor/sets/footrest.png"></div>
-<div ><div class="name">Шаг 1</div><div class="desc">Подберите удобное для вас расположение подпятника на водительском коврике и зафиксируйте его.</div></div>
+<div ><div class="name">Step 1</div><div class="desc">Choose a comfortable position for the heel pad on the driver mat and fix it.</div></div>
 </div></noindex></div></div><div class="col-md-6 col-xl-4"><div class="" >         <noindex><div class="item">
 <div class="img_wrapper"><img src="./static/images/price-constructor/sets/footrest.png"></div>
-<div ><div class="name">Шаг 2</div><div class="desc">Крепко приложите подпятник с обратной стороны коврика, чтоб зафиксировать местоположение отверстий под крепежные болты.</div></div>
+<div ><div class="name">Step 2</div><div class="desc">Press firmly from the back side to mark hole positions for the bolts.</div></div>
 </div></noindex></div></div><div class="col-md-6 col-xl-4"><div class="" >         <noindex><div class="item">
 <div class="img_wrapper"><img src="./static/images/price-constructor/sets/footrest.png"></div>
-<div ><div class="name">Шаг 3</div><div class="desc">Пробейте материал с обратной (!) стороны коврика пробойником или любым острым предметом диаметром 3-5 мм.</div></div>
+<div ><div class="name">Step 3</div><div class="desc">Punch from the back side using a 3–5 mm awl or sharp tool.</div></div>
 </div></noindex></div></div><div class="col-md-6 col-xl-4"><div class="" >         <noindex><div class="item">
 <div class="img_wrapper"><img src="./static/images/price-constructor/sets/footrest.png"></div>
-<div ><div class="name">Шаг 4</div><div class="desc">Вставьте подпятник с лицевой стороны в прибитые отверстия</div></div>
+<div ><div class="name">Step 4</div><div class="desc">Insert the heel pad from the front into the punched holes.</div></div>
 </div></noindex></div></div><div class="col-md-6 col-xl-4"><div class="" >         <noindex><div class="item">
 <div class="img_wrapper"><img src="./static/images/price-constructor/sets/footrest.png"></div>
-<div ><div class="name">Шаг 5</div><div class="desc">С обратной стороны коврика вставьте в отверстия крепежные болты и закрутите их</div></div>
+<div ><div class="name">Step 5</div><div class="desc">From the back side, insert and tighten the mounting bolts.</div></div>
 </div></noindex></div></div><div class="col-md-6 col-xl-4"><div class="" >         <noindex><div class="item">
 <div class="img_wrapper"><img src="./static/images/price-constructor/sets/footrest.png"></div>
-<div ><div class="name">Подпятник установлен и готов к использованию</div><div class="desc"></div></div>
+<div ><div class="name">The heel pad is installed and ready to use</div><div class="desc"></div></div>
 </div></noindex></div></div></div></div></div></div></div>
       </div>
 
-      <!-- Видео про EVA коврики -->
-      <div  class="widgetblock-cardvideo181 widgetblock videoblock"><div class="container"><h2 class="wtitle">Видео про EVA коврики</h2><ul class=""><li class="selected"><div class="" > <div class="item">
+      <!-- Video about EVA mats -->
+      <div  class="widgetblock-cardvideo181 widgetblock videoblock"><div class="container"><h2 class="wtitle">Video about EVA mats</h2><ul class=""><li class="selected"><div class="" > <div class="item">
 <a data-fancybox="" data-type="iframe" data-src="https://rutube.ru/play/embed/d6aa6af238fdf284f2fcee4cedd1347b/" href="javascript:;"><img src="https://www.prime-avto.ru/images/html_content/62987a13b91bf.jpg"></a>
-<div class="title">EVA-коврики – идеальный порядок в салоне до и после поездки</div>
+<div class="title">EVA mats – perfect order in the car before and after a trip</div>
 </div>     </div></li><li ><div class="" > <div class="item">
 <a data-fancybox="" data-type="iframe" data-src="https://rutube.ru/play/embed/6bf9021c16b308c93f894c1882aedbd0/" href="javascript:;"><img src="https://www.prime-avto.ru/images/html_content/62985e4f7987b.jpg"></a>
-<div class="title">EVA-коврики: стиль и защита вашего авто до и после установки</div>
+<div class="title">EVA mats: style and protection before and after installation</div>
 </div>     </div></li><li ><div class="" > <div class="item">
 <a data-fancybox="" data-type="iframe" data-src="https://rutube.ru/play/embed/ba9d9f67d9fecc414904550cd47067a5/" href="javascript:;"><img src="https://www.prime-avto.ru/images/html_content/62987a529fcbb.jpg"></a>
-<div class="title">До и после: как EVA-коврики меняют интерьер автомобиля</div>
+<div class="title">Before and after: how EVA mats change your interior</div>
 </div>     </div></li></ul></div></div>
 
-      <!-- Цитата: Дмитрий Песцов -->
+      <!-- Quote: Dmitry Pestsov -->
       <div  class="widgetblock-blockreviewdmitrypestsov widgetblock block-review-dmitry-pestsov-item"><div class="container"><div class="block-rev-pesk">
   <div class="row">
     <div class="col-md-6">
@@ -421,9 +451,9 @@
     <div class="col-md-6">
       <div class="block-content-data">
         <p>
-          Товарищи! Дорогие мои мастера золотые руки! Я&nbsp;обращаюсь к&nbsp;тем, кто работает в&nbsp;фирме под названием Прайм Авто. Вы&nbsp;мне сделали прекрасные коврики! Вы&nbsp;знаете, ездить стало гораздо приятней.</p>
+          Dear masters with golden hands! I address those who work at Prime Auto. You made wonderful mats for me! You know, driving has become much more pleasant.</p>
         <p>
-          Это прекрасно, когда вот люди так вот с&nbsp;любовью относятся к&nbsp;своему делу и&nbsp;к&nbsp;своим клиентам!</p>
+          It’s great when people treat their work and their clients with such love!</p>
       </div>
     </div>
   </div>
@@ -431,8 +461,8 @@
 
 </div></div>
 
-      <!-- Разница до и после -->
-      <div  class="widgetblock-beforeafter181 widgetblock evabeforeafter"><div class="container"><h2 class="wtitle">Разница до и после покупки EVA ковриков</h2><div class="row "><div class="col-md-3 col-xl-3"><div class="" >     <div class="container_before_after">
+      <!-- Before / After -->
+      <div  class="widgetblock-beforeafter181 widgetblock evabeforeafter"><div class="container"><h2 class="wtitle">Difference before and after buying EVA mats</h2><div class="row "><div class="col-md-3 col-xl-3"><div class="" >     <div class="container_before_after">
  <img src="https://www.prime-avto.ru/images/html_content/62988020c5e2c.jpg" />
 <img src="https://www.prime-avto.ru/images/html_content/62988020c5f08.jpg" />
  </div>   </div></div><div class="col-md-3 col-xl-3"><div class="" >     <div class="container_before_after">
@@ -446,37 +476,37 @@
 <img src="https://www.prime-avto.ru/images/html_content/6298818dac9a5.jpg" />
  </div>   </div></div></div></div></div>
 
-      <!-- Популярные вопросы -->
-      <div  class="widgetblock-qevapopular181 widgetblock qanswerswrapper"><div class="container"><h2 class="wtitle">Популярные вопросы про EVA коврики</h2><ul class=""><li class="selected"><div class="" >       <noindex><div class="qansweritem">
-<div class="question">Из чего сделаны полимерные автоковрики?</div>
-<div class="answer">Для изготовления ковриков мы используется материал с ячеистой структурой – Ethylene Vinyl Acetate (EVA или севилен). Он очень легкий и в то же время прочный. Среди преимуществ этого материала: способность удерживать большое количество жидкости, отсутствие запаха, стойкость к химическим реагентам, абсолютная безопасность для здоровья и окружающей среды, сохранение всех характеристик и при жаре +50°С, и в холоде -40°С.</div>
+      <!-- Popular questions -->
+      <div  class="widgetblock-qevapopular181 widgetblock qanswerswrapper"><div class="container"><h2 class="wtitle">Popular questions about EVA mats</h2><ul class=""><li class="selected"><div class="" >       <noindex><div class="qansweritem">
+<div class="question">What are polymer car mats made of?</div>
+<div class="answer">We use a honeycomb material — Ethylene Vinyl Acetate (EVA). It is very light yet strong. Advantages: holds a lot of liquid, odorless, resistant to chemicals, safe for health and the environment, and retains properties in heat up to +50°C and cold down to −40°C.</div>
 </div></noindex> </div></li><li ><div class="" >       <noindex><div class="qansweritem">
-<div class="question">Какого цвета бывают ковры?</div>
-<div class="answer">Выпускаются в самой широкой палитре цветов материала и окантовки, позволяющих получить большой ассортимент цветовых сочетаний!</div>
+<div class="question">What colors are available?</div>
+<div class="answer">A wide palette of mat and edging colors is available to get many combinations.</div>
 </div></noindex> </div></li><li ><div class="" >       <noindex><div class="qansweritem">
-<div class="question">Какая толщина ковриков, глубина ячеек?</div>
-<div class="answer">Толщина материала составляет 10-11мм., глубина ячеек: 5-7 мм</div>
+<div class="question">What is the thickness and cell depth?</div>
+<div class="answer">Material thickness is 10–11 mm, cell depth 5–7 mm.</div>
 </div></noindex> </div></li><li ><div class="" >       <noindex><div class="qansweritem">
-<div class="question">Автоковрики впитывают воду? </div>
-<div class="answer">Коврики из данного материала не впитывают воду.</div>
+<div class="question">Do the mats absorb water?</div>
+<div class="answer">This material does not absorb water.</div>
 </div></noindex> </div></li><li ><div class="" >       <noindex><div class="qansweritem">
-<div class="question">Как за ними ухаживать</div>
-<div class="answer">Коврики рассчитаны на мойку струей воды под давлением. Под ее напором вся скопившаяся грязь в ячейках моментально вымывается. Они не боятся автошампуней и моющих средств.</div>
+<div class="question">How to care for them?</div>
+<div class="answer">Rinse with a stream of water under pressure; accumulated dirt washes out quickly. They are resistant to car shampoos and detergents.</div>
 </div></noindex> </div></li><li ><div class="" >       <noindex><div class="qansweritem">
-<div class="question">Как коврики крепятся к полу автомобиля?</div>
-<div class="answer">Ко всем коврикам EVA пришивается "липучка", надёжно фиксирующая коврики на полу. При наличии штатных креплений коврики комплектуются соотвествтующими клипсами</div>
+<div class="question">How are mats attached to the floor?</div>
+<div class="answer">All EVA mats include hook-and-loop for reliable fixation. If OEM mounts are present, the mats include compatible clips.</div>
 </div></noindex> </div></li><li ><div class="" >       <noindex><div class="qansweritem">
-<div class="question">Почему нет бортиков?</div>
-<div class="answer">У данных ковриков ячеистая структура. Поэтому вода, попавшая на поверхность, далее не переливается, равномерно распределяясь в соседних ячейках.</div>
+<div class="question">Why are there no sidewalls?</div>
+<div class="answer">The honeycomb structure keeps water within the cells, distributing it evenly without spilling.</div>
 </div></noindex> </div></li><li ><div class="" >       <noindex><div class="qansweritem">
-<div class="question">Как себя ведут зимой? </div>
-<div class="answer">Коврики сохраняют эластичность при температурах до -50 градусов, не пачкаются и не источают неприятных запахов.</div>
+<div class="question">How do they perform in winter?</div>
+<div class="answer">They remain elastic down to −50°C, do not get dirty quickly, and do not emit unpleasant odors.</div>
 </div></noindex> </div></li></ul></div></div>
 
-      <!-- Отзывы наших покупателей -->
+      <!-- Customer reviews -->
       <section class="reviews">
         <div class="container">
-          <h2 class="reviews__title">Отзывы наших покупателей</h2>
+          <h2 class="reviews__title">Reviews</h2>
           <div class="swiper reviews__swiper">
             <div class="swiper-wrapper">
               <div class="swiper-slide">
@@ -645,6 +675,24 @@
   <script src="static/js/dist/burger.bundle.js"></script>
   <script defer src="static/js/dist/main.bundle.js"></script>
   <script>
+    // On small screens, ensure the preview images render above the build section
+    (function fixMobileOrder(){
+      function move(){
+        try {
+          if (window.matchMedia('(max-width: 768px)').matches) {
+            var container = document.querySelector('.mobile_container');
+            var preview = document.querySelector('.image_container_constructor');
+            if (container && preview && !container.contains(preview)) {
+              container.parentNode.insertBefore(preview, container);
+            }
+          }
+        } catch(_) {}
+      }
+      document.addEventListener('DOMContentLoaded', move);
+      window.addEventListener('resize', move);
+    })();
+  </script>
+  <script>
     // Ensure default colors are selected so Add/Buy works without exposing extra UI
     (function ensureDefaults(){
       function trySelect() {
@@ -671,52 +719,8 @@
       }
       document.addEventListener('DOMContentLoaded', function(){ setTimeout(trySelect, 800); });
     })();
-    // Prefill vehicle only when no URL params are provided (avoid overriding URL selections)
-    (function prefillVehicle(){
-      var paramsGuard = new URLSearchParams(location.search);
-      if (paramsGuard.get('make') || paramsGuard.get('model') || paramsGuard.get('year')) {
-        return; // URL has explicit selection → do not auto-pick
-      }
-      function dispatch(el){ try { el && el.dispatchEvent(new Event('change', { bubbles: true })); } catch(_){} }
-      function pickFirst(select){
-        if (!select) return false;
-        for (var i=0;i<select.options.length;i++){
-          var o = select.options[i];
-          if (!o.disabled && o.value) { select.selectedIndex = i; return true; }
-        }
-        return false;
-      }
-      function selectYear(){
-        var y = document.getElementById('cfg-year');
-        if (!y || y.options.length < 2) return false;
-        y.selectedIndex = y.options.length - 1; // latest year
-        dispatch(y);
-        return true;
-      }
-      function tryPrefill(){
-        var make = document.getElementById('cfg-make');
-        var model = document.getElementById('cfg-model');
-        if (!make || !model) return;
-        var makeOk = pickFirst(make);
-        if (makeOk) dispatch(make);
-        // wait for models to load
-        var tries = 0;
-        var t = setInterval(function(){
-          tries++;
-          if (model.options && model.options.length > 1) {
-            clearInterval(t);
-            pickFirst(model);
-            dispatch(model);
-            selectYear();
-          }
-          if (tries > 40) { // ~8s max
-            clearInterval(t);
-            selectYear();
-          }
-        }, 200);
-      }
-      document.addEventListener('DOMContentLoaded', function(){ setTimeout(tryPrefill, 1000); });
-    })();
+    // Disable auto-selecting vehicle when no URL params are provided
+    (function prefillVehicle(){ /* no-op by request */ })();
   </script>
   <script>
     // FAQ: toggle qansweritem answers in Популярные вопросы про EVA коврики
