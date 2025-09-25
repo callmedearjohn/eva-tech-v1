@@ -42,6 +42,17 @@ textarea {
   text-align: center;
 }
 
+/* Mobile-only cart icon next to burger */
+.mobile-cart { display: none; margin-right: 12px; }
+.mobile-cart.cart-link { border-color: rgba(255,255,255,.35); padding: 4px 8px; }
+.mobile-cart .cart-link__badge { top: -8px; right: -8px; }
+@media (max-width: 980px) {
+  .mobile-cart { display: inline-block; }
+}
+
+/* Wrap cart + burger at header end */
+.header__actions { display: inline-flex; align-items: center; gap: 12px; }
+
 /* Hero selector fixes */
 /* Align GO button with selects and unify control sizes */
 .hero-selector .constructor-step__fields {

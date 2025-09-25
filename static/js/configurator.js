@@ -89,7 +89,8 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch(_){ }
     try { const patternBlock = document.querySelector('.cfg-patterns')?.closest('.cfg-block'); if (patternBlock) patternBlock.style.display='none'; } catch(_){ }
     try { const optionsBlock = document.getElementById('cfg-heelpad')?.closest('.cfg-block'); if (optionsBlock) optionsBlock.style.display='none'; } catch(_){ }
-    try { const trimGroup = document.getElementById('cfg-trim-color')?.closest('.color-group'); if (trimGroup) trimGroup.style.display='none'; } catch(_){ }
+    // Show trim color for simple products (Carsbag/Home)
+    try { const trimGroup = document.getElementById('cfg-trim-color')?.closest('.color-group'); if (trimGroup) trimGroup.style.display=''; } catch(_){ }
     try { if (summaryVehicleEl) summaryVehicleEl.textContent = `Product: ${productLabel}`; if (vehicleSummaryEl) vehicleSummaryEl.textContent = `${productLabel}`; } catch(_){ }
     try {
       const preview = document.getElementById('preview-image');
@@ -380,8 +381,9 @@ document.addEventListener('DOMContentLoaded', () => {
       items.push(`Pattern: ${state.pattern}`);
     }
     items.push(`Mat: ${state.matColor || '—'}`);
+    // Always show trim selection (enabled for simple products too)
+    items.push(`Trim: ${state.trimColor || '—'}`);
     if (!simpleMode) {
-      items.push(`Trim: ${state.trimColor || '—'}`);
       if (state.heelPad) items.push('Heel pad (free)');
     }
     items.forEach(t=>{ const li=document.createElement('li'); li.className='property-list__item'; li.textContent=t; summaryListEl.appendChild(li); });
@@ -521,6 +523,7 @@ document.addEventListener('DOMContentLoaded', () => {
         product: paramsProduct,
         set: state.set,
         matColor: state.matColor || '',
+        trimColor: state.trimColor || '',
         qty: Math.max(1, Number(state.qty||1)),
         subtotal: PRICES[state.set] || 0
       };
@@ -537,8 +540,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   function ensureColorsSelected(){
     const missing = [];
-    if (!simpleMode && !state.matColor) missing.push('Mat color');
-    if (!simpleMode && !state.trimColor) missing.push('Trim color');
+    if (!state.matColor) missing.push('Mat color');
+    if (!state.trimColor) missing.push('Trim color');
     if (missing.length) {
       alert(`Please select: ${missing.join(', ')}.`);
       return false;
