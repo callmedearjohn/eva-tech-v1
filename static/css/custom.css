@@ -9,6 +9,62 @@ textarea {
   color: inherit;
 }
 
+/* Header nav readability: add spacing between items */
+.menu__nav-list {
+  gap: 1.25rem; /* space between topics */
+}
+
+/* Cart link styled like Fortunamats (icon + badge) */
+.cart-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #fff;
+  text-decoration: none;
+  padding: 6px 10px;
+  border: 1px solid rgba(255,255,255,.5);
+  border-radius: 6px;
+}
+.cart-link__icon { display: inline-block; }
+.cart-link__text { font-size: 1.1rem; }
+.cart-link__badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background: var(--clr-primary);
+  color: #fff;
+  border-radius: 9999px;
+  padding: 2px 6px;
+  font-size: 12px;
+  line-height: 1;
+  min-width: 18px;
+  text-align: center;
+}
+
+/* Hero selector fixes */
+/* Align GO button with selects and unify control sizes */
+.hero-selector .constructor-step__fields {
+  align-items: stretch; /* ensure equal heights */
+}
+.hero-selector .button#hero-go {
+  height: 56px; 
+  line-height: 56px;
+  margin: 0; /* remove auto-center to align grid */
+}
+.hero-selector .nice-select,
+.hero-selector select {
+  height: 56px;
+  line-height: 56px;
+}
+
+/* Ensure Make, Year, Model same width; prevent Year from being wider */
+.hero-selector .constructor-step__field {
+  min-width: 0; /* allow grid items to shrink evenly */
+}
+.hero-selector .nice-select { width: 100% !important; }
+
+
 /* Fix horizontal scroll caused by large images in Products section */
 #products .advantage__items { overflow-x: hidden; }
 #products .advantage__item { overflow: hidden; }

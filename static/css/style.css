@@ -394,7 +394,7 @@ HEADER
 .nav__list-link {
   text-decoration: none;
   color: #fff;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   -webkit-transition: all .3s ease;
   -o-transition: all .3s ease;
   transition: all .3s ease;
@@ -658,7 +658,7 @@ HERO
   }
 
   .nav__list-link {
-    font-size: 1.25rem;
+    font-size: 1rem;
   }
 
   .social-btn {
