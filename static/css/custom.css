@@ -64,11 +64,30 @@ textarea {
 }
 .hero-selector .nice-select { width: 100% !important; }
 
+/* --- Products section cards (uniform size, aligned text/button) --- */
+#products .advantage__items { align-items: stretch; }
+#products .advantage__item { display: flex; flex-direction: column; background: #fff; border-radius: 10px; overflow: hidden; height: 460px; }
+#products .advantage__item > img { width: 100%; height: 240px; object-fit: cover; display: block; }
+#products .advantage__item-desc { position: static; opacity: 1; background: #fff; color: #000; padding: 16px; display: flex; flex-direction: column; gap: 8px; align-items: center; justify-content: space-between; flex: 1 1 auto; }
+#products .advantage__item-desc h3 { margin: 0; }
+#products .advantage__item-desc p { margin: 0; text-align: center; }
+#products .advantage__item-desc .button { margin-top: auto; min-width: 140px; }
+
+@media (max-width: 1024px) {
+  #products .advantage__item { height: 420px; }
+  #products .advantage__item > img { height: 220px; }
+}
+
+@media (max-width: 640px) {
+  #products .advantage__item { height: auto; }
+  #products .advantage__item > img { height: 200px; }
+}
+
 
 /* Fix horizontal scroll caused by large images in Products section */
 #products .advantage__items { overflow-x: hidden; }
 #products .advantage__item { overflow: hidden; }
-#products .advantage__item img { width: 100%; max-width: 100%; height: auto; display: block; }
+#products .advantage__item img { width: 100%; max-width: 100%; display: block; }
 
 /* Mobile: make advantages descriptions flex and wrap */
 @media (max-width: 540px) {
