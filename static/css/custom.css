@@ -172,3 +172,48 @@ input[type="checkbox"]:disabled {
 
   color: var(--form-control-disabled);
 }
+
+/* === Configurator description: align images and cards (tab 0) === */
+/* Make the two side-by-side images the same height and properly cropped */
+#tab0 .row > [class*="col-"] img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Grid for feature cards and equalize card heights */
+.widgetblock-preimdesc181 ul {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.widgetblock-preimdesc181 .item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  height: 100%;
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  padding: 12px;
+}
+.widgetblock-preimdesc181 .item img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+.widgetblock-preimdesc181 .item .title { margin: 10px 0 4px; font-weight: 700; }
+.widgetblock-preimdesc181 .item .desc { margin: 0; }
+
+@media (max-width: 992px) {
+  .widgetblock-preimdesc181 ul { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 560px) {
+  .widgetblock-preimdesc181 ul { grid-template-columns: 1fr; }
+}

@@ -91,10 +91,13 @@
     .upsell__meta { font-size:12px; opacity:.8; }
     .upsell__btn { margin-left:auto; white-space:nowrap; }
     /* Before/After slider */
-    .container_before_after { position: relative; overflow: hidden; cursor: ew-resize; --ba: 50%; border-radius: 6px; }
+    .container_before_after { position: relative; overflow: hidden; cursor: col-resize; --ba: 50%; border-radius: 6px; }
     .container_before_after img { display: block; width: 100%; height: auto; user-select: none; pointer-events: none; }
     .container_before_after img + img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; clip-path: inset(0 0 0 var(--ba)); z-index: 2; }
-    .container_before_after::before { content: ""; position: absolute; top: 0; bottom: 0; left: var(--ba); width: 2px; background: rgba(255,255,255,.95); box-shadow: 0 0 0 1px rgba(0,0,0,.15); z-index: 3; }
+    /* Visible stick */
+    .container_before_after::before { content: ""; position: absolute; top: 0; bottom: 0; left: var(--ba); width: 3px; background: var(--clr-primary); box-shadow: 0 0 0 2px rgba(255,255,255,.85); z-index: 3; }
+    /* Drag handle knob */
+    .container_before_after::after { content: ""; position: absolute; left: var(--ba); top: 50%; transform: translate(-50%, -50%); width: 28px; height: 28px; border-radius: 50%; background: #fff; border: 2px solid var(--clr-primary); box-shadow: 0 2px 8px rgba(0,0,0,.25); z-index: 4; }
   </style>
 
 </head>
@@ -245,6 +248,11 @@
                             <span class="price-line"><span class="price-old">239$</span><span>219$</span><span class="badge-promo">Promo</span></span>
                           </span>
                         </label>
+                        <!-- 3rd row moved into Set block (visible only for eligible vehicles) -->
+                        <label class="cfg-radio" id="third-row-container" style="display:none;">
+                          <input type="checkbox" id="cfg-third-row">
+                          <span>3rd row (+50$)</span>
+                        </label>
                       </div>
                     </div>
                     <div class="cfg-block">
@@ -274,8 +282,7 @@
                           <div class="cfg-help">Heel pad is automatically added to your order.</div>
                         </div>
                       </div>
-                      <label class="cfg-checkbox"><input type="checkbox" id="cfg-third-row"><span>3rd row (eligible models only)</span></label>
-                      <p class="cfg-help" id="third-row-note" style="display:none">This car is not eligible for a 3rd row.</p>
+                      <!-- 3rd row control moved to the Set block above -->
                     </div>
                   </div>
                 </div>
@@ -410,10 +417,10 @@
   EVA mats are made from an eco‑friendly material with high wear resistance, resistance to extreme temperatures (<strong>from +50°C to −50°C</strong>) and aggressive chemicals. They are <strong>lightweight</strong>, and the dense structure provides excellent sound insulation.</p>
 <div class="row" style="margin-top:20px;">
   <div class="col-md-6" style="margin-bottom:20px;">
-    <img alt="" src="./static/images/work-examples/10.jpg" style="max-width: 100%" /></div>
+    <img alt="" src="./static/images/work-examples/10.jpg" style="max-width: 100%;height: 100%;" /></div>
   <div class="col-md-6" style="margin-bottom:20px;">
-    <img alt="" src="./static/images/work-examples/11.jpg" style="max-width: 100%" /></div>
-></div>
+    <img alt="" src="./static/images/work-examples/11.jpg" style="max-width: 100%;height: 100%;" /></div>
+</div>
 <p dir="ltr">
   The surface has a special <strong>rhombus</strong> pattern that effectively localizes dirt and water, keeping footwear and interior surfaces clean. The mats are easy to rinse without special tools, including with a touchless wash.</p>
   The mats come in many color variations and fit any style. Choose from classic tones to bright sporty combinations to give your car a unique look.</p>
@@ -439,7 +446,9 @@
 <img src="./static/images/work-examples/8.jpg">
 <div class="title">OEM mounts</div>
 <div class="desc">If your car has factory mounts, we install compatible clips on the mats.</div>
-</div>  </div></li></ul></div></div><div class="tab-pane fade in  show" id="tab1" name="tab1" role="tabpanel"><div  class="widgetblock-char181 widgetblock "><table class="table table-striped">
+</div>  </div></li></ul>
+</div>
+</div><div class="tab-pane fade in  show" id="tab1" name="tab1" role="tabpanel"><div  class="widgetblock-char181 widgetblock "><table class="table table-striped">
   <tbody>
     <tr>
       <td>

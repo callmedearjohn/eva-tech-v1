@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const heelPadEl = $('#cfg-heelpad');
   const thirdRowEl = $('#cfg-third-row');
   const thirdRowNote = $('#third-row-note');
+  const thirdRowContainer = document.getElementById('third-row-container');
 
   // Summary
   const summaryVehicleEl = $('#summary-vehicle');
@@ -35,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const requireVehicleMsg = document.getElementById('require-vehicle-msg');
 
   let PRICES = { front: 59, full: 139, complete: 219 };
-  const THIRD_ROW_SURCHARGE = 40;
+  const THIRD_ROW_SURCHARGE = 50;
 
   const state = {
     make: '', model: '', year: '',
@@ -54,6 +55,8 @@ document.addEventListener('DOMContentLoaded', () => {
   if (simpleMode) {
     try { const titleEl = document.querySelector('.section__title'); if (titleEl) titleEl.textContent = `Configure ${productLabel}`; } catch(_){ }
     try { const vehicleBlock = document.getElementById('cfg-make')?.closest('.cfg-block'); if (vehicleBlock) vehicleBlock.style.display = 'none'; if (requireVehicleMsg) requireVehicleMsg.style.display='none'; } catch(_){ }
+    // Hide top vehicle banner for simple products
+    try { const vt = document.querySelector('.vehicle-top'); if (vt) vt.style.display = 'none'; } catch(_){ }
     try {
       const setBlock = document.querySelector('.cfg-sets')?.closest('.cfg-block');
       const setTitle = setBlock?.querySelector('.cfg-title');
@@ -88,7 +91,11 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     } catch(_){ }
     try { const patternBlock = document.querySelector('.cfg-patterns')?.closest('.cfg-block'); if (patternBlock) patternBlock.style.display='none'; } catch(_){ }
-    try { const optionsBlock = document.getElementById('cfg-heelpad')?.closest('.cfg-block'); if (optionsBlock) optionsBlock.style.display='none'; } catch(_){ }
+    // Hide Options block (gift/third-row) for simple products
+    try {
+      const optionsBlock = document.querySelector('.gift-block')?.closest('.cfg-block');
+      if (optionsBlock) optionsBlock.style.display = 'none';
+    } catch(_){ }
     // Show trim color for simple products (Carsbag/Home)
     try { const trimGroup = document.getElementById('cfg-trim-color')?.closest('.color-group'); if (trimGroup) trimGroup.style.display=''; } catch(_){ }
     try { if (summaryVehicleEl) summaryVehicleEl.textContent = `Product: ${productLabel}`; if (vehicleSummaryEl) vehicleSummaryEl.textContent = `${productLabel}`; } catch(_){ }
@@ -116,6 +123,54 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       if (patternOverlay) patternOverlay.style.display='none';
     } catch(_){ }
+    // Adjust upsell for simple products
+    try {
+      const list = document.querySelector('.upsell__list');
+      if (list) {
+        const itemCarMats = [
+          '<div class="upsell__item">',
+          '  <a href="configurator" style="display:flex; align-items:center; gap:10px; text-decoration:none; color:inherit;">',
+          '    <img class="upsell__thumb" src="./static/images/work-examples/1.jpg" alt="EVA Car Mats">',
+          '    <div class="upsell__info">',
+          '      <div class="upsell__name">EVA Car Mats</div>',
+          '      <div class="upsell__meta">Custom-fit interior</div>',
+          '    </div>',
+          '  </a>',
+          '  <a class="button upsell__btn" href="configurator">Add</a>',
+          '</div>'
+        ].join('');
+        const itemCarBags = [
+          '<div class="upsell__item">',
+          '  <a href="configurator?product=carsbag" style="display:flex; align-items:center; gap:10px; text-decoration:none; color:inherit;">',
+          '    <img class="upsell__thumb" src="./static/images/car-bags/bag-1.jpg" alt="EVA Carsbag">',
+          '    <div class="upsell__info">',
+          '      <div class="upsell__name">EVA Carsbag</div>',
+          '      <div class="upsell__meta">Sizes M / L</div>',
+          '    </div>',
+          '  </a>',
+          '  <a class="button upsell__btn" href="configurator?product=carsbag">Add</a>',
+          '</div>'
+        ].join('');
+        const itemHomeMat = [
+          '<div class="upsell__item">',
+          '  <a href="configurator?product=home" style="display:flex; align-items:center; gap:10px; text-decoration:none; color:inherit;">',
+          '    <img class="upsell__thumb" src="./static/images/home-mats/mat-1.jpg" alt="EVA Home Mat">',
+          '    <div class="upsell__info">',
+          '      <div class="upsell__name">EVA Home Mat</div>',
+          '      <div class="upsell__meta">Sizes S / M / L / XL</div>',
+          '    </div>',
+          '  </a>',
+          '  <a class="button upsell__btn" href="configurator?product=home">Add</a>',
+          '</div>'
+        ].join('');
+
+        if (paramsProduct === 'carsbag') {
+          list.innerHTML = itemCarMats + itemHomeMat; // show Car Mats and Home Mat on Carsbag product
+        } else if (paramsProduct === 'home') {
+          list.innerHTML = itemCarBags + itemCarMats; // show both Carsbag and Car Mats
+        }
+      }
+    } catch(_){ }
   }
 
   // NiceSelect binding if available (bind once, then call update())
@@ -135,7 +190,7 @@ document.addEventListener('DOMContentLoaded', () => {
   for (let y = 1990; y <= now.getFullYear(); y++) {
     yearEl.insertAdjacentHTML('beforeend', `<option value="${y}">${y}</option>`);
   }
-  try { __cfgYearNS && __cfgYearNS.update && __cfgYearNS.update(); } catch(_){}
+  try { __cfgYearNS && __cfgYearNS.update && __cfgYearNS.update(); } catch(_){ }
 
   // Makes & models via same API used on homepage script
   const marksUrl = 'https://api.auto.ria.com/categories/1/marks/';
@@ -144,7 +199,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const homepageMake = document.getElementById('car-make');
     if (homepageMake) {
       makeEl.innerHTML = homepageMake.innerHTML;
-      try { __cfgMakeNS && __cfgMakeNS.update && __cfgMakeNS.update(); } catch(_){}
+      try { __cfgMakeNS && __cfgMakeNS.update && __cfgMakeNS.update(); } catch(_){ }
     } else {
       // Fallback: inject full static makes list (mirrors homepage select)
       makeEl.innerHTML = [
@@ -207,7 +262,7 @@ document.addEventListener('DOMContentLoaded', () => {
         '<option value="84">Volkswagen</option>',
         '<option value="85">Volvo</option>'
       ].join('');
-      try { __cfgMakeNS && __cfgMakeNS.update && __cfgMakeNS.update(); } catch(_){}
+      try { __cfgMakeNS && __cfgMakeNS.update && __cfgMakeNS.update(); } catch(_){ }
     }
   }
   async function loadModelsByMake(makeId) {
@@ -217,7 +272,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const models = await res.json();
       models.forEach(m => modelEl.insertAdjacentHTML('beforeend', `<option value="${m.name}">${m.name}</option>`));
     } catch(_) {}
-    try { __cfgModelNS && __cfgModelNS.update && __cfgModelNS.update(); } catch(_){}
+    try { __cfgModelNS && __cfgModelNS.update && __cfgModelNS.update(); } catch(_){ }
   }
 
   // Colors from JSON (fallback to defaults)
@@ -227,13 +282,13 @@ document.addEventListener('DOMContentLoaded', () => {
       const data = await res.json();
       matColorEl.innerHTML = '<option selected disabled>Choose</option>' + data.matColors.map(c=>`<option value="${c}">${c}</option>`).join('');
       trimColorEl.innerHTML = '<option selected disabled>Choose</option>' + data.trimColors.map(c=>`<option value="${c}">${c}</option>`).join('');
-      try { buildSwatches(matSwatchList, data.matColors, 'mat'); buildSwatches(trimSwatchList, data.trimColors, 'trim'); } catch(_){}
+      try { buildSwatches(matSwatchList, data.matColors, 'mat'); buildSwatches(trimSwatchList, data.trimColors, 'trim'); } catch(_){ }
     } catch (e) {
       const mats = ['Black','Grey','Blue','Brown','Red','Beige'];
       const trims = ['Black','Blue','Red','Grey','Beige','Brown'];
       matColorEl.innerHTML = '<option selected disabled>Choose</option>' + mats.map(c=>`<option value="${c.toLowerCase()}">${c}</option>`).join('');
       trimColorEl.innerHTML = '<option selected disabled>Choose</option>' + trims.map(c=>`<option value="${c.toLowerCase()}">${c}</option>`).join('');
-      try { buildSwatches(matSwatchList, mats.map(c=>c.toLowerCase()), 'mat'); buildSwatches(trimSwatchList, trims.map(c=>c.toLowerCase()), 'trim'); } catch(_){}
+      try { buildSwatches(matSwatchList, mats.map(c=>c.toLowerCase()), 'mat'); buildSwatches(trimSwatchList, trims.map(c=>c.toLowerCase()), 'trim'); } catch(_){ }
     }
     try {
       __cfgMatNS && __cfgMatNS.update && __cfgMatNS.update();
@@ -299,7 +354,7 @@ document.addEventListener('DOMContentLoaded', () => {
         : [];
     } catch (e) { eligible = []; }
     // Re-evaluate eligibility when data arrives
-    try { updateEligibility(); } catch(_){}
+    try { updateEligibility(); } catch(_){ }
   }
 
   function updateEligibility() {
@@ -309,6 +364,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (thirdRowEl) thirdRowEl.disabled = true;
       if (thirdRowEl) thirdRowEl.checked = false;
       if (thirdRowNote) thirdRowNote.style.display = 'none';
+      if (thirdRowContainer) thirdRowContainer.style.display = 'none';
       return;
     }
     const make = String(state.make).toLowerCase();
@@ -322,7 +378,8 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!ok) thirdRowEl.checked = false;
     }
     if (thirdRowNote) thirdRowNote.style.display = ok ? 'none' : 'block';
-    try { updateThirdRowLabel(); } catch(_){}
+    if (thirdRowContainer) thirdRowContainer.style.display = ok ? '' : 'none';
+    try { updateThirdRowLabel(); } catch(_){ }
   }
 
   function updateThirdRowLabel(){
@@ -407,33 +464,9 @@ document.addEventListener('DOMContentLoaded', () => {
           patternOverlay.style.opacity = .22;
         }
       }
-    } catch(_){}
+    } catch(_){ }
 
-    // gallery swap by color (only for car mats)
-    if (!simpleMode) {
-      try {
-        const mainImg = document.getElementById('preview-image');
-        const thumbs = document.querySelectorAll('.configurator__thumbnails img');
-        if (state.matColor) {
-          const baseList = [
-            `./static/images/price-constructor/color-combinations/${state.matColor}-${state.trimColor||state.matColor}.jpg`,
-            `./static/images/price-constructor/color-combinations/${state.matColor}-${state.matColor}.jpg`,
-            `./static/images/price-constructor/color-combinations/${state.matColor}-black.jpg`,
-            `./static/images/work-examples/1.jpg`
-          ];
-          function tryNext(list){
-            if (!list.length) return;
-            const src = list[0];
-            if (mainImg) mainImg.src = src;
-            if (mainImg) {
-              mainImg.onerror = () => tryNext(list.slice(1));
-              mainImg.onload = () => { thumbs.forEach(t=> t.src = src); };
-            }
-          }
-          tryNext(baseList);
-        }
-      } catch(_) {}
-    }
+    // Keep gallery as in-car photos; do not swap to isolated color-combo images
   }
 
   // Listeners
@@ -476,7 +509,7 @@ document.addEventListener('DOMContentLoaded', () => {
     state.year = urlYear || ls.carYear || '';
     if (state.year) {
       yearEl.value = state.year;
-      try { __cfgYearNS && __cfgYearNS.update && __cfgYearNS.update(); } catch(_){}
+      try { __cfgYearNS && __cfgYearNS.update && __cfgYearNS.update(); } catch(_){ }
     }
     loadMakes().then(()=>{
       const normalize = (s)=> String(s||'').toLowerCase().trim();
