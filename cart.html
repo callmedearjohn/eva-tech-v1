@@ -36,6 +36,10 @@
     .near_goods { margin-top:28px; }
     .catalog__list { display:flex; gap:16px; margin-top:16px; }
     .catalog__item { border:1px solid #eee; border-radius:10px; padding:12px; }
+    .deltd { text-align:center; }
+    .icon-remove { display:inline-flex; align-items:center; justify-content:center; width:28px; height:28px; background:#f4f4f4; border-radius:6px; color:#d42920; text-decoration:none; cursor:pointer; }
+    .icon-remove svg { width:16px; height:16px; display:block; }
+    .icon-remove:hover { background:#ffe5e5; }
     @media (max-width: 900px){ .basket_wrapper { grid-template-columns: 1fr; } .s{ position:static; } }
   </style>
 </head>
@@ -237,7 +241,9 @@
             <div class="counter"><span class="minus" data-dec>-</span><span><span class="count">${it.qty||1}</span></span><span class="plus" data-inc>+</span></div>
           </td>
           <td class="pricetd"><div class="newsf"><span class="strong"> <span>$</span>&nbsp;${(((it.subtotal||0) * (it.qty||1)).toFixed(0))}</span></div></td>
-          <td class="deltd"><a href="javascript:void(0)" class="icon-remove" title="Remove" data-rm></a></td>
+          <td class="deltd"><a href="javascript:void(0)" class="icon-remove" title="Remove" data-rm>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 7h12l-1 14H7L6 7Zm3-3h6l1 2H8l1-2Zm-4 2h14v2H5V6Z" fill="currentColor"/></svg>
+          </a></td>
         `;
         tr.querySelector('[data-inc]').addEventListener('click', ()=>{ Cart.update(idx, (it.qty||1) + 1); render(); });
         tr.querySelector('[data-dec]').addEventListener('click', ()=>{ const q=(it.qty||1)-1; Cart.update(idx, q<1?1:q); render(); });

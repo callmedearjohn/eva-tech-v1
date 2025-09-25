@@ -35,6 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const requireVehicleMsg = document.getElementById('require-vehicle-msg');
 
   let PRICES = { front: 59, full: 139, complete: 219 };
+  const THIRD_ROW_SURCHARGE = 40;
 
   const state = {
     make: '', model: '', year: '',
@@ -273,32 +274,75 @@ document.addEventListener('DOMContentLoaded', () => {
   async function loadEligibility() {
     try {
       const res = await fetch('static/data/third-row-eligible.json');
-      eligible = await res.json();
+      const data = await res.json();
+      // Normalize to array of { make, model, from, to } rules
+      eligible = Array.isArray(data)
+        ? (typeof data[0] === 'string'
+            // backward compatibility: ["make|model"] → wide-open year range
+            ? data.map((s) => {
+                const parts = String(s || '').split('|');
+                return {
+                  make: (parts[0] || '').trim().toLowerCase(),
+                  model: (parts[1] || '').trim().toLowerCase(),
+                  from: 1900,
+                  to: 3000
+                };
+              })
+            // new schema: array of objects
+            : data.map((r) => ({
+                make: String(r.make || '').trim().toLowerCase(),
+                model: String(r.model || '').trim().toLowerCase(),
+                from: Number(r.from) || 1900,
+                to: Number(r.to) || 3000
+              })))
+        : [];
     } catch (e) { eligible = []; }
+    // Re-evaluate eligibility when data arrives
+    try { updateEligibility(); } catch(_){}
   }
 
   function updateEligibility() {
-    const hasMakeAndModel = Boolean(state.make && state.model);
-    if (!hasMakeAndModel) {
+    const hasVehicle = Boolean(state.make && state.model && state.year);
+    if (!hasVehicle) {
       state.thirdRowEligible = false;
-      thirdRowEl.disabled = true;
-      thirdRowEl.checked = false;
-      thirdRowNote.style.display = 'none';
+      if (thirdRowEl) thirdRowEl.disabled = true;
+      if (thirdRowEl) thirdRowEl.checked = false;
+      if (thirdRowNote) thirdRowNote.style.display = 'none';
       return;
     }
-    const key = `${state.make}|${state.model}`.toLowerCase();
-    state.thirdRowEligible = eligible.includes(key);
-    thirdRowEl.disabled = !state.thirdRowEligible;
-    if (!state.thirdRowEligible) {
-      thirdRowEl.checked = false;
+    const make = String(state.make).toLowerCase();
+    const model = String(state.model).toLowerCase();
+    const year = Number(state.year);
+    const rules = (eligible || []).filter((r) => r.make === make && r.model === model);
+    const ok = rules.some((r) => year >= r.from && year <= r.to);
+    state.thirdRowEligible = ok;
+    if (thirdRowEl) {
+      thirdRowEl.disabled = !ok;
+      if (!ok) thirdRowEl.checked = false;
     }
-    thirdRowNote.style.display = state.thirdRowEligible ? 'none' : 'block';
+    if (thirdRowNote) thirdRowNote.style.display = ok ? 'none' : 'block';
+    try { updateThirdRowLabel(); } catch(_){}
+  }
+
+  function updateThirdRowLabel(){
+    const labelSpan = thirdRowEl?.closest('label')?.querySelector('span');
+    if (!labelSpan) return;
+    const base = '3rd row';
+    if (!state.thirdRowEligible) {
+      labelSpan.textContent = `${base} (eligible models only)`;
+      return;
+    }
+    if (state.set === 'complete') {
+      labelSpan.textContent = `${base} (included)`;
+    } else {
+      labelSpan.textContent = `${base} (+${THIRD_ROW_SURCHARGE}$)`;
+    }
   }
 
   function calcSubtotal() {
     let subtotal = PRICES[state.set];
     if (state.thirdRow && state.thirdRowEligible && state.set !== 'complete') {
-      subtotal += 40; // nominal surcharge for 3rd row when not included
+      subtotal += THIRD_ROW_SURCHARGE; // nominal surcharge for 3rd row when not included
     }
     state.subtotal = subtotal;
     const total = subtotal * Math.max(1, Number(state.qty || 1));
@@ -326,7 +370,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const items = [];
     items.push(`${setNames[state.set]}`);
     if (!simpleMode) {
-      if (state.thirdRow && state.set !== 'complete') items.push('3rd row add-on');
+      if (state.thirdRow) {
+        if (state.set === 'complete') {
+          items.push('3rd row included');
+        } else {
+          items.push(`3rd row add-on (+${THIRD_ROW_SURCHARGE}$)`);
+        }
+      }
       items.push(`Pattern: ${state.pattern}`);
     }
     items.push(`Mat: ${state.matColor || '—'}`);
@@ -394,10 +444,10 @@ document.addEventListener('DOMContentLoaded', () => {
     syncSummary();
   });
   if (modelEl) modelEl.addEventListener('change', (e)=>{ state.model = e.target.value; updateEligibility(); syncSummary(); });
-  if (yearEl) yearEl.addEventListener('change', (e)=>{ state.year = e.target.value; syncSummary(); });
+  if (yearEl) yearEl.addEventListener('change', (e)=>{ state.year = e.target.value; updateEligibility(); syncSummary(); });
   if (matColorEl) matColorEl.addEventListener('change', (e)=>{ state.matColor = e.target.value; if(matSelectedLabel) matSelectedLabel.textContent = state.matColor.charAt(0).toUpperCase()+state.matColor.slice(1); try { const c=matSwatchList?.querySelector(`[data-color="${state.matColor}"]`); matSwatchList?.querySelectorAll('.swatch').forEach(s=>s.classList.remove('is-selected')); c&&c.classList.add('is-selected'); } catch(_){ } syncSummary(); });
   if (trimColorEl) trimColorEl.addEventListener('change', (e)=>{ state.trimColor = e.target.value; if(trimSelectedLabel) trimSelectedLabel.textContent = state.trimColor.charAt(0).toUpperCase()+state.trimColor.slice(1); try { const c=trimSwatchList?.querySelector(`[data-color="${state.trimColor}"]`); trimSwatchList?.querySelectorAll('.swatch').forEach(s=>s.classList.remove('is-selected')); c&&c.classList.add('is-selected'); } catch(_){ } syncSummary(); });
-  $$('input[name="set"]').forEach(r=> r.addEventListener('change', (e)=>{ state.set = e.target.value; syncSummary(); }));
+  $$('input[name="set"]').forEach(r=> r.addEventListener('change', (e)=>{ state.set = e.target.value; try { updateThirdRowLabel(); } catch(_){} syncSummary(); }));
   $$('input[name="pattern"]').forEach(r=> r.addEventListener('change', (e)=>{ state.pattern = e.target.value; syncSummary(); }));
   if (heelPadEl) heelPadEl.addEventListener('change', (e)=>{ state.heelPad = e.target.checked; syncSummary(); });
   if (thirdRowEl) thirdRowEl.addEventListener('change', (e)=>{ state.thirdRow = e.target.checked; syncSummary(); });
