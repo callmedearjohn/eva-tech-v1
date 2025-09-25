@@ -2708,3 +2708,11 @@ TINGLE MODAL
     flex-wrap: wrap;
   }
 }
+
+.wrapper_2bannres {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 50px;
+  margin: 20px 0;
+}
