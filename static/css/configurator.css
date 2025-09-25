@@ -7,9 +7,27 @@
 
 .configurator__preview img { width: 100%; border-radius: 8px; }
 .pattern-overlay { position:absolute; inset:0; pointer-events:none; background-size: 160px auto; opacity:.25; mix-blend-mode:multiply; border-radius:8px; }
-.configurator__main-image { position:relative; }
+.configurator__main-image { position:relative; text-align:center; }
+.configurator__main-image img { max-width:520px; width:100%; height:auto; display:inline-block; }
 .configurator__thumbnails { display:flex; gap:.5rem; margin-top:.5rem; flex-wrap:wrap; }
 .configurator__thumbnails img { width: 80px; height: 60px; object-fit: cover; border-radius:6px; cursor:pointer; }
+
+/* Alignments and visual fixes */
+.goodcard .row { align-items: flex-start; }
+.card_title { margin-bottom: 12px; }
+.summary-card h3 { margin-top: 0; }
+.summary-actions .btn, .order_buttons .btn { height: 44px; display: inline-flex; align-items:center; justify-content:center; }
+.configurator__thumbnails { justify-content: center; }
+.cfg-row-vehicle select { margin-right: 8px; }
+.cfg-row-vehicle select:last-child { margin-right: 0; }
+.cfg-block .cfg-title { line-height: 1.2; }
+.tabs_wrapper { margin-top: 24px; }
+.nav.nav-tabs { border-bottom: 1px solid #eee; }
+.nav.nav-tabs .nav-link { padding: 10px 14px; }
+.tab-content { padding: 12px 0; }
+
+/* Hide removed tab content if present */
+#tab3 { display:none !important; }
 
 .cfg-block { margin-bottom: 1.5rem; }
 .cfg-title { margin: 0 0 .5rem; font-weight: 700; }

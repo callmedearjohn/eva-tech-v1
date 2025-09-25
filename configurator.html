@@ -45,6 +45,34 @@
     .payments-logos svg { height:20px; width:auto; display:block; }
     .summary-note { font-size:12px; color:#555; margin-top:6px; }
 
+    /* Stars yellow (Black -> Yellow) */
+    .cfg-rating .stars { color:#ffcc33; }
+    .cfg-rating { display:flex; align-items:center; gap:8px; }
+    .cfg-rating .reviews-count { color:#666; font-size:14px; }
+
+    /* Hide Pattern block (single pattern) */
+    .cfg-block:has(.cfg-patterns) { display:none; }
+
+    /* Improve Set radios (Red block style) */
+    .cfg-row.cfg-sets { display:grid; gap:10px; }
+    .cfg-radio { display:flex; gap:10px; align-items:flex-start; padding:10px; border:1px solid #eee; border-radius:8px; background:#fff; }
+    .cfg-radio input { margin-top:4px; }
+    .cfg-radio span strong { display:block; margin-bottom:4px; }
+
+    /* Quantity control buttons */
+    .qty-control { display:inline-flex; align-items:center; gap:8px; }
+    .qty-control button { width:38px; height:38px; background:#111; color:#fff; border:none; border-radius:4px; font-size:20px; line-height:1; cursor:pointer; }
+    .qty-control input { width:56px; text-align:center; height:38px; border:1px solid #ddd; border-radius:6px; }
+
+    /* Upsell (pink area) beautify */
+    .upsell { border:1px solid #e9e9e9; border-radius:12px; background:#fff; padding:16px; box-shadow:0 2px 8px rgba(0,0,0,.04); }
+    .upsell__title { font-weight:700; font-size:18px; margin:0 0 10px; text-align:center; }
+    .upsell__list { display:flex; flex-direction:column; gap:12px; }
+    .upsell__item { align-items:center; }
+    .upsell__thumb { width:84px; height:64px; object-fit:cover; border:1px solid #eee; border-radius:6px; }
+    .upsell__name { font-size:16px; }
+    .upsell__btn { padding:8px 14px; }
+
     /* Vehicle top header */
     .vehicle-top { background:#f8f8f8; border-bottom:1px solid #eee; }
     .vehicle-top__content { display:flex; flex-direction:column; gap:4px; padding:12px 0; }
@@ -137,13 +165,16 @@
                   </div>
                   <!-- Configurator preview injected here so configurator.js updates are visible -->
                   <div class="configurator__main-image">
-                    <img id="preview-image" src="./static/images/price-constructor/sets/set-1.jpg" alt="Preview">
+                    <img id="preview-image" src="./static/images/work-examples/1.jpg" alt="Preview">
                     <div id="pattern-overlay" class="pattern-overlay"></div>
                   </div>
                   <div class="configurator__thumbnails">
                     <img src="./static/images/work-examples/1.jpg" alt="thumb">
                     <img src="./static/images/work-examples/2.jpg" alt="thumb">
                     <img src="./static/images/work-examples/3.jpg" alt="thumb">
+                    <img src="./static/images/work-examples/4.jpg" alt="thumb">
+                    <img src="./static/images/work-examples/5.jpg" alt="thumb">
+                    <img src="./static/images/work-examples/6.jpg" alt="thumb">
                   </div>
                 </div>
               </div>
@@ -172,7 +203,7 @@
                     <div class="cfg-rating"><div class="stars">★★★★★</div><div class="reviews-count">Based on 120+ reviews</div></div>
                     <div class="cfg-block">
                       <h3 class="cfg-title">Your vehicle</h3>
-                      <p id="cfg-vehicle-summary" class="cfg-help">Make/Model/Price: —</p>
+                      <!-- <p id="cfg-vehicle-summary" class="cfg-help">Make/Model/Price: —</p> -->
                       <div class="cfg-row-vehicle">
                         <select id="cfg-make" class="select constructor-step__select constructor-step__control form-control select__arow"><option selected disabled>Make</option></select>
                         <select id="cfg-model" class="select constructor-step__select constructor-step__control form-control select__arow"><option selected disabled>Model</option></select>
@@ -206,10 +237,7 @@
                       </div>
                     </div>
                     <div class="cfg-block">
-                      <h3 class="cfg-title">Pattern</h3>
-                      <div class="cfg-row cfg-patterns">
-                        <label class="cfg-swatch" data-pattern="diamond"><input type="radio" name="pattern" value="diamond" checked><span>RHOMBUS</span></label>
-                      </div>
+                      <!-- Pattern removed (single option rhombus) -->
                     </div>
                     <div class="cfg-block">
                       <h3 class="cfg-title">Colors</h3>
@@ -228,7 +256,6 @@
                     </div>
                     <div class="cfg-block">
                       <h3 class="cfg-title">Options</h3>
-                      <label class="cfg-checkbox"><input type="checkbox" id="cfg-heelpad"><span>Heel pad (free)</span></label>
                       <div class="gift-block">
                         <img src="./static/images/price-constructor/sets/footrest.png" alt="Heel pad gift">
                         <div>
@@ -355,11 +382,11 @@
         </div>
       </div>
 
-      <!-- Tabs: Description / Specifications / Advantages / Footrest installation -->
+      <!-- Tabs: Description / Specifications / Advantages -->
       <div class="tabs_wrapper">
         <div class="container">
           <ul class="nav nav-tabs" role="tablist">
-            <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#tab0" role="tab">Description</a></li><li class="nav-item"><a class="nav-link " data-toggle="tab" href="#tab1" role="tab">Specifications</a></li><li class="nav-item"><a class="nav-link " data-toggle="tab" href="#tab2" role="tab">Advantages</a></li><li class="nav-item"><a class="nav-link " data-toggle="tab" href="#tab3" role="tab">Footrest installation</a></li>
+            <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#tab0" role="tab">Description</a></li><li class="nav-item"><a class="nav-link " data-toggle="tab" href="#tab1" role="tab">Specifications</a></li><li class="nav-item"><a class="nav-link " data-toggle="tab" href="#tab2" role="tab">Advantages</a></li>
           </ul>
         </div>
       </div>
@@ -471,25 +498,7 @@
 <p dir="ltr">- Reliable fastening to OEM clips plus extra hook-and-loop to the floor.</p>
 <p dir="ltr">- Easy to clean with a stream of water — dirt rinses out from the cells.</p>
 <p dir="ltr">- We guarantee high product quality.</p>
-</noindex></div></div><div class="tab-pane fade in  show" id="tab3" name="tab3" role="tabpanel"><div  class="widgetblock-installbearing widgetblock installbearing"><div class="container"><div class="row "><div class="col-md-6 col-xl-4"><div class="" >         <noindex><div class="item">
-<div class="img_wrapper"><img src="./static/images/price-constructor/sets/footrest.png"></div>
-<div ><div class="name">Step 1</div><div class="desc">Choose a comfortable position for the heel pad on the driver mat and fix it.</div></div>
-</div></noindex></div></div><div class="col-md-6 col-xl-4"><div class="" >         <noindex><div class="item">
-<div class="img_wrapper"><img src="./static/images/price-constructor/sets/footrest.png"></div>
-<div ><div class="name">Step 2</div><div class="desc">Press firmly from the back side to mark hole positions for the bolts.</div></div>
-</div></noindex></div></div><div class="col-md-6 col-xl-4"><div class="" >         <noindex><div class="item">
-<div class="img_wrapper"><img src="./static/images/price-constructor/sets/footrest.png"></div>
-<div ><div class="name">Step 3</div><div class="desc">Punch from the back side using a 3–5 mm awl or sharp tool.</div></div>
-</div></noindex></div></div><div class="col-md-6 col-xl-4"><div class="" >         <noindex><div class="item">
-<div class="img_wrapper"><img src="./static/images/price-constructor/sets/footrest.png"></div>
-<div ><div class="name">Step 4</div><div class="desc">Insert the heel pad from the front into the punched holes.</div></div>
-</div></noindex></div></div><div class="col-md-6 col-xl-4"><div class="" >         <noindex><div class="item">
-<div class="img_wrapper"><img src="./static/images/price-constructor/sets/footrest.png"></div>
-<div ><div class="name">Step 5</div><div class="desc">From the back side, insert and tighten the mounting bolts.</div></div>
-</div></noindex></div></div><div class="col-md-6 col-xl-4"><div class="" >         <noindex><div class="item">
-<div class="img_wrapper"><img src="./static/images/price-constructor/sets/footrest.png"></div>
-<div ><div class="name">The heel pad is installed and ready to use</div><div class="desc"></div></div>
-</div></noindex></div></div></div></div></div></div></div>
+</noindex></div></div>
       </div>
 
       <!-- Video about EVA mats -->
@@ -733,7 +742,7 @@
   <script defer src="./static/js/vendors/nice-select2/nice-select2.js"></script>
   <script defer src="./static/js/vendors/swiper/swiper-bundle.min.js"></script>
   <script defer src="./static/js/vendors/tingle/tingle.min.js"></script>
-  <script defer src="./static/js/configurator.js"></script>
+  <script defer src="./static/js/configurator.js?v1"></script>
   <script defer src="./static/js/cart-badge.js"></script>
   <script src="static/js/dist/burger.bundle.js"></script>
   <script defer src="static/js/dist/main.bundle.js"></script>

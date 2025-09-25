@@ -1,6 +1,34 @@
 {
-  "matColors": ["black", "gray", "blue", "brown", "red", "beige"],
-  "trimColors": ["black", "blue", "red", "gray", "beige", "brown"]
+  "matColors": [
+    "black",
+    "gray",
+    "blue",
+    "brown",
+    "red",
+    "beige",
+    "purple",
+    "orange",
+    "yellow",
+    "sand",
+    "cyan",
+    "green",
+    "navy"
+  ],
+  "trimColors": [
+    "black",
+    "blue",
+    "red",
+    "gray",
+    "beige",
+    "brown",
+    "purple",
+    "orange",
+    "yellow",
+    "sand",
+    "cyan",
+    "green",
+    "navy"
+  ]
 }
 
 

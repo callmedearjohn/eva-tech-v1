@@ -363,16 +363,29 @@ document.addEventListener('DOMContentLoaded', () => {
         const mainImg = document.getElementById('preview-image');
         const thumbs = document.querySelectorAll('.configurator__thumbnails img');
         if (state.matColor) {
-          const base = `./static/images/price-constructor/color-combinations/${state.matColor}-${state.trimColor||state.matColor}.jpg`;
-          if (mainImg) mainImg.src = base;
-          thumbs.forEach((t, idx)=>{ t.src = base.replace('.jpg', idx===0? '.jpg' : idx===1? '.jpg' : '.jpg'); });
+          const baseList = [
+            `./static/images/price-constructor/color-combinations/${state.matColor}-${state.trimColor||state.matColor}.jpg`,
+            `./static/images/price-constructor/color-combinations/${state.matColor}-${state.matColor}.jpg`,
+            `./static/images/price-constructor/color-combinations/${state.matColor}-black.jpg`,
+            `./static/images/work-examples/1.jpg`
+          ];
+          function tryNext(list){
+            if (!list.length) return;
+            const src = list[0];
+            if (mainImg) mainImg.src = src;
+            if (mainImg) {
+              mainImg.onerror = () => tryNext(list.slice(1));
+              mainImg.onload = () => { thumbs.forEach(t=> t.src = src); };
+            }
+          }
+          tryNext(baseList);
         }
       } catch(_) {}
     }
   }
 
   // Listeners
-  makeEl.addEventListener('change', async (e)=>{
+  if (makeEl) makeEl.addEventListener('change', async (e)=>{
     const makeId = e.target.value;
     state.make = e.target.options[e.target.selectedIndex]?.textContent || '';
     await loadModelsByMake(makeId);
@@ -380,14 +393,14 @@ document.addEventListener('DOMContentLoaded', () => {
     updateEligibility();
     syncSummary();
   });
-  modelEl.addEventListener('change', (e)=>{ state.model = e.target.value; updateEligibility(); syncSummary(); });
-  yearEl.addEventListener('change', (e)=>{ state.year = e.target.value; syncSummary(); });
-  matColorEl.addEventListener('change', (e)=>{ state.matColor = e.target.value; if(matSelectedLabel) matSelectedLabel.textContent = state.matColor.charAt(0).toUpperCase()+state.matColor.slice(1); try { const c=matSwatchList?.querySelector(`[data-color="${state.matColor}"]`); matSwatchList?.querySelectorAll('.swatch').forEach(s=>s.classList.remove('is-selected')); c&&c.classList.add('is-selected'); } catch(_){ } syncSummary(); });
-  trimColorEl.addEventListener('change', (e)=>{ state.trimColor = e.target.value; if(trimSelectedLabel) trimSelectedLabel.textContent = state.trimColor.charAt(0).toUpperCase()+state.trimColor.slice(1); try { const c=trimSwatchList?.querySelector(`[data-color="${state.trimColor}"]`); trimSwatchList?.querySelectorAll('.swatch').forEach(s=>s.classList.remove('is-selected')); c&&c.classList.add('is-selected'); } catch(_){ } syncSummary(); });
+  if (modelEl) modelEl.addEventListener('change', (e)=>{ state.model = e.target.value; updateEligibility(); syncSummary(); });
+  if (yearEl) yearEl.addEventListener('change', (e)=>{ state.year = e.target.value; syncSummary(); });
+  if (matColorEl) matColorEl.addEventListener('change', (e)=>{ state.matColor = e.target.value; if(matSelectedLabel) matSelectedLabel.textContent = state.matColor.charAt(0).toUpperCase()+state.matColor.slice(1); try { const c=matSwatchList?.querySelector(`[data-color="${state.matColor}"]`); matSwatchList?.querySelectorAll('.swatch').forEach(s=>s.classList.remove('is-selected')); c&&c.classList.add('is-selected'); } catch(_){ } syncSummary(); });
+  if (trimColorEl) trimColorEl.addEventListener('change', (e)=>{ state.trimColor = e.target.value; if(trimSelectedLabel) trimSelectedLabel.textContent = state.trimColor.charAt(0).toUpperCase()+state.trimColor.slice(1); try { const c=trimSwatchList?.querySelector(`[data-color="${state.trimColor}"]`); trimSwatchList?.querySelectorAll('.swatch').forEach(s=>s.classList.remove('is-selected')); c&&c.classList.add('is-selected'); } catch(_){ } syncSummary(); });
   $$('input[name="set"]').forEach(r=> r.addEventListener('change', (e)=>{ state.set = e.target.value; syncSummary(); }));
   $$('input[name="pattern"]').forEach(r=> r.addEventListener('change', (e)=>{ state.pattern = e.target.value; syncSummary(); }));
-  heelPadEl.addEventListener('change', (e)=>{ state.heelPad = e.target.checked; syncSummary(); });
-  thirdRowEl.addEventListener('change', (e)=>{ state.thirdRow = e.target.checked; syncSummary(); });
+  if (heelPadEl) heelPadEl.addEventListener('change', (e)=>{ state.heelPad = e.target.checked; syncSummary(); });
+  if (thirdRowEl) thirdRowEl.addEventListener('change', (e)=>{ state.thirdRow = e.target.checked; syncSummary(); });
 
   // Quantity controls
   if (qtyMinusBtn && qtyPlusBtn && qtyInput) {
@@ -397,15 +410,18 @@ document.addEventListener('DOMContentLoaded', () => {
     qtyInput.addEventListener('input', ()=>{ state.qty = clamp(Number(qtyInput.value)); qtyInput.value = state.qty; calcSubtotal(); });
   }
 
-  // Prefill from URL only (do not use localStorage; cart/order uses it)
+  // Prefill from URL, fallback to localStorage saved on homepage submit
   (function prefill(){
     const params = new URLSearchParams(location.search);
     const urlMake = params.get('make');
     const urlModel = params.get('model');
     const urlYear = params.get('year');
-    state.make = urlMake || '';
-    state.model = urlModel || '';
-    state.year = urlYear || '';
+    // fallback from localStorage
+    let ls = {};
+    try { ls = JSON.parse(localStorage.getItem('counstructorUserData')||'{}'); } catch(_){ ls = {}; }
+    state.make = urlMake || ls.carMake || '';
+    state.model = urlModel || ls.carModel || '';
+    state.year = urlYear || ls.carYear || '';
     if (state.year) {
       yearEl.value = state.year;
       try { __cfgYearNS && __cfgYearNS.update && __cfgYearNS.update(); } catch(_){}
@@ -417,25 +433,25 @@ document.addEventListener('DOMContentLoaded', () => {
         || Array.from(makeEl.options).find(o=> normalize(o.value)===normalize(state.make));
       if (makeOpt) {
         makeEl.value = makeOpt.value;
+        state.make = makeOpt.textContent || makeOpt.value;
         try { __cfgMakeNS && __cfgMakeNS.update && __cfgMakeNS.update(); } catch(_){ }
-        // Fire change so dependent logic runs
-        makeEl.dispatchEvent(new Event('change', { bubbles: true }));
-        // Ensure models for this make are loaded, then pick model
+        // Load models for this make (avoid double fetching and race)
         Promise.resolve(loadModelsByMake(makeOpt.value)).then(()=>{
-          if (state.model) {
-            let modelOpt = Array.from(modelEl.options).find(o=> normalize(o.textContent)===normalize(state.model))
-              || Array.from(modelEl.options).find(o=> normalize(o.value)===normalize(state.model));
-            if (!modelOpt) {
-              // Inject the model if API didn't return it yet
-              modelEl.insertAdjacentHTML('beforeend', `<option value="${state.model}">${state.model}</option>`);
-              modelOpt = Array.from(modelEl.options).find(o=> normalize(o.value)===normalize(state.model));
-            }
-            if (modelOpt) {
-              modelEl.value = modelOpt.value || modelOpt.textContent;
-              try { __cfgModelNS && __cfgModelNS.update && __cfgModelNS.update(); } catch(_){ }
-              modelEl.dispatchEvent(new Event('change', { bubbles: true }));
-              try { __cfgModelNS && __cfgModelNS.update && __cfgModelNS.update(); } catch(_){ }
-            }
+          if (!state.model) return;
+          const normalize = (s)=> String(s||'').toLowerCase().trim();
+          let modelOpt = Array.from(modelEl.options).find(o=> normalize(o.textContent)===normalize(state.model))
+            || Array.from(modelEl.options).find(o=> normalize(o.value)===normalize(state.model));
+          if (!modelOpt) {
+            // Inject the model if API didn't return it
+            modelEl.insertAdjacentHTML('beforeend', `<option value="${state.model}">${state.model}</option>`);
+            modelOpt = Array.from(modelEl.options).find(o=> normalize(o.value)===normalize(state.model));
+          }
+          if (modelOpt) {
+            modelEl.value = modelOpt.value || modelOpt.textContent;
+            state.model = modelOpt.value || modelOpt.textContent;
+            updateEligibility();
+            syncSummary();
+            try { __cfgModelNS && __cfgModelNS.update && __cfgModelNS.update(); } catch(_){ }
           }
         });
       }
@@ -443,8 +459,8 @@ document.addEventListener('DOMContentLoaded', () => {
   })();
 
   loadColors();
-  // Heel pad gift preselected
-  try { heelPadEl.checked = true; state.heelPad = true; } catch(_){}
+  // Heel pad gift preselected (checkbox may be hidden/removed)
+  try { if (heelPadEl) { heelPadEl.checked = true; } state.heelPad = true; } catch(_){ }
   loadEligibility();
   syncSummary();
 
@@ -489,7 +505,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!ensureVehicleSelected() || !ensureColorsSelected()) return;
     const module = await import('./cart.js');
     module.Cart.add({ ...toCartItem() });
-    window.location.href = '/order';
+    window.location.href = '/order.html';
   });
 
   // modal open on thumbnail click
