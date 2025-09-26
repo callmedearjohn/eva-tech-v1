@@ -544,6 +544,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function ensurePremiumPlusOption(){
+    return;
     try {
       // Show Premium+ only for car mats (not for Carsbag or Home mats)
       if (simpleMode) return;
@@ -648,17 +649,10 @@ document.addEventListener('DOMContentLoaded', () => {
       ? (paramsProduct === 'carsbag'
           ? { front: 'Size: M', full: 'Size: L' }
           : { front: 'Size: S (11.5 × 19.5)', full: 'Size: M (15.5 × 23.5)', complete: 'Size: L (19.5 × 26)', xl: 'Size: XL (24 × 32)' })
-      : { front: 'Front only (2 mats)', full: 'Full interior', complete: 'Complete set', premium_plus: 'Premium + — Front & 2d row & 3d row & Trunk' };
+      : { front: 'Front only (2 mats)', full: 'Full interior', complete: 'Complete set', premium_plus: 'Premium Plus — Full interior + Trunk' };
     const items = [];
     items.push(`${setNames[state.set]}`);
     if (!simpleMode) {
-      if (state.thirdRow) {
-        if (state.set === 'complete') {
-          items.push('3rd row included');
-        } else {
-          items.push(`3rd row add-on (+${THIRD_ROW_SURCHARGE}$)`);
-        }
-      }
       items.push(`Pattern: ${state.pattern}`);
     }
     items.push(`Mat: ${state.matColor || '—'}`);
@@ -695,6 +689,25 @@ document.addEventListener('DOMContentLoaded', () => {
     // Keep gallery as in-car photos; do not swap to isolated color-combo images
   }
 
+  // Inline validation helpers for vehicle selects
+  function getNiceSelectWrap(el){
+    const sib = el && el.nextElementSibling;
+    return sib && sib.classList && sib.classList.contains('nice-select') ? sib : null;
+  }
+  function setInvalid(el, invalid){
+    if (!el) return;
+    el.classList.toggle('cfg-invalid', Boolean(invalid));
+    const wrap = getNiceSelectWrap(el);
+    if (wrap) wrap.classList.toggle('cfg-invalid', Boolean(invalid));
+  }
+  function focusInvalid(el){
+    if (!el) return;
+    const wrap = getNiceSelectWrap(el) || el;
+    try { wrap.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch(_){ }
+    try { el.focus && el.focus(); } catch(_){ }
+    try { wrap.classList.add('cfg-shake'); setTimeout(()=> wrap.classList.remove('cfg-shake'), 500); if (wrap !== el) wrap.click(); } catch(_){ }
+  }
+
   // Listeners
   if (makeEl) makeEl.addEventListener('change', async (e)=>{
     const makeId = e.target.value;
@@ -703,9 +716,11 @@ document.addEventListener('DOMContentLoaded', () => {
     state.model = '';
     updateEligibility();
     syncSummary();
+    setInvalid(makeEl, false);
+    if (requireVehicleMsg) requireVehicleMsg.style.display = 'none';
   });
-  if (modelEl) modelEl.addEventListener('change', (e)=>{ state.model = e.target.value; updateEligibility(); syncSummary(); });
-  if (yearEl) yearEl.addEventListener('change', (e)=>{ state.year = e.target.value; updateEligibility(); syncSummary(); });
+  if (modelEl) modelEl.addEventListener('change', (e)=>{ state.model = e.target.value; updateEligibility(); syncSummary(); setInvalid(modelEl, false); if (requireVehicleMsg) requireVehicleMsg.style.display = 'none'; });
+  if (yearEl) yearEl.addEventListener('change', (e)=>{ state.year = e.target.value; updateEligibility(); syncSummary(); setInvalid(yearEl, false); if (requireVehicleMsg) requireVehicleMsg.style.display = 'none'; });
   if (matColorEl) matColorEl.addEventListener('change', (e)=>{ state.matColor = e.target.value; if(matSelectedLabel) matSelectedLabel.textContent = state.matColor.charAt(0).toUpperCase()+state.matColor.slice(1); try { const c=matSwatchList?.querySelector(`[data-color="${state.matColor}"]`); matSwatchList?.querySelectorAll('.swatch').forEach(s=>s.classList.remove('is-selected')); c&&c.classList.add('is-selected'); } catch(_){ } syncSummary(); });
   if (trimColorEl) trimColorEl.addEventListener('change', (e)=>{ state.trimColor = e.target.value; if(trimSelectedLabel) trimSelectedLabel.textContent = state.trimColor.charAt(0).toUpperCase()+state.trimColor.slice(1); try { const c=trimSwatchList?.querySelector(`[data-color="${state.trimColor}"]`); trimSwatchList?.querySelectorAll('.swatch').forEach(s=>s.classList.remove('is-selected')); c&&c.classList.add('is-selected'); } catch(_){ } syncSummary(); });
   $$('input[name="set"]').forEach(r=> r.addEventListener('change', (e)=>{ state.set = e.target.value; try { updateThirdRowLabel(); } catch(_){} syncSummary(); }));
@@ -793,11 +808,22 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   function ensureVehicleSelected(){
     if (simpleMode) return true;
-    const ok = Boolean(state.make && state.model && state.year);
-    if (!ok) {
-      alert('Please select Make, Model and Year first.');
+    // clear previous marks
+    [makeEl, modelEl, yearEl].forEach((el)=> setInvalid(el, false));
+    if (requireVehicleMsg) requireVehicleMsg.style.display = 'none';
+
+    const missing = [];
+    if (!state.make) missing.push(makeEl);
+    if (!state.model) missing.push(modelEl);
+    if (!state.year) missing.push(yearEl);
+
+    if (missing.length) {
+      missing.forEach((el)=> setInvalid(el, true));
+      if (requireVehicleMsg) requireVehicleMsg.style.display = '';
+      focusInvalid(missing[0]);
+      return false;
     }
-    return ok;
+    return true;
   }
   function ensureColorsSelected(){
     const missing = [];
@@ -819,23 +845,66 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!ensureVehicleSelected() || !ensureColorsSelected()) return;
     const module = await import('./cart.js');
     module.Cart.add({ ...toCartItem() });
-    window.location.href = '/order.html';
+    window.location.href = '/cart';
   });
 
-  // modal open on thumbnail click
-  (function enableModal(){
-    const thumbs = document.querySelectorAll('.configurator__thumbnails img, .configurator__main-image img');
-    function openModal(src){
-      if (window.tingle) {
-        const modal = new tingle.modal({ footer: false, closeMethods: ['overlay','escape','button'] });
-        modal.setContent(`<img src="${src}" style="max-width:100%;height:auto;display:block;margin:0 auto;" alt="">`);
-        modal.open();
-      } else {
-        // fallback
-        const w = window.open(src, '_blank'); if (w) w.focus();
-      }
+  // Mobile lightbox with swipe + gentle animation
+  (function enableMobileLightbox(){
+    const mql = window.matchMedia('(max-width: 768px)');
+    const lightbox = document.getElementById('mobile-lightbox');
+    const closeBtn = lightbox ? lightbox.querySelector('.mobile-lightbox__close') : null;
+    const wrap = lightbox ? lightbox.querySelector('.swiper-wrapper') : null;
+    let swiper;
+
+    function getGallerySources(){
+      const imgs = Array.from(document.querySelectorAll('.configurator__thumbnails img'));
+      return imgs.map(i=> i.src);
     }
-    thumbs.forEach(el=> el.addEventListener('click', ()=> openModal(el.src)));
+    function openAt(index){
+      if (!lightbox || !wrap) return;
+      const srcs = getGallerySources();
+      wrap.innerHTML = srcs.map(s=> `<div class="swiper-slide"><img src="${s}" alt=""></div>`).join('');
+      if (swiper) { try { swiper.destroy(true, true); } catch(_){} swiper = null; }
+      swiper = new Swiper('.mobile-lightbox__swiper', {
+        initialSlide: Math.max(0, Math.min(index, srcs.length-1)),
+        navigation: { nextEl: '.mobile-lightbox .swiper-button-next', prevEl: '.mobile-lightbox .swiper-button-prev' },
+        spaceBetween: 12
+      });
+      lightbox.classList.add('is-open');
+      lightbox.setAttribute('aria-hidden', 'false');
+    }
+    function close(){
+      if (!lightbox) return;
+      lightbox.classList.remove('is-open');
+      lightbox.setAttribute('aria-hidden', 'true');
+      if (swiper) { try { swiper.destroy(true, true); } catch(_){} swiper = null; }
+    }
+
+    if (closeBtn) closeBtn.addEventListener('click', close);
+    if (lightbox) lightbox.addEventListener('click', (e)=>{ if (e.target === lightbox) close(); });
+
+    // Hook thumbnail clicks on mobile only
+    function bindThumbs(){
+      const thumbs = document.querySelectorAll('.configurator__thumbnails img, .configurator__main-image img');
+      thumbs.forEach((el, idx)=>{
+        el.addEventListener('click', (ev)=>{
+          if (mql.matches) {
+            ev.preventDefault();
+            openAt(idx);
+          } else {
+            // desktop: keep existing tingle fallback (if present)
+            if (window.tingle) {
+              const modal = new tingle.modal({ footer:false, closeMethods:['overlay','escape','button'] });
+              modal.setContent(`<img src="${el.src}" style="max-width:100%;height:auto;display:block;margin:0 auto;" alt="">`);
+              modal.open();
+            } else {
+              const w = window.open(el.src, '_blank'); if (w) w.focus();
+            }
+          }
+        });
+      });
+    }
+    bindThumbs();
   })();
 });
 

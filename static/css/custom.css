@@ -270,3 +270,14 @@ section#products { padding-top: 1.25rem; padding-bottom: 1.25rem; }
   /* Give the hero card a slightly taller visual */
   #products .advantage__item:first-child > img { height: 260px; }
 }
+
+/* FAQ mobile tweaks: make question titles smaller on small screens */
+@media (max-width: 768px) {
+  .faq__item-title { font-size: 16px; }
+}
+@media (max-width: 560px) {
+  .faq__item-title { font-size: 14px; }
+}
+@media (max-width: 400px) {
+  .faq__item-title { font-size: 13px; }
+}

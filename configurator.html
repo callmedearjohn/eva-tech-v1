@@ -17,28 +17,22 @@
   <script type="text/javascript" src="https://www.prime-avto.ru/assets/top.js?ver=fe96abef9e3c147f44af97f20cb47252"></script>
 
   <style>
-    @media (max-width: 768px) {
-  .configurator__main-image { height: 400px !important; }
-}
 
-@media (max-width: 576px) {
-  .configurator__main-image { height: 320px !important; }
-}
-
-@media (max-width: 420px) {
-  .configurator__main-image { height: 280px !important; }
-}
     @media (max-width: 768px) {
       .goodcard .row > [class*="col-md-"],
       .goodcard .row > [class*="col-xl-"] {
         width: 100% !important;
         max-width: 100% !important;
       }
+      /* Preview block stacks vertically on mobile: main image on top, thumbnails below */
       .image_container_constructor,
-      #image_container_constructor,
+      #image_container_constructor { display: block; }
       .configurator__thumbnails { display: flex; gap: 8px; overflow-x: auto; padding: 8px 0; }
       .configurator__thumbnails img { width: 96px; height: 72px; object-fit: cover; flex: 0 0 auto; }
       .summary-card { margin-top: 16px; }
+      /* Mobile compaction: reduce vertical gaps so preview + colors fit on one screen */
+      .mt-5 { margin-top: 8px !important; }
+      .cfg-block { margin-bottom: 12px !important; }
       .top-products img { width: 88px !important; height: 88px !important; }
       .side-products .button { padding: 6px 10px; font-size: 12px; }
     }
@@ -121,7 +115,7 @@
           </a>
           <nav class="about-info__menu">
             <ul class="menu__nav-list">
-              <li class="nav__list-item"><a href="#home" class="nav__list-link">Home</a></li>
+              <li class="nav__list-item"><a href="/" class="nav__list-link">Home</a></li>
               <li class="nav__list-item"><a href="about-product" class="nav__list-link">What is Eva?</a></li>
               <li class="nav__list-item"><a href="/#products" class="nav__list-link">Products</a></li>
               <li class="nav__list-item"><a href="warantly" class="nav__list-link">Warranty</a></li>
@@ -202,7 +196,6 @@
                     <img src="./static/images/work-examples/5.jpg" alt="thumb">
                     <img src="./static/images/work-examples/6.jpg" alt="thumb">
                     <img src="./static/images/price-constructor/PIC2.jpg" alt="thumb">
-                    <img src="./static/images/price-constructor/PIC3.PNG" alt="thumb">
                     <img src="./static/images/price-constructor/PIC4.jpg" alt="thumb">
                   </div>
                 </div>
@@ -263,11 +256,6 @@
                             <span class="price-line"><span class="price-old">239$</span><span>219$</span><span class="badge-promo">Promo</span></span>
                           </span>
                         </label>
-                        <!-- 3rd row moved into Set block (visible only for eligible vehicles) -->
-                        <label class="cfg-radio" id="third-row-container" style="display:none;">
-                          <input type="checkbox" id="cfg-third-row">
-                          <span>3rd row (+50$)</span>
-                        </label>
                       </div>
                     </div>
                     <div class="cfg-block">
@@ -301,7 +289,6 @@
                         <input type="checkbox" id="cfg-hybrid">
                         <span>Hybrid</span>
                       </label>
-                      <!-- 3rd row control moved to the Set block above -->
                     </div>
                   </div>
                 </div>
@@ -377,7 +364,7 @@
                     <ul class="ul order_buttons">
                       <div class="summary-actions">
                         <button id="summary-add" class="order_button btn">Add to cart</button>
-                        <button id="summary-buy" class="oneclick btn">Buy now</button>
+                        <button id="summary-buy" class="oneclick btn">Buy in 1 click</button>
                       </div>
                       <div class="payments-logos" aria-label="Accepted payment methods">
                         <!-- Inline brand marks -->
@@ -772,7 +759,7 @@
     </div>
     <nav class="header__menu-nav">
       <ul class="header__menu-items">
-        <li class="header__menu-item"><a href="#home">Home</a></li>
+        <li class="header__menu-item"><a href="/">Home</a></li>
         <li class="header__menu-item"><a href="about-product">What is Eva?</a></li>
         <li class="header__menu-item"><a href="/#products">Products</a></li>
         <li class="header__menu-item"><a href="warantly">Warranty</a></li>
@@ -802,6 +789,59 @@
   <script src="static/js/dist/burger.bundle.js"></script>
   <script defer src="static/js/dist/main.bundle.js"></script>
   <script defer src="static/js/dist/faq.bundle.js"></script>
+  <div id="mobile-lightbox" class="mobile-lightbox" aria-hidden="true">
+    <button type="button" class="mobile-lightbox__close" aria-label="Close">✕</button>
+    <div class="mobile-lightbox__content">
+      <div class="swiper mobile-lightbox__swiper">
+        <div class="swiper-wrapper"></div>
+        <div class="swiper-button-prev about-btn"></div>
+        <div class="swiper-button-next about-btn"></div>
+      </div>
+    </div>
+  </div>
+  <script>
+    // Move the Colors block directly under the preview on mobile to reduce scrolling
+    (function moveColorsUnderPreview(){
+      function init(){
+        try {
+          var colorsTitle = Array.from(document.querySelectorAll('.cfg-title')).find(function(el){ return /colors/i.test(el.textContent||''); });
+          var colorsBlock = colorsTitle ? colorsTitle.closest('.cfg-block') : null;
+          var leftCol = document.getElementById('left-col');
+          var preview = document.querySelector('.image_container_constructor');
+          if (!colorsBlock || !leftCol || !preview) return;
+          var origin = document.getElementById('colors-block-origin');
+          if (!origin) {
+            origin = document.createElement('div');
+            origin.id = 'colors-block-origin';
+            origin.style.display = 'none';
+            colorsBlock.parentNode.insertBefore(origin, colorsBlock);
+          }
+          var mql = window.matchMedia('(max-width: 768px)');
+          function update(){
+            try {
+              if (mql.matches) {
+                // place after the preview/gallery in the left column
+                var after = preview.nextSibling;
+                if (leftCol && colorsBlock && colorsBlock.parentNode !== leftCol) {
+                  if (after) leftCol.insertBefore(colorsBlock, after);
+                  else leftCol.appendChild(colorsBlock);
+                }
+              } else {
+                // restore on desktop
+                if (origin && origin.parentNode && origin.nextSibling !== colorsBlock) {
+                  origin.parentNode.insertBefore(colorsBlock, origin.nextSibling);
+                }
+              }
+            } catch(_) {}
+          }
+          update();
+          if (mql.addEventListener) mql.addEventListener('change', update);
+          else window.addEventListener('resize', update);
+        } catch(_) {}
+      }
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+    })();
+  </script>
   <script>
     // Move the title, rating, and only the "Your vehicle" block into the left column on small screens
     (function mobileVehicleBlock(){

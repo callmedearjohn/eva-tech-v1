@@ -26,6 +26,13 @@ document.addEventListener('click', (e) => {
   } else if (e.target.matches('.close-btn')) {
     menu.classList.remove('header__menu-mobile--active');
     document.body.style.overflow = '';
+  } else if (e.target.closest('.header__menu-mobile a[href^="#"]')) {
+    // Close mobile menu when clicking hash links like #products
+    const link = e.target.closest('a');
+    if (link && link.getAttribute('href') === '#products') {
+      menu.classList.remove('header__menu-mobile--active');
+      document.body.style.overflow = '';
+    }
   }
 })
 

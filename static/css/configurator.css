@@ -68,20 +68,28 @@
   .summary-actions { grid-template-columns: 1fr; }
 }
 
-@media (max-width: 768px) {
-  .configurator__main-image { height: 400px !important; }
-}
-
-@media (max-width: 576px) {
-  .configurator__main-image { height: 320px !important; }
-}
-
-@media (max-width: 420px) {
-  .configurator__main-image { height: 280px !important; }
-}
-
 /* Improve selects appearance with NiceSelect fallback */
 .constructor-step__select { min-height: 42px; }
 .select__arow { background-position: right 10px center; }
 
 
+/* Mobile lightbox for gallery */
+@media (max-width: 768px) {
+  .mobile-lightbox { position: fixed; inset: 0; background: rgba(0,0,0,.8); display: none; align-items:center; justify-content:center; z-index: 9999; }
+  .mobile-lightbox.is-open { display:flex; animation: lb-fade .25s ease forwards; }
+  .mobile-lightbox__content { width: 92vw; max-width: 520px; border-radius: 10px; overflow: hidden; background: #000; transform: scale(.92); opacity: 0; animation: lb-zoom .25s ease forwards; }
+  .mobile-lightbox__close { position:absolute; right:12px; top:12px; width:36px; height:36px; border-radius:18px; background:rgba(255,255,255,.9); color:#111; display:flex; align-items:center; justify-content:center; z-index: 2; }
+  .mobile-lightbox .swiper { width: 100%; height: 100%; }
+  .mobile-lightbox .swiper-slide { display:flex; align-items:center; justify-content:center; }
+  .mobile-lightbox .swiper-slide img { max-width:100%; max-height:80vh; height:auto; display:block; }
+  @keyframes lb-zoom { to { transform: scale(1); opacity: 1; } }
+  @keyframes lb-fade { from { opacity: 0; } to { opacity: 1; } }
+}
+
+/* Inline validation for vehicle selects */
+.cfg-invalid { outline: 2px solid #d93025 !important; border-color: #d93025 !important; }
+.nice-select.cfg-invalid { border-color: #d93025 !important; box-shadow: 0 0 0 2px rgba(217,48,37,.15); }
+
+/* Subtle attention animation when jumping to the first invalid input */
+@keyframes cfg-shake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-3px); } 75% { transform: translateX(3px); } }
+.cfg-shake { animation: cfg-shake .4s ease; }

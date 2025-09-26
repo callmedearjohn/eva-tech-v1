@@ -43,6 +43,10 @@
     /* Ensure social dropdown is truly non-interactive when hidden */
     .social__list.fadeOut { display: none; pointer-events: none; }
     .social__list.fadeIn { display: block; pointer-events: auto; }
+    /* Inline validation visuals (shared across inputs/labels) */
+    .cart-invalid { outline: 2px solid #d93025 !important; border-color: #d93025 !important; color:#d93025 !important; }
+    @keyframes cart-shake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-3px); } 75% { transform: translateX(3px); } }
+    .cart-shake { animation: cart-shake .4s ease; }
     @media (max-width: 900px){ .basket_wrapper { grid-template-columns: 1fr; } .s{ position:static; } }
     @media (max-width: 720px){
       .basket-table, .basket-table thead, .basket-table tbody, .basket-table tr, .basket-table th, .basket-table td { display:block; width:100%; }
@@ -64,7 +68,7 @@
         </a>
         <nav class="about-info__menu">
           <ul class="menu__nav-list">
-            <li class="nav__list-item"><a href="#home" class="nav__list-link">Home</a></li>
+            <li class="nav__list-item"><a href="/" class="nav__list-link">Home</a></li>
             <li class="nav__list-item"><a href="about-product" class="nav__list-link">What is Eva?</a></li>
             <li class="nav__list-item"><a href="/#products" class="nav__list-link">Products</a></li>
             <li class="nav__list-item"><a href="warantly" class="nav__list-link">Warranty</a></li>
@@ -137,7 +141,7 @@
                   <div><span>Total</span><span>$<span id="cart-total">0</span></span></div>
                 </div>
                 <div style="margin-top:12px">
-                  <label style="display:inline-flex; align-items:center; gap:6px; font-size:14px;">
+                  <label id="agreement-label" style="display:inline-flex; align-items:center; gap:6px; font-size:14px;">
                     <input type="checkbox" id="agree-terms"> I agree to the <a href="privacyPolicy">Terms and Conditions</a>
                   </label>
                 </div>
@@ -208,7 +212,7 @@
     </div>
     <nav class="header__menu-nav">
       <ul class="header__menu-items">
-        <li class="header__menu-item"><a href="#home">Home</a></li>
+        <li class="header__menu-item"><a href="/">Home</a></li>
         <li class="header__menu-item"><a href="about-product">What is Eva?</a></li>
         <li class="header__menu-item"><a href="/#products">Products</a></li>
         <li class="header__menu-item"><a href="warantly">Warranty</a></li>
@@ -239,6 +243,7 @@
     const taxEl = document.getElementById('cart-tax');
     const promoInput = document.getElementById('promo-code');
     const applyPromoBtn = document.getElementById('apply-promo');
+    const paypalContainer = document.getElementById('paypal-button-container');
     let taxCfg = { type:'percent', value:0 };
     try { const r = await fetch('static/data/tax.json'); taxCfg = await r.json(); } catch(_){ }
     const ADDON_CARSBAG_PRICE = 45;
@@ -261,6 +266,21 @@
     function render(){
       const items = Cart.list();
       rowsEl.innerHTML = '';
+      // Empty-cart UX: show message and block checkout/payment
+      if (!items.length) {
+        rowsEl.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:24px 8px; color:#666;">Your cart is empty. <a href="/configurator">Build your mats</a> or <a href="/">continue shopping</a>.</td></tr>';
+        shipPriceEl.textContent = '0';
+        if (discountEl) discountEl.textContent = '0';
+        if (taxEl) taxEl.textContent = '0';
+        totalEl.textContent = '0.00';
+        try { document.getElementById('cart-freeship').style.display = 'none'; } catch(_){ }
+        try { document.getElementById('ship-note').style.display = 'none'; } catch(_){ }
+        try { paypalContainer && (paypalContainer.style.display = 'none'); } catch(_){ }
+        try { if (window.updateCartBadge) window.updateCartBadge(); } catch(_){}
+        return;
+      } else {
+        try { paypalContainer && (paypalContainer.style.display = ''); } catch(_){ }
+      }
       items.forEach((it, idx)=>{
         const tr = document.createElement('tr');
         const imgSrc = it.product === 'carsbag' ? './static/images/car-bags/bag-1.jpg' : (it.product === 'home' ? './static/images/home-mats/mat-1.jpg' : `./static/images/price-constructor/color-combinations/${it.matColor}-${it.trimColor||it.matColor}.jpg`);
@@ -332,7 +352,11 @@
     if (applyPromoBtn) {
       applyPromoBtn.addEventListener('click', async ()=>{
         const code = (promoInput.value||'').trim();
-        if (!code) return;
+        if (!code) {
+          try { promoInput.classList.add('cart-invalid','cart-shake'); setTimeout(()=> promoInput.classList.remove('cart-shake'), 500); promoInput.scrollIntoView({behavior:'smooth', block:'center'}); promoInput.focus(); } catch(_){ }
+          return;
+        }
+        try { promoInput.classList.remove('cart-invalid'); } catch(_){ }
         try {
           const amountBeforeTaxShip = Cart.total();
           const res = await fetch('promo.php', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ promoCode: code, totalAmount: amountBeforeTaxShip }) });
@@ -341,11 +365,13 @@
             discountPercent = Number(data.discount||0);
             appliedPromo = code;
             render();
-            alert('Promo applied');
+            // subtle success feedback
+            try { applyPromoBtn.textContent = 'Applied'; setTimeout(()=> applyPromoBtn.textContent = 'Apply', 1200); } catch(_){ }
           } else {
-            alert(data?.message || 'Invalid code');
+            // show invalid state for wrong code
+            try { promoInput.classList.add('cart-invalid','cart-shake'); setTimeout(()=> promoInput.classList.remove('cart-shake'), 500); } catch(_){ }
           }
-        } catch(err){ alert('Failed to apply code'); }
+        } catch(err){ try { promoInput.classList.add('cart-invalid','cart-shake'); setTimeout(()=> promoInput.classList.remove('cart-shake'), 500); } catch(_){} }
       });
     }
     // render initial
@@ -385,13 +411,24 @@
     if (window.paypal) {
       paypal.Buttons({
         onClick: function(data, actions) {
+          // Block checkout if cart is empty
+          try {
+            if (!Cart.list().length) {
+              const tbl = document.querySelector('.basket-table');
+              tbl && tbl.classList.add('cart-shake');
+              setTimeout(()=> tbl && tbl.classList.remove('cart-shake'), 500);
+              return actions.reject();
+            }
+          } catch(_){ }
           const agree = document.getElementById('agree-terms');
+          const label = document.getElementById('agreement-label');
+          // inline validation for agreement checkbox
           if (agree && !agree.checked) {
-            alert('Please agree to the Terms and Conditions.');
-            const link = document.getElementById('open-terms');
-            if (link) link.click();
+            try { label && label.classList.add('cart-invalid','cart-shake'); setTimeout(()=> label && label.classList.remove('cart-shake'), 500); } catch(_){ }
+            try { label && label.scrollIntoView({ behavior:'smooth', block:'center' }); } catch(_){ }
             return actions.reject();
           }
+          try { label && label.classList.remove('cart-invalid'); } catch(_){ }
           return actions.resolve();
         },
         createOrder: function(data, actions) {

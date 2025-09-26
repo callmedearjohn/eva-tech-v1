@@ -1,5 +1,10 @@
 [
     {
+        "code": "PROMO10",
+        "discountValue": 10,
+        "expirationDate": "2030-12-31"
+    },
+    {
         "code": "PROMO25",
         "discountValue": 25,
         "expirationDate": "2024-12-31"

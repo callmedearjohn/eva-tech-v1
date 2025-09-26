@@ -5,8 +5,11 @@ header('Content-Type: application/json');
 $promoCodes = json_decode(file_get_contents('promoCodes.json'), true);
 
 function validatePromoCode($code, $promoCodes) {
-    foreach ($promoCodes as &$promo) {
-        if ($promo['code'] === $code && new DateTime($promo['expirationDate']) >= new DateTime()) {
+    $needle = strtoupper(trim((string)$code));
+    foreach ($promoCodes as $promo) {
+        $pcode = strtoupper(trim((string)($promo['code'] ?? '')));
+        $expires = isset($promo['expirationDate']) ? new DateTime($promo['expirationDate']) : null;
+        if ($pcode === $needle && $expires && $expires >= new DateTime()) {
             return $promo;
         }
     }
