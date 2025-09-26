@@ -246,6 +246,18 @@
     const FREE_SHIP_THRESHOLD = 100;
     let discountPercent = 0; // applied promo discount (percent)
     let appliedPromo = '';
+
+    // Map UI colors to asset filenames (same mapping as configurator)
+    function getMatAssetKey(color){
+      const n = String(color || '').toLowerCase();
+      const map = { 'black':'black', 'gray':'gray', 'grey':'gray', 'beige':'beg', 'brown':'brown', 'blue':'blue', 'red':'red', 'orange':'red' };
+      return map[n] || '';
+    }
+    function getTrimAssetKey(color){
+      const n = String(color || '').toLowerCase();
+      const map = { 'black':'black', 'light-grey':'lightgray', 'grey':'darkgray', 'gray':'darkgray', 'orange':'orange', 'red':'red', 'blue':'blue', 'yellow':'yellow', 'velvet':'black' };
+      return map[n] || '';
+    }
     function render(){
       const items = Cart.list();
       rowsEl.innerHTML = '';
@@ -261,10 +273,25 @@
           : `${title || productName} — ${it.set} | ${it.pattern} | ${it.matColor}/${it.trimColor||it.matColor} ${it.thirdRow ? '| 3rd row' : ''} ${it.heelPad ? '| heel pad' : ''}`;
         const colorDot = it.matColor ? `<span class="basketcolor" style="background:${it.matColor}"></span>` : '';
         const trimDot = it.trimColor ? `<span class="basketcolor" style="background:${it.trimColor}"></span>` : '';
+        // Build layered image preview for car mats when available; fallback to combo photo
+        let imgHtml = '';
+        if (!isSimple) {
+          const matKey = getMatAssetKey(it.matColor);
+          const trimKey = getTrimAssetKey(it.trimColor || it.matColor);
+          const matLayerSrc = matKey ? `./static/images/price-constructor/mats/${matKey}.png` : '';
+          const trimLayerSrc = trimKey ? `./static/images/price-constructor/trims/${trimKey}.png` : '';
+          if (matLayerSrc || trimLayerSrc) {
+            imgHtml = `<div class="basket_img">${matLayerSrc?`<img src="${matLayerSrc}" alt="${productName} mat">`:''}${trimLayerSrc?`<img src="${trimLayerSrc}" alt="${productName} trim">`:''}</div>`;
+          } else {
+            imgHtml = `<div class=\"basket_img\"><img src=\"${imgSrc}\" alt=\"${productName}\"></div>`;
+          }
+        } else {
+          imgHtml = `<div class=\"basket_img\"><img src=\"${imgSrc}\" alt=\"${productName}\"></div>`;
+        }
         tr.innerHTML = `
           <td>
             <div class="bnameim">
-              <div><div class="basket_img"><img src="${imgSrc}" alt="${productName}"></div></div>
+              <div>${imgHtml}</div>
               <div>${detail}<br>
                 <div class="desc_wrapper"><span class="opt_desc"><span>Colour:</span> ${colorDot}</span><span class="opt_desc"><span>Edging colour:</span> ${trimDot || colorDot}</span></div>
               </div>

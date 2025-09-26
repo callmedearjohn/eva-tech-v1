@@ -11,12 +11,23 @@
   <link rel="stylesheet" href="./static/css/hero-selector.css">
   <link rel="stylesheet" href="./static/css/style.min.css">
   <link rel="stylesheet" href="./static/css/custom.css?v=20250925">
-  <link rel="stylesheet" href="./static/css/configurator.css">
+  <link rel="stylesheet" href="./static/css/configurator.css?v1">
   <link rel="stylesheet" href="./static/css/individual.css">
   <link rel="stylesheet" href="./static/css/widget.css">
   <script type="text/javascript" src="https://www.prime-avto.ru/assets/top.js?ver=fe96abef9e3c147f44af97f20cb47252"></script>
 
   <style>
+    @media (max-width: 768px) {
+  .configurator__main-image { height: 400px !important; }
+}
+
+@media (max-width: 576px) {
+  .configurator__main-image { height: 320px !important; }
+}
+
+@media (max-width: 420px) {
+  .configurator__main-image { height: 280px !important; }
+}
     @media (max-width: 768px) {
       .goodcard .row > [class*="col-md-"],
       .goodcard .row > [class*="col-xl-"] {
@@ -25,12 +36,8 @@
       }
       .image_container_constructor,
       #image_container_constructor,
-      .configurator__main-image { display:block !important; }
-      .configurator__main-image { margin-bottom: 10px; }
-      .configurator__main-image img#preview-image { width: 100%; height: auto; display:block; }
       .configurator__thumbnails { display: flex; gap: 8px; overflow-x: auto; padding: 8px 0; }
       .configurator__thumbnails img { width: 96px; height: 72px; object-fit: cover; flex: 0 0 auto; }
-      .configurator__main-image img { width: 100%; height: auto; }
       .summary-card { margin-top: 16px; }
       .top-products img { width: 88px !important; height: 88px !important; }
       .side-products .button { padding: 6px 10px; font-size: 12px; }
@@ -183,8 +190,9 @@
                   </div>
                   <!-- Configurator preview injected here so configurator.js updates are visible -->
                   <div class="configurator__main-image">
-                    <img id="preview-image" src="./static/images/work-examples/1.jpg" alt="Preview">
                     <div id="pattern-overlay" class="pattern-overlay"></div>
+                    <div class="layer mat-layer-wrap"><img id="mat-layer" alt=""></div>
+                    <div class="layer trim-layer-wrap"><img id="trim-layer" alt=""></div>
                   </div>
                   <div class="configurator__thumbnails">
                     <img src="./static/images/work-examples/1.jpg" alt="thumb">

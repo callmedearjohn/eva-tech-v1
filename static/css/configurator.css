@@ -7,8 +7,8 @@
 
 .configurator__preview img { width: 100%; border-radius: 8px; }
 .pattern-overlay { position:absolute; inset:0; pointer-events:none; background-size: 160px auto; opacity:.25; mix-blend-mode:multiply; border-radius:8px; }
-.configurator__main-image { position:relative; text-align:center; }
-.configurator__main-image img { max-width:520px; width:100%; height:auto; display:inline-block; }
+.configurator__main-image { position:relative; text-align:center;height:500px; width: 100%;}
+.configurator__main-image img { max-width:520px; width:100%; display:inline-block; }
 .configurator__thumbnails { display:flex; gap:.5rem; margin-top:.5rem; flex-wrap:wrap; }
 .configurator__thumbnails img { width: 80px; height: 60px; object-fit: cover; border-radius:6px; cursor:pointer; }
 
@@ -66,6 +66,18 @@
   .configurator__grid { grid-template-columns: 1fr; }
   .cfg-row { grid-template-columns: 1fr; }
   .summary-actions { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 768px) {
+  .configurator__main-image { height: 400px !important; }
+}
+
+@media (max-width: 576px) {
+  .configurator__main-image { height: 320px !important; }
+}
+
+@media (max-width: 420px) {
+  .configurator__main-image { height: 280px !important; }
 }
 
 /* Improve selects appearance with NiceSelect fallback */

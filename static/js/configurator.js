@@ -319,7 +319,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Allowed colors (filter any sources to these lists)
   const ALLOWED_MAT_COLORS = ['black','grey','beige','red','brown','blue','orange'];
-  const ALLOWED_TRIM_COLORS = ['black','light-grey','orange','velvet','red','blue','yellow'];
+  const ALLOWED_TRIM_COLORS = [
+    'black','light-grey','darkgray','lightgray','grey','gray',
+    'orange','red','blue','yellow','brown',
+    'darkblue','darkgreen','salad','biruz','gold','pink','violet','velvet'
+  ];
 
   // Colors from JSON (fallback to defaults)
   async function loadColors() {
@@ -347,7 +351,16 @@ document.addEventListener('DOMContentLoaded', () => {
   function buildSwatches(container, colors, type){
     if (!container) return;
     container.innerHTML = '';
-    const colorToHex = { black:'#000000', gray:'#d9d9d9', grey:'#d9d9d9', 'light-grey':'#e5e5e5', blue:'#2b61c8', brown:'#8a5b3c', red:'#ff1a13', beige:'#dcc48e', purple:'#6f1d8a', orange:'#ffa000', yellow:'#ffee00', sand:'#d7c190', cyan:'#4db3c8', green:'#2c7a0b', navy:'#0d2a52', velvet:'#333333' };
+    const colorToHex = {
+      black:'#000000', gray:'#d9d9d9', grey:'#d9d9d9', 'light-grey':'#e5e5e5', lightgray:'#e5e5e5', darkgray:'#777777',
+      blue:'#2b61c8', darkblue:'#124b9a',
+      brown:'#8a5b3c', red:'#ff1a13', orange:'#ffa000', yellow:'#ffee00',
+      beige:'#dcc48e', sand:'#d7c190',
+      green:'#2c7a0b', darkgreen:'#185c2e', salad:'#7bc96f',
+      cyan:'#4db3c8', biruz:'#2bb3a3',
+      pink:'#ff5e9c', violet:'#6f1d8a', navy:'#0d2a52', gold:'#d4af37',
+      velvet:'#333333'
+    };
     colors.forEach((c)=>{
       const sw = document.createElement('button');
       sw.type = 'button';
@@ -371,6 +384,120 @@ document.addEventListener('DOMContentLoaded', () => {
       });
       container.appendChild(sw);
     });
+  }
+
+  // Map UI colors to asset filenames
+  function getMatAssetKey(color){
+    const n = String(color || '').toLowerCase();
+    const map = {
+      'black': 'black',
+      'gray': 'gray',
+      'grey': 'gray',
+      'beige': 'beg',
+      'brown': 'brown',
+      'blue': 'blue',
+      'red': 'red',
+      'orange': 'red' // fallback approximation if orange mat not present
+    };
+    return map[n] || '';
+  }
+  function getTrimAssetKey(color){
+    const n = String(color || '').toLowerCase();
+    const map = {
+      'black': 'black',
+      'light-grey': 'lightgray',
+      'grey': 'darkgray',
+      'gray': 'darkgray',
+      'orange': 'orange',
+      'red': 'red',
+      'blue': 'blue',
+      'yellow': 'yellow',
+      'velvet': 'black'
+    };
+    return map[n] || '';
+  }
+
+  // Ensure layered preview images exist and are styled
+  function ensurePreviewLayers(){
+    const container = document.querySelector('.configurator__main-image');
+    if (!container) return { container: null, matLayer: null, trimLayer: null };
+    if (getComputedStyle(container).position === 'static') {
+      container.style.position = 'relative';
+    }
+    let matLayer = document.getElementById('mat-layer');
+    let trimLayer = document.getElementById('trim-layer');
+    // If wrappers exist, style them; else, fallback to absolute positioning
+    const matWrap = matLayer?.parentElement;
+    const trimWrap = trimLayer?.parentElement;
+    if (matWrap && matWrap.classList.contains('mat-layer-wrap')) {
+      matWrap.style.position = 'absolute';
+      matWrap.style.left = '0';
+      matWrap.style.top = '0';
+      matWrap.style.right = '0';
+      matWrap.style.bottom = '0';
+      matWrap.style.zIndex = '3';
+    }
+    if (trimWrap && trimWrap.classList.contains('trim-layer-wrap')) {
+      trimWrap.style.position = 'absolute';
+      trimWrap.style.left = '0';
+      trimWrap.style.top = '0';
+      trimWrap.style.right = '0';
+      trimWrap.style.bottom = '0';
+      trimWrap.style.zIndex = '4';
+    }
+    if (matLayer) {
+      matLayer.style.width = '100%';
+      matLayer.style.height = 'auto';
+      matLayer.style.pointerEvents = 'none';
+      matLayer.style.display = 'none';
+    }
+    if (trimLayer) {
+      trimLayer.style.width = '100%';
+      trimLayer.style.height = 'auto';
+      trimLayer.style.pointerEvents = 'none';
+      trimLayer.style.display = 'none';
+    }
+    return { container, matLayer, trimLayer };
+  }
+
+  // Update preview using layered PNG assets for mats and trims; fallback to combo photos, then overlay tint
+  function updatePreviewByColors(){
+    try {
+      if (simpleMode) return; // only for car mats
+      // base image is not used; layered assets only
+      const { matLayer, trimLayer } = ensurePreviewLayers();
+      const matKey = getMatAssetKey(state.matColor);
+      const trimKey = getTrimAssetKey(state.trimColor);
+
+      // If we have both keys, try to load layered assets
+      if (matKey || trimKey) {
+        const baseMatSrc = matKey ? `./static/images/price-constructor/mats/${matKey}.png` : '';
+        const baseTrimSrc = trimKey ? `./static/images/price-constructor/trims/${trimKey}.png` : '';
+
+        let anyApplied = false;
+        const tryLoad = (layer, src, onDone)=>{
+          if (!layer || !src) { onDone && onDone(false); return; }
+          const img = new Image();
+          img.onload = function(){ layer.src = src; layer.style.display = ''; onDone && onDone(true); };
+          img.onerror = function(){ layer.style.display = 'none'; onDone && onDone(false); };
+          img.src = src;
+        };
+
+        let pending = 0;
+        const done = (ok)=>{ anyApplied = anyApplied || ok; pending--; if (pending === 0) finalize(); };
+        function finalize(){
+          if (anyApplied && patternOverlay) patternOverlay.style.display = 'none';
+          if (!anyApplied && patternOverlay) patternOverlay.style.display = '';
+        }
+        pending = 2;
+        tryLoad(matLayer, baseMatSrc, done);
+        tryLoad(trimLayer, baseTrimSrc, done);
+        return; // layered approach only
+      }
+
+      // No combo photo fallback; show overlay tint when layers unavailable
+      if (patternOverlay) patternOverlay.style.display = '';
+    } catch(_) {}
   }
 
   // 3rd row eligibility
@@ -532,7 +659,9 @@ document.addEventListener('DOMContentLoaded', () => {
     items.forEach(t=>{ const li=document.createElement('li'); li.className='property-list__item'; li.textContent=t; summaryListEl.appendChild(li); });
     calcSubtotal();
 
-    // preview updates: color and pattern overlay
+    // preview updates: color-combo image if available; otherwise pattern overlay tint
+    try { updatePreviewByColors(); } catch(_) {}
+    // pattern overlay tint (active only if not hidden by updatePreviewByColors)
     try {
       const colorMap = { black:'#111', gray:'#7a7a7a', blue:'#124b9a', brown:'#6b4a2e', red:'#b32121', beige:'#d2b48c' };
       const bg = colorMap[state.matColor] || '#222';
