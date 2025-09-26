@@ -290,7 +290,7 @@
         const productName = it.product === 'carsbag' ? 'Cars Bag' : (it.product === 'home' ? 'Home Mat' : 'EVA Car Mats');
         const detail = isSimple
           ? `${productName} — Size: ${sizeMap[it.set] || it.set} | Color: ${it.matColor || '—'} / ${it.trimColor || it.matColor || '—'}`
-          : `${title || productName} — ${it.set} | ${it.pattern} | ${it.matColor}/${it.trimColor||it.matColor} ${it.thirdRow ? '| 3rd row' : ''} ${it.heelPad ? '| heel pad' : ''}`;
+          : `${title || productName} — ${it.set} | ${it.pattern} | ${it.matColor}/${it.trimColor||it.matColor} ${it.thirdRow ? '| 3rd row' : ''} ${it.heelPad ? '| heel pad' : ''} ${it.hybrid ? '| hybrid' : ''}`;
         const colorDot = it.matColor ? `<span class="basketcolor" style="background:${it.matColor}"></span>` : '';
         const trimDot = it.trimColor ? `<span class="basketcolor" style="background:${it.trimColor}"></span>` : '';
         // Build layered image preview for car mats when available; fallback to combo photo
@@ -451,7 +451,7 @@
                 }
               },
               items: items.map(i=>({
-                name: `${i.make} ${i.model} ${i.year} — ${i.set}`.slice(0,127),
+                name: (`${i.make} ${i.model} ${i.year} — ${i.set}` + (i.hybrid ? ' — hybrid' : '')).slice(0,127),
                 unit_amount: { value: (i.subtotal||0).toFixed(2), currency_code: 'CAD' },
                 quantity: String(i.qty||1)
               }))

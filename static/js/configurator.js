@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const matColorEl = $('#cfg-mat-color');
   const trimColorEl = $('#cfg-trim-color');
   const patternOverlay = document.getElementById('pattern-overlay');
+  const previewImg = document.getElementById('preview-image');
   const matSwatchList = document.getElementById('mat-swatch-list');
   const trimSwatchList = document.getElementById('trim-swatch-list');
   const matSelectedLabel = document.getElementById('mat-color-selected');
@@ -26,6 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const summaryVehicleEl = $('#summary-vehicle');
   const summaryListEl = $('#summary-list');
   const summarySubtotalEl = $('#summary-subtotal');
+  const summaryTaxEl = document.getElementById('summary-tax');
   const freeShipEl = $('#free-shipping');
   const addBtn = $('#summary-add');
   const buyBtn = $('#summary-buy');
@@ -37,6 +39,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let PRICES = { front: 59, full: 139, complete: 219, premium_plus: 259 };
   const THIRD_ROW_SURCHARGE = 50;
+  // Tax configuration (loaded once, reused)
+  let __taxCfg = { type: 'percent', value: 0 };
+  async function ensureTaxCfg(){
+    if (__taxCfg && typeof __taxCfg.value === 'number' && __taxCfg.value >= 0) return __taxCfg;
+    try { const r = await fetch('static/data/tax.json'); __taxCfg = await r.json(); } catch(_) { __taxCfg = { type:'percent', value:0 }; }
+    return __taxCfg;
+  }
 
   const state = {
     make: '', model: '', year: '',
@@ -58,6 +67,8 @@ document.addEventListener('DOMContentLoaded', () => {
     try { const vehicleBlock = document.getElementById('cfg-make')?.closest('.cfg-block'); if (vehicleBlock) vehicleBlock.style.display = 'none'; if (requireVehicleMsg) requireVehicleMsg.style.display='none'; } catch(_){ }
     // Hide top vehicle banner for simple products
     try { const vt = document.querySelector('.vehicle-top'); if (vt) vt.style.display = 'none'; } catch(_){ }
+    // Remove fixed height from main image container for simple products (carsbag/home)
+    try { const cont = document.querySelector('.configurator__main-image'); if (cont) { cont.style.height = 'auto'; cont.style.minHeight = '0'; } } catch(_){ }
     try {
       const setBlock = document.querySelector('.cfg-sets')?.closest('.cfg-block');
       const setTitle = setBlock?.querySelector('.cfg-title');
@@ -127,7 +138,6 @@ document.addEventListener('DOMContentLoaded', () => {
     try { const trimGroup = document.getElementById('cfg-trim-color')?.closest('.color-group'); if (trimGroup) trimGroup.style.display=''; } catch(_){ }
     try { if (summaryVehicleEl) summaryVehicleEl.textContent = `Product: ${productLabel}`; if (vehicleSummaryEl) vehicleSummaryEl.textContent = `${productLabel}`; } catch(_){ }
     try {
-      const preview = document.getElementById('preview-image');
       const thumbsWrap = document.querySelector('.configurator__thumbnails');
       const carsbagImgs = [
         './static/images/car-bags/bag-1.jpg',
@@ -144,11 +154,18 @@ document.addEventListener('DOMContentLoaded', () => {
         './static/images/home-mats/mat-4.jpg'
       ];
       const imgs = paramsProduct === 'carsbag' ? carsbagImgs : homeImgs;
-      if (preview) preview.src = imgs[0];
+      if (previewImg) { previewImg.src = imgs[0]; previewImg.style.display = ''; }
+      try { const { matLayer, trimLayer } = ensurePreviewLayers(); if (matLayer) matLayer.style.display = 'none'; if (trimLayer) trimLayer.style.display = 'none'; } catch(_){}
+      if (patternOverlay) patternOverlay.style.display='none';
       if (thumbsWrap) {
         thumbsWrap.innerHTML = imgs.map(src=>`<img src="${src}" alt="thumb">`).join('');
+        try {
+          // bind click on thumbs to swap preview image
+          thumbsWrap.querySelectorAll('img').forEach((img)=>{
+            img.addEventListener('click', ()=>{ if (previewImg) { previewImg.src = img.src; } });
+          });
+        } catch(_){ }
       }
-      if (patternOverlay) patternOverlay.style.display='none';
     } catch(_){ }
     // Adjust upsell for simple products
     try {
@@ -632,6 +649,14 @@ document.addEventListener('DOMContentLoaded', () => {
     state.subtotal = subtotal;
     const total = subtotal * Math.max(1, Number(state.qty || 1));
     summarySubtotalEl.textContent = String(total);
+    // Update estimated tax line if present
+    if (summaryTaxEl) {
+      Promise.resolve(ensureTaxCfg()).then((cfg)=>{
+        const rate = (cfg && cfg.type === 'percent') ? Number(cfg.value||0) : 0;
+        const tax = +((total * rate / 100)).toFixed(2);
+        summaryTaxEl.textContent = tax.toFixed(2);
+      }).catch(()=>{ try { summaryTaxEl.textContent = '0'; } catch(_){} });
+    }
     freeShipEl.style.display = subtotal >= 100 ? 'block' : 'none';
     if (vehicleSummaryEl) {
       const hasVehicle = Boolean(state.make && state.model && state.year);
@@ -662,6 +687,7 @@ document.addEventListener('DOMContentLoaded', () => {
     items.push(`Trim: ${state.trimColor || '—'}`);
     if (!simpleMode) {
       if (state.heelPad) items.push('Heel pad (free)');
+      if (state.hybrid) items.push('Hybrid vehicle');
     }
     items.forEach(t=>{ const li=document.createElement('li'); li.className='property-list__item'; li.textContent=t; summaryListEl.appendChild(li); });
     calcSubtotal();
@@ -851,8 +877,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const price = Number(item.subtotal||0);
     const subtotal = price * qty;
     const shipping = subtotal >= 100 ? 0 : 22;
-    const taxRate = 0; // optional: fetch tax like cart page if needed
-    const tax = +((subtotal * (taxRate||0) / 100)).toFixed(2);
+    // Fetch tax configuration to mirror cart page behavior
+    let taxCfg = { type: 'percent', value: 0 };
+    try {
+      const res = await fetch('static/data/tax.json');
+      taxCfg = await res.json();
+    } catch(_) {}
+    const taxRate = (taxCfg && taxCfg.type === 'percent') ? Number(taxCfg.value || 0) : 0;
+    const tax = +((subtotal * (taxRate || 0) / 100)).toFixed(2);
     const total = (subtotal + shipping + tax).toFixed(2);
 
     if (!window.paypal || !window.paypal.Buttons) {
@@ -902,7 +934,7 @@ document.addEventListener('DOMContentLoaded', () => {
               }
             },
             items: [{
-              name: (item.product === 'mats' ? `${item.make} ${item.model} ${item.year}` : (item.product === 'carsbag' ? 'EVA Carsbag' : 'EVA Home Mat')).slice(0,127),
+              name: ((item.product === 'mats' ? `${item.make} ${item.model} ${item.year}` : (item.product === 'carsbag' ? 'EVA Carsbag' : 'EVA Home Mat')) + (item.hybrid ? ' — hybrid' : '')).slice(0,127),
               unit_amount: { currency_code: 'CAD', value: (price).toFixed(2) },
               quantity: String(qty)
             }],
@@ -953,13 +985,80 @@ document.addEventListener('DOMContentLoaded', () => {
       const imgs = Array.from(document.querySelectorAll('.configurator__thumbnails img'));
       return imgs.map(i=> i.src);
     }
+    function getCompositeInfo(){
+      const { matLayer, trimLayer } = ensurePreviewLayers();
+      const matSrc = (matLayer && matLayer.src) || '';
+      const trimSrc = (trimLayer && trimLayer.src) || '';
+      // pattern overlay styles (tint and pattern) copied from live overlay if available
+      const po = document.getElementById('pattern-overlay');
+      let overlayStyles = '';
+      try {
+        if (po) {
+          const cs = window.getComputedStyle(po);
+          const bgc = cs.getPropertyValue('background-color');
+          const bgi = cs.getPropertyValue('background-image');
+          const bgp = cs.getPropertyValue('background-position');
+          const bgs = cs.getPropertyValue('background-size');
+          const op  = cs.getPropertyValue('opacity');
+          if (bgi || bgc) {
+            overlayStyles = `background-color:${bgc};background-image:${bgi};background-position:${bgp};background-size:${bgs};opacity:${op || .25};`;
+          }
+        }
+      } catch(_) {}
+      return { matSrc, trimSrc, overlayStyles };
+    }
+    function buildCompositeSlideHTML(){
+      // For simple-mode products (carsbag/home), composite is the current preview image
+      if (simpleMode) {
+        let current = '';
+        try { current = (previewImg && previewImg.src) || (getGallerySources()[0] || ''); } catch(_) { current = (previewImg && previewImg.src) || ''; }
+        return `<div class="swiper-slide"><img src="${current}" alt="" style="max-width:100%;height:auto;display:block;margin:0 auto;"></div>`;
+      }
+      const { matSrc, trimSrc, overlayStyles } = getCompositeInfo();
+      // Use layered backgrounds: trim above mat; center/contain; full-viewport height inside lightbox
+      const bgImages = [trimSrc, matSrc].filter(Boolean).map(s=>`url('${s}')`).join(',');
+      const layerStyle = `position:relative;width:100%;max-width:520px;height:80vh;background:#000;${bgImages?`background-image:${bgImages};background-size:contain,contain;background-repeat:no-repeat,no-repeat;background-position:center,center;`:''}`;
+      const overlayDiv = overlayStyles ? `<div style="position:absolute;inset:0;pointer-events:none;mix-blend-mode:multiply;${overlayStyles}"></div>` : '';
+      return `<div class="swiper-slide"><div class="lb-composite" style="${layerStyle}">${overlayDiv}</div></div>`;
+    }
+    function buildCompositeContentForModal(){
+      if (simpleMode) {
+        let current = '';
+        try { current = (previewImg && previewImg.src) || (getGallerySources()[0] || ''); } catch(_) { current = (previewImg && previewImg.src) || ''; }
+        return `<img src="${current}" style="max-width:100%;height:auto;display:block;margin:0 auto;" alt="">`;
+      }
+      const { matSrc, trimSrc, overlayStyles } = getCompositeInfo();
+      const bgImages = [trimSrc, matSrc].filter(Boolean).map(s=>`url('${s}')`).join(',');
+      const layerStyle = `position:relative;width:100%;max-width:520px;min-height:300px;background:transparent;${bgImages?`background-image:${bgImages};background-size:contain,contain;background-repeat:no-repeat,no-repeat;background-position:center,center;`:''}`;
+      const overlayDiv = overlayStyles ? `<div style="position:absolute;inset:0;pointer-events:none;mix-blend-mode:multiply;${overlayStyles}"></div>` : '';
+      return `<div class="lb-composite" style="${layerStyle}">${overlayDiv}</div>`;
+    }
+    function refreshMainPreview(){
+      try {
+        if (simpleMode) {
+          if (previewImg) previewImg.style.display = '';
+          const layers = ensurePreviewLayers();
+          if (layers.matLayer) layers.matLayer.style.display = 'none';
+          if (layers.trimLayer) layers.trimLayer.style.display = 'none';
+          if (patternOverlay) patternOverlay.style.display = 'none';
+        } else {
+          if (previewImg) previewImg.style.display = 'none';
+          updatePreviewByColors();
+        }
+      } catch(_) {}
+    }
     function openAt(index){
       if (!lightbox || !wrap) return;
       const srcs = getGallerySources();
-      wrap.innerHTML = srcs.map(s=> `<div class="swiper-slide"><img src="${s}" alt=""></div>`).join('');
+      const slides = [];
+      // Always put composite slide first so user sees current selection
+      slides.push(buildCompositeSlideHTML());
+      slides.push(...srcs.map(s=> `<div class="swiper-slide"><img src="${s}" alt=""></div>`));
+      wrap.innerHTML = slides.join('');
       if (swiper) { try { swiper.destroy(true, true); } catch(_){} swiper = null; }
+      const init = (index === 'composite') ? 0 : Math.max(0, Math.min(Number(index)+1, slides.length-1));
       swiper = new Swiper('.mobile-lightbox__swiper', {
-        initialSlide: Math.max(0, Math.min(index, srcs.length-1)),
+        initialSlide: init,
         navigation: { nextEl: '.mobile-lightbox .swiper-button-next', prevEl: '.mobile-lightbox .swiper-button-prev' },
         spaceBetween: 12
       });
@@ -971,6 +1070,7 @@ document.addEventListener('DOMContentLoaded', () => {
       lightbox.classList.remove('is-open');
       lightbox.setAttribute('aria-hidden', 'true');
       if (swiper) { try { swiper.destroy(true, true); } catch(_){} swiper = null; }
+      try { refreshMainPreview(); } catch(_) {}
     }
 
     if (closeBtn) closeBtn.addEventListener('click', close);
@@ -983,21 +1083,62 @@ document.addEventListener('DOMContentLoaded', () => {
         el.addEventListener('click', (ev)=>{
           if (mql.matches) {
             ev.preventDefault();
-            openAt(idx);
+            const onlyThumbs = Array.from(document.querySelectorAll('.configurator__thumbnails img'));
+            const ti = onlyThumbs.indexOf(el);
+            openAt(ti >= 0 ? ti : 'composite');
           } else {
             // desktop: keep existing tingle fallback (if present)
-            if (window.tingle) {
-              const modal = new tingle.modal({ footer:false, closeMethods:['overlay','escape','button'] });
-              modal.setContent(`<img src="${el.src}" style="max-width:100%;height:auto;display:block;margin:0 auto;" alt="">`);
-              modal.open();
+            const onlyThumbs = Array.from(document.querySelectorAll('.configurator__thumbnails img'));
+            const ti = onlyThumbs.indexOf(el);
+            if (ti >= 0) {
+              if (window.tingle) {
+                const modal = new tingle.modal({ footer:false, closeMethods:['overlay','escape','button'], onClose: function(){ try { refreshMainPreview(); } catch(_) {} } });
+                modal.setContent(`<img src="${el.src}" style="max-width:100%;height:auto;display:block;margin:0 auto;" alt="">`);
+                modal.open();
+              } else {
+                const w = window.open(el.src, '_blank'); if (w) w.focus();
+              }
             } else {
-              const w = window.open(el.src, '_blank'); if (w) w.focus();
+              // Clicked on main layered image; show composite
+              if (window.tingle) {
+                const modal = new tingle.modal({ footer:false, closeMethods:['overlay','escape','button'], onClose: function(){ try { refreshMainPreview(); } catch(_) {} } });
+                modal.setContent(buildCompositeContentForModal());
+                modal.open();
+              } else {
+                const { matSrc, trimSrc } = getCompositeInfo();
+                const first = trimSrc || matSrc || getGallerySources()[0];
+                const w = window.open(first, '_blank'); if (w) w.focus();
+              }
             }
           }
         });
       });
     }
     bindThumbs();
+
+    // Also open gallery when clicking the main preview container itself
+    // (layered preview images have pointer-events: none, so clicks land on the container)
+    const mainContainer = document.querySelector('.configurator__main-image');
+    if (mainContainer) {
+      mainContainer.addEventListener('click', (ev)=>{
+        // Let img-specific handler deal with direct IMG clicks
+        if (ev.target && ev.target.tagName === 'IMG') return;
+        if (mql.matches) {
+          ev.preventDefault();
+          openAt('composite');
+        } else {
+          if (window.tingle) {
+            const modal = new tingle.modal({ footer:false, closeMethods:['overlay','escape','button'], onClose: function(){ try { refreshMainPreview(); } catch(_) {} } });
+            modal.setContent(buildCompositeContentForModal());
+            modal.open();
+          } else {
+            const { matSrc, trimSrc } = getCompositeInfo();
+            const first = trimSrc || matSrc || getGallerySources()[0];
+            const w = window.open(first, '_blank'); if (w) w.focus();
+          }
+        }
+      });
+    }
   })();
 });
 

@@ -75,6 +75,11 @@
 
 /* Mobile lightbox for gallery */
 @media (max-width: 768px) {
+  /* Stack vehicle selects on small screens for better tap targets */
+  .cfg-row-vehicle { flex-direction: column; }
+  .cfg-row-vehicle select,
+  .cfg-row-vehicle .nice-select { width: 100%; max-width: 100%; }
+  .cfg-row-vehicle select { margin-right: 0; }
   .mobile-lightbox { position: fixed; inset: 0; background: rgba(0,0,0,.8); display: none; align-items:center; justify-content:center; z-index: 9999; }
   .mobile-lightbox.is-open { display:flex; animation: lb-fade .25s ease forwards; }
   .mobile-lightbox__content { width: 92vw; max-width: 520px; border-radius: 10px; overflow: hidden; background: #000; transform: scale(.92); opacity: 0; animation: lb-zoom .25s ease forwards; }

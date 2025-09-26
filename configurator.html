@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="./static/css/hero-selector.css">
   <link rel="stylesheet" href="./static/css/style.min.css">
   <link rel="stylesheet" href="./static/css/custom.css?v=20250925">
-  <link rel="stylesheet" href="./static/css/configurator.css?v1">
+  <link rel="stylesheet" href="./static/css/configurator.css?v2">
   <link rel="stylesheet" href="./static/css/individual.css">
   <link rel="stylesheet" href="./static/css/widget.css">
   <script type="text/javascript" src="https://www.prime-avto.ru/assets/top.js?ver=fe96abef9e3c147f44af97f20cb47252"></script>
@@ -184,6 +184,7 @@
                   </div>
                   <!-- Configurator preview injected here so configurator.js updates are visible -->
                   <div class="configurator__main-image">
+                    <img id="preview-image" alt="" style="display:none; width:100%; height:auto;">
                     <div id="pattern-overlay" class="pattern-overlay"></div>
                     <div class="layer mat-layer-wrap"><img id="mat-layer" alt=""></div>
                     <div class="layer trim-layer-wrap"><img id="trim-layer" alt=""></div>
@@ -360,6 +361,9 @@
                         <span id="summary-subtotal">0</span> $
                       </div>
                       <div class="underprice">order total</div>
+                      <div class="price-tax" style="margin-top:6px; font-size:14px; color:#555;">
+                        <span>Tax (est.)</span> $<span id="summary-tax">0</span>
+                      </div>
                     </div></div>
                     <ul class="ul order_buttons">
                       <div class="summary-actions">
