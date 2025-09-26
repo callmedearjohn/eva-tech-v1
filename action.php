@@ -325,6 +325,44 @@ function sendPaypalEmail($data, $mail) {
             <p><b>Total:</b> {$total}$</p>
         </body></html>";
         $mail->send();
+
+        // Send confirmation email to payer
+        if (!empty($payerEmail)) {
+            try {
+                $mail->clearAddresses();
+                $mail->setFrom('info@eva-tech.ca', 'EVATECH Team');
+                $mail->addAddress($payerEmail);
+                $mail->isHTML(true);
+                $mail->Subject = 'Thank you for your order - EVATECH';
+
+                $summaryRows = $rows;
+                $confirmBody = "<html><body>
+                    <div style='font-family:Arial,sans-serif;color:#111;'>
+                      <h2 style='margin:0 0 10px;'>Thank you for your order!</h2>
+                      <p style='margin:0 0 12px;'>Hi " . htmlspecialchars($payerName) . ",</p>
+                      <p style='margin:0 0 12px;'>We've received your payment and started processing your order.</p>
+                      <p style='margin:0 0 12px;'><b>PayPal Order ID:</b> " . htmlspecialchars($paypalId) . "</p>
+                      <p style='margin:0 0 6px;'><b>Shipping to:</b> " . htmlspecialchars($address) . "</p>
+                      <div style='margin:12px 0;padding:12px 14px;background:#fafbfc;border:1px solid #edf2f7;border-radius:8px;'>
+                        <div style='font-weight:600;margin:0 0 8px;'>Order summary</div>
+                        <ul style='margin:0;padding:0 0 0 16px;'>$summaryRows</ul>
+                        <p style='margin:8px 0 0;'>Subtotal: <b>{$subtotal}$</b></p>
+                        <p style='margin:2px 0 0;'>Tax: <b>{$tax}$</b></p>
+                        <p style='margin:2px 0 0;'>Shipping: <b>{$shipping}$</b></p>
+                        <p style='margin:6px 0 0;'>Total: <b>{$total}$</b></p>
+                      </div>
+                      <p style='margin:12px 0 0;'>If you have any questions, reply to this email or call +1 613-214-1621.</p>
+                      <p style='margin:12px 0 0;'>— EVATECH Team</p>
+                    </div>
+                  </body></html>";
+
+                $mail->Body = $confirmBody;
+                $mail->AltBody = "Thank you for your order!\nPayPal Order ID: {$paypalId}\nShip to: {$address}\nTotal: {$total}$\n— EVATECH Team";
+                $mail->send();
+            } catch (Exception $e) {
+                // Ignore payer email failures to avoid breaking the main flow
+            }
+        }
         return true;
     } catch (Exception $e) {
         return $e->getMessage();

@@ -405,7 +405,6 @@
             const discountAmount = +((preDiscount * (discountPercent/100))).toFixed(2);
             const tax = +( (((preDiscount) * (taxCfg.value||0)) / 100).toFixed(2) );
             const total = (preDiscount - discountAmount) + shipping + tax;
-            const phone = prompt('Phone number for delivery (optional):') || '';
             const payload = {
               formName:'paypal',
               paypalOrderId: details.id,
@@ -420,10 +419,15 @@
                 postal: details.purchase_units?.[0]?.shipping?.address?.postal_code || '',
                 country: details.purchase_units?.[0]?.shipping?.address?.country_code || ''
               },
-              items, subtotal, shipping, addons, addonsTotal, tax, total, phone, discountPercent, discountAmount, promoCode: appliedPromo
+              items, subtotal, shipping, addons, addonsTotal, tax, total, discountPercent, discountAmount, promoCode: appliedPromo
             };
-            try { await fetch('action.php', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) }); } catch(_){ }
-            alert('Payment captured. Thank you!');
+            try {
+              await fetch('action.php', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+            } catch(_) { }
+            try { Cart.clear(); } catch(_) { }
+            try { if (window.updateCartBadge) window.updateCartBadge(); } catch(_) { }
+            try { rowsEl.innerHTML = ''; render(); } catch(_) { }
+            alert('Payment captured. Thank you! A confirmation email has been sent.');
           });
         }
       }).render('#paypal-button-container');

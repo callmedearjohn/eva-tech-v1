@@ -407,6 +407,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function ensurePremiumPlusOption(){
     try {
+      // Show Premium+ only for car mats (not for Carsbag or Home mats)
+      if (simpleMode) return;
       const setsRow = document.querySelector('.cfg-sets');
       if (!setsRow) return;
       let premiumLabel = setsRow.querySelector('input[name="set"][value="premium_plus"]')?.closest('label') || null;
