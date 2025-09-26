@@ -18,11 +18,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const shipingSpan = document.getElementById('shipping');
   const subtotal = document.querySelector('#subtotal');
   const totalSpan = document.querySelector('#total');
-  const orderType = document.querySelector('#orderType');
-  const orderCar = document.querySelector('#orderCar');
-  const orderCarYear = document.querySelector('#orderCarYear');
-  const orderSum = document.querySelector('.order__product-sum');
-  const orderImg = document.querySelector('.order__product-img');
+  // Do not cache elements that may be rendered later (like order list items)
 
   const updateOrder = () => {
     const types = {
@@ -31,22 +27,29 @@ document.addEventListener('DOMContentLoaded', function () {
         'premium': { price: '180', imgUrl: 'static/images/price-constructor/sets/set-3.jpg' }
     };
 
-    const selectedType = types[counstructorUserData.setType];
+    const setType = (counstructorUserData && counstructorUserData.setType) ? counstructorUserData.setType : undefined;
+    const selectedType = setType ? types[setType] : undefined;
+    const orderImg = document.querySelector('.order__product-img');
+    const orderSum = document.querySelector('.order__product-sum');
     
     if (selectedType) {
-        orderImg.src = selectedType.imgUrl;
-        orderSum.innerHTML = selectedType.price;
-        subtotal.innerHTML = selectedType.price;
+        if (orderImg) orderImg.src = selectedType.imgUrl;
+        if (orderSum) orderSum.innerHTML = selectedType.price;
+        if (subtotal) subtotal.innerHTML = selectedType.price;
     }
-    
-    orderType.innerHTML = counstructorUserData.setType;
-    orderCarYear.innerHTML = counstructorUserData.carYear;
-    orderCar.innerHTML = counstructorUserData.carMake;
+    // Older fields may not exist on the current page; guard their access
+    // and skip if missing.
+    // const orderType = document.querySelector('#orderType');
+    // const orderCarYear = document.querySelector('#orderCarYear');
+    // const orderCar = document.querySelector('#orderCar');
+    // if (orderType && counstructorUserData) orderType.innerHTML = counstructorUserData.setType || '';
+    // if (orderCarYear && counstructorUserData) orderCarYear.innerHTML = counstructorUserData.carYear || '';
+    // if (orderCar && counstructorUserData) orderCar.innerHTML = counstructorUserData.carMake || '';
 };
 
 
   const updateTotal = () => {
-    const shipingValue = parseFloat(provinceSelect.value) || 0;
+    const shipingValue = parseFloat(provinceSelect ? provinceSelect.value : 0) || 0;
     const subtotalValue = parseFloat(subtotal.innerHTML) || 0;
     const totalValue = (subtotalValueAfterPromo || subtotalValue) + shipingValue;
     shipingSpan.innerHTML = shipingValue;
@@ -56,10 +59,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
   let subtotalValueAfterPromo = 0;
   updateOrder();
+  // Re-run after the page's dynamic order list renders
+  setTimeout(updateOrder, 50);
+  window.addEventListener('storage', function(e){ if (e.key === 'evatech_cart_v1') updateOrder(); });
   updateTotal();
 
-  NiceSelect.bind(provinceSelect);
-  provinceSelect.addEventListener('change', updateTotal);
+  if (provinceSelect) {
+    NiceSelect.bind(provinceSelect);
+    provinceSelect.addEventListener('change', updateTotal);
+  }
 
   document.getElementById('phone').addEventListener('input', function () {
     this.value = this.value.replace(/[^\d+]/g, '');
@@ -83,8 +91,7 @@ document.addEventListener('DOMContentLoaded', function () {
   
   }
 
-
-  promoBtn.addEventListener('click', async () => {
+  if (promoBtn) promoBtn.addEventListener('click', async () => {
     const promoInput = document.querySelector('#promo');
     const promo = promoInput.value;
     const total = subtotal.innerHTML;
@@ -214,7 +221,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const province = provinceSelect.options[provinceSelect.selectedIndex].text;
     const totalPrice = totalSpan.innerHTML;
     const shippingPrice = shipingSpan.innerHTML;
-    const subtotalPrice = orderSum.innerHTML;
+    const subtotalPriceEl = document.querySelector('.order__product-sum') || document.querySelector('#subtotal');
+    const subtotalPrice = subtotalPriceEl ? subtotalPriceEl.innerHTML : '0';
     const promoCodeValue = promoValue;
 
 
