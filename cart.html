@@ -133,10 +133,23 @@
                 <div class="basket_explain">
                   <div><span>Shipping</span><span>$<span id="ship-price">0</span></span></div>
                   <div><span>Discount</span><span>$<span id="cart-discount">0</span></span></div>
+                  <div><span>Tax</span><span>$<span id="cart-tax">0</span></span></div>
                   <div><span>Total</span><span>$<span id="cart-total">0</span></span></div>
                 </div>
-                <div class="btn_mo"><a class="button" href="#paypal-button-container" id="go-checkout">GO TO CHECKOUT</a></div>
                 <div style="margin-top:12px"><div id="paypal-button-container"></div></div>
+                <div style="margin-top:12px">
+                  <label style="display:inline-flex; align-items:center; gap:6px; font-size:14px;">
+                    <input type="checkbox" id="agree-terms"> I agree to the <a href="#" id="open-terms">Terms and Conditions</a>
+                  </label>
+                </div>
+                <dialog id="terms-dialog" style="max-width:720px; width:90%; padding:16px 18px; border:1px solid #e5e5e5; border-radius:10px;">
+                  <h3 style="margin:0 0 10px;">Terms and Conditions</h3>
+                  <div style="max-height:50vh; overflow:auto; color:#333; font-size:14px; line-height:1.55;">
+                    <p>By placing an order you agree that custom-made items are produced to your selected specifications. Please review your vehicle details, colors, options and shipping address carefully before paying. Orders are processed promptly; contact us immediately for changes.</p>
+                    <p>Shipping within Canada is free for orders over $100 before tax. Orders under $100 ship at a flat $22. Manufacturing defects are covered by our warranty; wear-and-tear and incorrect selections are not covered.</p>
+                  </div>
+                  <div style="text-align:right; margin-top:12px;"><button id="close-terms" class="button button-gray">Close</button></div>
+                </dialog>
                 <p id="cart-freeship" style="display:none; margin-top:8px;">Free Shipping in Canada</p>
                 <p id="ship-note" class="note" style="display:none">Orders under $100 before tax ship for a flat $22 within Canada.</p>
               </div>
@@ -222,6 +235,7 @@
     const shipPriceEl = document.getElementById('ship-price');
     const totalEl = document.getElementById('cart-total');
     const discountEl = document.getElementById('cart-discount');
+    const taxEl = document.getElementById('cart-tax');
     const promoInput = document.getElementById('promo-code');
     const applyPromoBtn = document.getElementById('apply-promo');
     let taxCfg = { type:'percent', value:0 };
@@ -278,10 +292,11 @@
       if (taxCfg.type === 'percent') tax = +((preDiscount * (taxCfg.value||0) / 100)).toFixed(2);
       const discountAmount = +((preDiscount * (discountPercent/100))).toFixed(2);
       if (discountEl) discountEl.textContent = discountAmount.toFixed(2);
+      if (taxEl) taxEl.textContent = tax.toFixed(2);
       const total = (preDiscount - discountAmount) + shipping + tax;
       totalEl.textContent = total.toFixed(2);
       const free = ((subtotal + addonsTotal) >= FREE_SHIP_THRESHOLD);
-      document.getElementById('cart-freeship').style.display = free ? 'block' : 'none';
+      document.getElementById('cart-freeship').style.display = free ? 'none' : 'block';
       const shipNote = document.getElementById('ship-note');
       shipNote.style.display = free ? 'none' : 'block';
     }
@@ -309,6 +324,16 @@
     // PayPal button
     if (window.paypal) {
       paypal.Buttons({
+        onClick: function(data, actions) {
+          const agree = document.getElementById('agree-terms');
+          if (agree && !agree.checked) {
+            alert('Please agree to the Terms and Conditions.');
+            const link = document.getElementById('open-terms');
+            if (link) link.click();
+            return actions.reject();
+          }
+          return actions.resolve();
+        },
         createOrder: function(data, actions) {
           const items = Cart.list();
           const subtotal = Cart.total();
@@ -342,6 +367,7 @@
             const subtotal = Cart.total();
             const shipping = +shipPriceEl.textContent;
             const addonsTotal = 0;
+            const addons = [];
             const preDiscount = subtotal + addonsTotal;
             const discountAmount = +((preDiscount * (discountPercent/100))).toFixed(2);
             const tax = +( (((preDiscount) * (taxCfg.value||0)) / 100).toFixed(2) );
@@ -369,6 +395,18 @@
         }
       }).render('#paypal-button-container');
     }
+    // Terms modal open/close
+    (function(){
+      const open = document.getElementById('open-terms');
+      const dlg = document.getElementById('terms-dialog');
+      const close = document.getElementById('close-terms');
+      if (open && dlg) {
+        open.addEventListener('click', function(e){ e.preventDefault(); try { dlg.showModal(); } catch(_){ dlg.setAttribute('open',''); } });
+      }
+      if (close && dlg) {
+        close.addEventListener('click', function(){ try { dlg.close(); } catch(_){ dlg.removeAttribute('open'); } });
+      }
+    })();
   </script>
 </body>
 </html>

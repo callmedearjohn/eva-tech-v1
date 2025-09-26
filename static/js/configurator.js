@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const qtyInput = document.getElementById('qty-input');
   const requireVehicleMsg = document.getElementById('require-vehicle-msg');
 
-  let PRICES = { front: 59, full: 139, complete: 219 };
+  let PRICES = { front: 59, full: 139, complete: 219, premium_plus: 259 };
   const THIRD_ROW_SURCHARGE = 50;
 
   const state = {
@@ -44,6 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
     matColor: '', trimColor: '',
     heelPad: false, thirdRow: false,
     thirdRowEligible: false,
+    hybrid: false,
     qty: 1,
     subtotal: 0
   };
@@ -275,20 +276,26 @@ document.addEventListener('DOMContentLoaded', () => {
     try { __cfgModelNS && __cfgModelNS.update && __cfgModelNS.update(); } catch(_){ }
   }
 
+  // Allowed colors (filter any sources to these lists)
+  const ALLOWED_MAT_COLORS = ['black','grey','beige','red','brown','blue','orange'];
+  const ALLOWED_TRIM_COLORS = ['black','light-grey','orange','velvet','red','blue','yellow'];
+
   // Colors from JSON (fallback to defaults)
   async function loadColors() {
     try {
       const res = await fetch('static/data/colors.json');
       const data = await res.json();
-      matColorEl.innerHTML = '<option selected disabled>Choose</option>' + data.matColors.map(c=>`<option value="${c}">${c}</option>`).join('');
-      trimColorEl.innerHTML = '<option selected disabled>Choose</option>' + data.trimColors.map(c=>`<option value="${c}">${c}</option>`).join('');
-      try { buildSwatches(matSwatchList, data.matColors, 'mat'); buildSwatches(trimSwatchList, data.trimColors, 'trim'); } catch(_){ }
+      const mats = (data.matColors||[]).map(String).map(s=>s.toLowerCase()).filter(c=> ALLOWED_MAT_COLORS.includes(c));
+      const trims = (data.trimColors||[]).map(String).map(s=>s.toLowerCase()).filter(c=> ALLOWED_TRIM_COLORS.includes(c));
+      matColorEl.innerHTML = '<option selected disabled>Choose</option>' + mats.map(c=>`<option value="${c}">${c}</option>`).join('');
+      trimColorEl.innerHTML = '<option selected disabled>Choose</option>' + trims.map(c=>`<option value="${c}">${c}</option>`).join('');
+      try { buildSwatches(matSwatchList, mats, 'mat'); buildSwatches(trimSwatchList, trims, 'trim'); } catch(_){ }
     } catch (e) {
-      const mats = ['Black','Grey','Blue','Brown','Red','Beige'];
-      const trims = ['Black','Blue','Red','Grey','Beige','Brown'];
-      matColorEl.innerHTML = '<option selected disabled>Choose</option>' + mats.map(c=>`<option value="${c.toLowerCase()}">${c}</option>`).join('');
-      trimColorEl.innerHTML = '<option selected disabled>Choose</option>' + trims.map(c=>`<option value="${c.toLowerCase()}">${c}</option>`).join('');
-      try { buildSwatches(matSwatchList, mats.map(c=>c.toLowerCase()), 'mat'); buildSwatches(trimSwatchList, trims.map(c=>c.toLowerCase()), 'trim'); } catch(_){ }
+      const mats = ALLOWED_MAT_COLORS;
+      const trims = ALLOWED_TRIM_COLORS;
+      matColorEl.innerHTML = '<option selected disabled>Choose</option>' + mats.map(c=>`<option value="${c}">${c}</option>`).join('');
+      trimColorEl.innerHTML = '<option selected disabled>Choose</option>' + trims.map(c=>`<option value="${c}">${c}</option>`).join('');
+      try { buildSwatches(matSwatchList, mats, 'mat'); buildSwatches(trimSwatchList, trims, 'trim'); } catch(_){ }
     }
     try {
       __cfgMatNS && __cfgMatNS.update && __cfgMatNS.update();
@@ -299,7 +306,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function buildSwatches(container, colors, type){
     if (!container) return;
     container.innerHTML = '';
-    const colorToHex = { black:'#000000', gray:'#d9d9d9', grey:'#d9d9d9', blue:'#2b61c8', brown:'#8a5b3c', red:'#ff1a13', beige:'#dcc48e', purple:'#6f1d8a', orange:'#ffa000', yellow:'#ffee00', sand:'#d7c190', cyan:'#4db3c8', green:'#2c7a0b', navy:'#0d2a52' };
+    const colorToHex = { black:'#000000', gray:'#d9d9d9', grey:'#d9d9d9', 'light-grey':'#e5e5e5', blue:'#2b61c8', brown:'#8a5b3c', red:'#ff1a13', beige:'#dcc48e', purple:'#6f1d8a', orange:'#ffa000', yellow:'#ffee00', sand:'#d7c190', cyan:'#4db3c8', green:'#2c7a0b', navy:'#0d2a52', velvet:'#333333' };
     colors.forEach((c)=>{
       const sw = document.createElement('button');
       sw.type = 'button';
@@ -357,6 +364,40 @@ document.addEventListener('DOMContentLoaded', () => {
     try { updateEligibility(); } catch(_){ }
   }
 
+  function ensurePremiumPlusOption(){
+    try {
+      const setsRow = document.querySelector('.cfg-sets');
+      if (!setsRow) return;
+      let premiumLabel = setsRow.querySelector('input[name="set"][value="premium_plus"]')?.closest('label') || null;
+      if (state.thirdRowEligible) {
+        if (!premiumLabel) {
+          const html = [
+            '<label class="cfg-radio" data-premium-plus>',
+            '  <input type="radio" name="set" value="premium_plus">',
+            '  <span>',
+            '    <strong>Premium + — Front & 2d row & 3d row & Trunk</strong>',
+            '    <span class="price-line"><span class="price-old">269$</span><span>259$</span><span class="badge-promo">Promo</span></span>',
+            '  </span>',
+            '</label>'
+          ].join('');
+          setsRow.insertAdjacentHTML('beforeend', html);
+          // bind listener
+          const input = setsRow.querySelector('input[name="set"][value="premium_plus"]');
+          if (input) input.addEventListener('change', (e)=>{ state.set = e.target.value; state.thirdRow = true; try { if (thirdRowEl){ thirdRowEl.checked = true; thirdRowEl.disabled = true; } } catch(_){} try { updateThirdRowLabel(); } catch(_){} syncSummary(); });
+        }
+      } else if (premiumLabel) {
+        // If currently selected, fallback to 'complete'
+        const selected = setsRow.querySelector('input[name="set"][value="premium_plus"]')?.checked;
+        premiumLabel.remove();
+        if (selected) {
+          const fallback = setsRow.querySelector('input[name="set"][value="complete"]');
+          if (fallback) { fallback.checked = true; state.set = 'complete'; }
+        }
+        try { if (thirdRowEl) { thirdRowEl.disabled = true; thirdRowEl.checked = false; } } catch(_){}
+      }
+    } catch(_){ }
+  }
+
   function updateEligibility() {
     const hasVehicle = Boolean(state.make && state.model && state.year);
     if (!hasVehicle) {
@@ -365,6 +406,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (thirdRowEl) thirdRowEl.checked = false;
       if (thirdRowNote) thirdRowNote.style.display = 'none';
       if (thirdRowContainer) thirdRowContainer.style.display = 'none';
+      try { ensurePremiumPlusOption(); } catch(_){}
       return;
     }
     const make = String(state.make).toLowerCase();
@@ -379,6 +421,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (thirdRowNote) thirdRowNote.style.display = ok ? 'none' : 'block';
     if (thirdRowContainer) thirdRowContainer.style.display = ok ? '' : 'none';
+    try { ensurePremiumPlusOption(); } catch(_){}
     try { updateThirdRowLabel(); } catch(_){ }
   }
 
@@ -390,7 +433,7 @@ document.addEventListener('DOMContentLoaded', () => {
       labelSpan.textContent = `${base} (eligible models only)`;
       return;
     }
-    if (state.set === 'complete') {
+    if (state.set === 'complete' || state.set === 'premium_plus') {
       labelSpan.textContent = `${base} (included)`;
     } else {
       labelSpan.textContent = `${base} (+${THIRD_ROW_SURCHARGE}$)`;
@@ -399,7 +442,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function calcSubtotal() {
     let subtotal = PRICES[state.set];
-    if (state.thirdRow && state.thirdRowEligible && state.set !== 'complete') {
+    if (state.thirdRow && state.thirdRowEligible && state.set !== 'complete' && state.set !== 'premium_plus') {
       subtotal += THIRD_ROW_SURCHARGE; // nominal surcharge for 3rd row when not included
     }
     state.subtotal = subtotal;
@@ -424,7 +467,7 @@ document.addEventListener('DOMContentLoaded', () => {
       ? (paramsProduct === 'carsbag'
           ? { front: 'Size: M', full: 'Size: L' }
           : { front: 'Size: S (11.5 × 19.5)', full: 'Size: M (15.5 × 23.5)', complete: 'Size: L (19.5 × 26)', xl: 'Size: XL (24 × 32)' })
-      : { front: 'Front only (2 mats)', full: 'Full interior', complete: 'Complete set' };
+      : { front: 'Front only (2 mats)', full: 'Full interior', complete: 'Complete set', premium_plus: 'Premium + — Front & 2d row & 3d row & Trunk' };
     const items = [];
     items.push(`${setNames[state.set]}`);
     if (!simpleMode) {
@@ -486,6 +529,8 @@ document.addEventListener('DOMContentLoaded', () => {
   $$('input[name="pattern"]').forEach(r=> r.addEventListener('change', (e)=>{ state.pattern = e.target.value; syncSummary(); }));
   if (heelPadEl) heelPadEl.addEventListener('change', (e)=>{ state.heelPad = e.target.checked; syncSummary(); });
   if (thirdRowEl) thirdRowEl.addEventListener('change', (e)=>{ state.thirdRow = e.target.checked; syncSummary(); });
+  const hybridEl = document.getElementById('cfg-hybrid');
+  if (hybridEl) hybridEl.addEventListener('change', (e)=>{ state.hybrid = e.target.checked; syncSummary(); });
 
   // Quantity controls
   if (qtyMinusBtn && qtyPlusBtn && qtyInput) {
