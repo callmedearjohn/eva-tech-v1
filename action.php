@@ -220,19 +220,52 @@ function sendOneClickEmail($data, $mail) {
         $mail->isHTML(true);
 
         $rows = '';
+        // Helper to normalize color values like #000000 → black when possible
+        $colorName = function($c){
+            $c = trim(strtolower((string)$c));
+            if ($c === '') return '—';
+            if (preg_match('/^#?[0-9a-f]{6}$/i', $c)) {
+                $hex = ltrim($c, '#');
+                $map = [
+                    '000000'=>'black','ffffff'=>'white','d9d9d9'=>'gray','e5e5e5'=>'light-grey','777777'=>'darkgray',
+                    '2b61c8'=>'blue','124b9a'=>'darkblue','8a5b3c'=>'brown','ff1a13'=>'red','ffa000'=>'orange','ffee00'=>'yellow',
+                    'dcc48e'=>'beige','7bc96f'=>'salad','6f1d8a'=>'violet','ff5e9c'=>'pink','d4af37'=>'gold'
+                ];
+                return $map[strtolower($hex)] ?? ('#' . $hex);
+            }
+            return $c;
+        };
         foreach ($items as $i) {
-            $make = $i['make'] ?? '';
-            $model = $i['model'] ?? '';
-            $year = $i['year'] ?? '';
+            $product = $i['product'] ?? 'mats';
             $set = $i['set'] ?? '';
-            $pattern = $i['pattern'] ?? '';
-            $mat = $i['matColor'] ?? '';
-            $trim = $i['trimColor'] ?? '';
-            $third = (!empty($i['thirdRow'])) ? 'Yes' : 'No';
-            $heel = (!empty($i['heelPad'])) ? 'Yes' : 'No';
+            $mat = $colorName($i['matColor'] ?? '');
+            $trim = $colorName($i['trimColor'] ?? '');
             $price = $i['subtotal'] ?? 0;
             $qty = $i['qty'] ?? 1;
-            $rows .= "<li>{$make} {$model} {$year} — {$set} | {$pattern} | {$mat}/{$trim} | 3rd row: {$third} | heel pad: {$heel} | price: {$price}$ × {$qty}</li>";
+            if ($product === 'carsbag' || $product === 'home') {
+                $sizeMap = ($product === 'carsbag')
+                    ? ['front'=>'M','full'=>'L']
+                    : ['front'=>'S','full'=>'M','complete'=>'L','xl'=>'XL'];
+                $size = $sizeMap[$set] ?? strtoupper($set);
+                $title = ($product === 'carsbag') ? 'Cars Bag' : 'Home Mat';
+                $rows .= "<li><b>{$title}</b> — Size: {$size} | Colors: {$mat}/{$trim} | price: {$price}$ × {$qty}</li>";
+            } else {
+                $make = $i['make'] ?? '';
+                $model = $i['model'] ?? '';
+                $year = $i['year'] ?? '';
+                $pattern = $i['pattern'] ?? '';
+                $third = (!empty($i['thirdRow'])) ? 'Yes' : 'No';
+                $heel = (!empty($i['heelPad'])) ? 'Yes' : 'No';
+                $hybrid = (!empty($i['hybrid'])) ? 'Yes' : 'No';
+                $setNames = [
+                    'front' => 'Front only (2 mats)',
+                    'full' => 'Front + Rear',
+                    'complete' => 'Front + Rear + Trunk',
+                    'premium_plus' => 'Premium + (Front + 2nd + 3rd + Trunk)'
+                ];
+                $setLabel = $setNames[$set] ?? $set;
+                $rows .= "<li><b>{$make} {$model} {$year}</b> — {$setLabel} | Pattern: {$pattern} | Colors: {$mat}/{$trim} | 3rd row: {$third} | Heel pad: {$heel} | Hybrid: {$hybrid} | price: {$price}$ × {$qty}</li>";
+            }
         }
 
         $mail->Subject = 'One-Click Purchase Request';
@@ -310,6 +343,10 @@ function sendPaypalEmail($data, $mail) {
             $address = "$name, $line1 $line2, $city, $state, $postal, $country";
         }
 
+        $discountPercent = $data['discountPercent'] ?? 0;
+        $discountAmount  = $data['discountAmount'] ?? 0;
+        $promoCode       = $data['promoCode'] ?? '';
+
         $mail->Subject = 'PayPal Order';
         $mail->Body = "<html><body>
             <h3>PayPal order captured</h3>
@@ -320,6 +357,8 @@ function sendPaypalEmail($data, $mail) {
             <ul>{$rows}</ul>
             <p><b>Subtotal:</b> {$subtotal}$</p>
             <p><b>Add-ons:</b> {$addonsTotal}$</p>
+            " . (!empty($promoCode) || $discountAmount>0 ? "<p><b>Discount:</b> {$discountAmount}$ ({$discountPercent}%)</p>" : "") . "
+            " . (!empty($promoCode) ? "<p><b>Promo code:</b> {$promoCode}</p>" : "") . "
             <p><b>Tax:</b> {$tax}$</p>
             <p><b>Shipping:</b> {$shipping}$</p>
             <p><b>Total:</b> {$total}$</p>

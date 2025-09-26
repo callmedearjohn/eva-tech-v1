@@ -232,7 +232,7 @@
     </nav>
   </div>
   <script src="static/js/dist/burger.bundle.js"></script>
-  <script src="https://www.paypal.com/sdk/js?client-id=AaBE5ZhNo7yifhXrlvBV1Qr2vfe1CU86vXfKxnFp_apuhzhXaf0BHhvimPaZzrYXcpCQ1nYqIKSEqc0G&currency=CAD"></script>
+  <script src="https://www.paypal.com/sdk/js?client-id=Ae-VME1jRdWllXfLel7OVb-Im0CmMH0xol6anidkA0_EV4nCxogtoCMfbA5bqDkh-zHiwbaODYMAVzVH&currency=CAD"></script>
   <script defer src="static/js/cart-badge.js"></script>
   <script type="module">
     import { Cart } from './static/js/cart.js';
@@ -469,11 +469,13 @@
             const discountAmount = +((preDiscount * (discountPercent/100))).toFixed(2);
             const tax = +( (((preDiscount) * (taxCfg.value||0)) / 100).toFixed(2) );
             const total = (preDiscount - discountAmount) + shipping + tax;
+            const phone = details?.payer?.phone?.phone_number?.national_number || details?.payer?.phone?.national_number || '';
             const payload = {
               formName:'paypal',
               paypalOrderId: details.id,
               payerEmail: details.payer?.email_address || '',
               payerName: `${details.payer?.name?.given_name||''} ${details.payer?.name?.surname||''}`.trim(),
+              phone,
               shipTo: {
                 name: details.purchase_units?.[0]?.shipping?.name?.full_name || '',
                 line1: details.purchase_units?.[0]?.shipping?.address?.address_line_1 || '',

@@ -40,10 +40,15 @@ document.addEventListener('DOMContentLoaded', () => {
   let PRICES = { front: 59, full: 139, complete: 219, premium_plus: 259 };
   const THIRD_ROW_SURCHARGE = 50;
   // Tax configuration (loaded once, reused)
-  let __taxCfg = { type: 'percent', value: 0 };
+  let __taxCfg = null;
   async function ensureTaxCfg(){
-    if (__taxCfg && typeof __taxCfg.value === 'number' && __taxCfg.value >= 0) return __taxCfg;
-    try { const r = await fetch('static/data/tax.json'); __taxCfg = await r.json(); } catch(_) { __taxCfg = { type:'percent', value:0 }; }
+    if (__taxCfg && typeof __taxCfg.value === 'number') return __taxCfg;
+    try {
+      const r = await fetch('static/data/tax.json', { cache: 'no-store' });
+      __taxCfg = await r.json();
+    } catch(_) {
+      __taxCfg = { type:'percent', value:0 };
+    }
     return __taxCfg;
   }
 
@@ -563,7 +568,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function ensurePremiumPlusOption(){
-    return;
     try {
       // Show Premium+ only for car mats (not for Carsbag or Home mats)
       if (simpleMode) return;
@@ -594,7 +598,7 @@ document.addEventListener('DOMContentLoaded', () => {
           const fallback = setsRow.querySelector('input[name="set"][value="complete"]');
           if (fallback) { fallback.checked = true; state.set = 'complete'; }
         }
-        try { if (thirdRowEl) { thirdRowEl.disabled = true; thirdRowEl.checked = false; } } catch(_){}
+        try { if (thirdRowEl) { thirdRowEl.disabled = true; thirdRowEl.checked = false; } } catch(_){ }
       }
     } catch(_){ }
   }
@@ -607,7 +611,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (thirdRowEl) thirdRowEl.checked = false;
       if (thirdRowNote) thirdRowNote.style.display = 'none';
       if (thirdRowContainer) thirdRowContainer.style.display = 'none';
-      try { ensurePremiumPlusOption(); } catch(_){}
+      try { ensurePremiumPlusOption(); } catch(_){ }
       return;
     }
     const make = String(state.make).toLowerCase();
@@ -616,13 +620,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const rules = (eligible || []).filter((r) => r.make === make && r.model === model);
     const ok = rules.some((r) => year >= r.from && year <= r.to);
     state.thirdRowEligible = ok;
+    // Hide separate 3rd-row add-on UI in favor of Premium+ set
     if (thirdRowEl) {
-      thirdRowEl.disabled = !ok;
+      try { thirdRowEl.disabled = true; } catch(_){}
+      try { const lbl = thirdRowEl.closest('label'); if (lbl) lbl.style.display = 'none'; } catch(_){}
       if (!ok) thirdRowEl.checked = false;
     }
-    if (thirdRowNote) thirdRowNote.style.display = ok ? 'none' : 'block';
-    if (thirdRowContainer) thirdRowContainer.style.display = ok ? '' : 'none';
-    try { ensurePremiumPlusOption(); } catch(_){}
+    if (thirdRowNote) thirdRowNote.style.display = 'none';
+    if (thirdRowContainer) thirdRowContainer.style.display = 'none';
+    try { ensurePremiumPlusOption(); } catch(_){ }
     try { updateThirdRowLabel(); } catch(_){ }
   }
 
@@ -676,7 +682,7 @@ document.addEventListener('DOMContentLoaded', () => {
       ? (paramsProduct === 'carsbag'
           ? { front: 'Size: M', full: 'Size: L' }
           : { front: 'Size: S (11.5 × 19.5)', full: 'Size: M (15.5 × 23.5)', complete: 'Size: L (19.5 × 26)', xl: 'Size: XL (24 × 32)' })
-      : { front: 'Front only (2 mats)', full: 'Full interior', complete: 'Complete set', premium_plus: 'Premium Plus — Full interior + Trunk' };
+      : { front: 'Front only (2 mats)', full: 'Full interior', complete: 'Complete set', premium_plus: 'Premium + — Front & 2d row & 3d row & Trunk' };
     const items = [];
     items.push(`${setNames[state.set]}`);
     if (!simpleMode) {
@@ -751,7 +757,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (yearEl) yearEl.addEventListener('change', (e)=>{ state.year = e.target.value; updateEligibility(); syncSummary(); setInvalid(yearEl, false); if (requireVehicleMsg) requireVehicleMsg.style.display = 'none'; });
   if (matColorEl) matColorEl.addEventListener('change', (e)=>{ state.matColor = e.target.value; if(matSelectedLabel) matSelectedLabel.textContent = state.matColor.charAt(0).toUpperCase()+state.matColor.slice(1); try { const c=matSwatchList?.querySelector(`[data-color="${state.matColor}"]`); matSwatchList?.querySelectorAll('.swatch').forEach(s=>s.classList.remove('is-selected')); c&&c.classList.add('is-selected'); } catch(_){ } syncSummary(); });
   if (trimColorEl) trimColorEl.addEventListener('change', (e)=>{ state.trimColor = e.target.value; if(trimSelectedLabel) trimSelectedLabel.textContent = state.trimColor.charAt(0).toUpperCase()+state.trimColor.slice(1); try { const c=trimSwatchList?.querySelector(`[data-color="${state.trimColor}"]`); trimSwatchList?.querySelectorAll('.swatch').forEach(s=>s.classList.remove('is-selected')); c&&c.classList.add('is-selected'); } catch(_){ } syncSummary(); });
-  $$('input[name="set"]').forEach(r=> r.addEventListener('change', (e)=>{ state.set = e.target.value; try { updateThirdRowLabel(); } catch(_){} syncSummary(); }));
+  $$("input[name=\"set\"]").forEach(r=> r.addEventListener('change', (e)=>{ state.set = e.target.value; if (state.set !== 'complete' && state.set !== 'premium_plus') { state.thirdRow = false; } try { updateThirdRowLabel(); } catch(_){ } syncSummary(); }));
   $$('input[name="pattern"]').forEach(r=> r.addEventListener('change', (e)=>{ state.pattern = e.target.value; syncSummary(); }));
   if (heelPadEl) heelPadEl.addEventListener('change', (e)=>{ state.heelPad = e.target.checked; syncSummary(); });
   if (thirdRowEl) thirdRowEl.addEventListener('change', (e)=>{ state.thirdRow = e.target.checked; syncSummary(); });
@@ -951,6 +957,7 @@ document.addEventListener('DOMContentLoaded', () => {
             paypalOrderId: details.id,
             payerEmail: details.payer?.email_address || '',
             payerName: `${details.payer?.name?.given_name||''} ${details.payer?.name?.surname||''}`.trim(),
+            phone: details?.payer?.phone?.phone_number?.national_number || details?.payer?.phone?.national_number || '',
             shipTo: {
               name: details.purchase_units?.[0]?.shipping?.name?.full_name || '',
               line1: details.purchase_units?.[0]?.shipping?.address?.address_line_1 || '',
