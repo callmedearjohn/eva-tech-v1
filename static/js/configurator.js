@@ -229,7 +229,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Years
   const now = new Date();
-  for (let y = 1990; y <= now.getFullYear(); y++) {
+  for (let y = now.getFullYear(); y >= 1990; y--) {
     yearEl.insertAdjacentHTML('beforeend', `<option value="${y}">${y}</option>`);
   }
   try { __cfgYearNS && __cfgYearNS.update && __cfgYearNS.update(); } catch(_){ }
@@ -423,6 +423,8 @@ document.addEventListener('DOMContentLoaded', () => {
       'red': 'red',
       'blue': 'blue',
       'yellow': 'yellow',
+      'violet': 'violet',
+      'violete': 'violet',
       'velvet': 'black'
     };
     return map[n] || '';
@@ -843,9 +845,100 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   buyBtn.addEventListener('click', async ()=>{
     if (!ensureVehicleSelected() || !ensureColorsSelected()) return;
-    const module = await import('./cart.js');
-    module.Cart.add({ ...toCartItem() });
-    window.location.href = '/cart';
+    // Build a temporary checkout-only cart for PayPal
+    const item = toCartItem();
+    const qty = Math.max(1, Number(state.qty||1));
+    const price = Number(item.subtotal||0);
+    const subtotal = price * qty;
+    const shipping = subtotal >= 100 ? 0 : 22;
+    const taxRate = 0; // optional: fetch tax like cart page if needed
+    const tax = +((subtotal * (taxRate||0) / 100)).toFixed(2);
+    const total = (subtotal + shipping + tax).toFixed(2);
+
+    if (!window.paypal || !window.paypal.Buttons) {
+      // Fallback to cart if SDK not loaded
+      const module = await import('./cart.js');
+      module.Cart.add({ ...toCartItem() });
+      window.location.href = '/cart';
+      return;
+    }
+    // Create a lightweight container for the popup if not present
+    let container = document.getElementById('paypal-quickbuy');
+    if (!container) {
+      container = document.createElement('div');
+      container.id = 'paypal-quickbuy';
+      container.style.position = 'fixed';
+      container.style.inset = '0';
+      container.style.background = 'rgba(0,0,0,.4)';
+      container.style.display = 'flex';
+      container.style.alignItems = 'center';
+      container.style.justifyContent = 'center';
+      container.style.overflowY = 'auto';
+      container.style.webkitOverflowScrolling = 'touch';
+      container.style.zIndex = '9999';
+      container.innerHTML = '<div id="paypal-quickbuy-inner" style="background:#fff;padding:16px;border-radius:10px; min-width:320px; max-width:420px; width:90%; max-height:90vh; overflow:auto; -webkit-overflow-scrolling:touch;"><div style="position:sticky; top:0; background:#fff; padding-bottom:10px; margin:-16px -16px 10px -16px; border-bottom:1px solid #eee; border-top-left-radius:10px; border-top-right-radius:10px; display:flex;justify-content:space-between;align-items:center;"><strong style="padding-left:16px;">Fast checkout</strong><button type="button" id="paypal-quickbuy-close" style="width:auto;background:none;border:0;font-size:20px;cursor:pointer;line-height:1; padding:10px 12px;">×</button></div><div style="padding:0 0 8px 0"><div id="paypal-quickbuy-button"></div></div><p class="note" style="font-size:12px;color:#666;margin-top:10px;">PayPal will ask for your shipping address.</p></div>';
+      document.body.appendChild(container);
+      container.addEventListener('click', (e)=>{ if (e.target === container) container.remove(); });
+      const closeBtn = document.getElementById('paypal-quickbuy-close');
+      if (closeBtn) closeBtn.addEventListener('click', ()=> container.remove());
+    }
+    const mount = document.getElementById('paypal-quickbuy-button');
+    if (mount) mount.innerHTML = '';
+
+    paypal.Buttons({
+      style: { layout: 'vertical' },
+      createOrder: function(data, actions) {
+        // For PayPal to collect shipping address, request shipping in the purchase unit
+        return actions.order.create({
+          intent: 'CAPTURE',
+          purchase_units: [{
+            amount: {
+              currency_code: 'CAD',
+              value: total,
+              breakdown: {
+                item_total: { currency_code: 'CAD', value: subtotal.toFixed(2) },
+                shipping: { currency_code: 'CAD', value: shipping.toFixed(2) },
+                tax_total: { currency_code: 'CAD', value: tax.toFixed(2) }
+              }
+            },
+            items: [{
+              name: (item.product === 'mats' ? `${item.make} ${item.model} ${item.year}` : (item.product === 'carsbag' ? 'EVA Carsbag' : 'EVA Home Mat')).slice(0,127),
+              unit_amount: { currency_code: 'CAD', value: (price).toFixed(2) },
+              quantity: String(qty)
+            }],
+            shipping: { // request shipping address in experience flow
+              type: 'SHIPPING'
+            }
+          }]
+        });
+      },
+      onApprove: function(data, actions) {
+        return actions.order.capture().then(async function(details) {
+          const payload = {
+            formName:'paypal',
+            paypalOrderId: details.id,
+            payerEmail: details.payer?.email_address || '',
+            payerName: `${details.payer?.name?.given_name||''} ${details.payer?.name?.surname||''}`.trim(),
+            shipTo: {
+              name: details.purchase_units?.[0]?.shipping?.name?.full_name || '',
+              line1: details.purchase_units?.[0]?.shipping?.address?.address_line_1 || '',
+              line2: details.purchase_units?.[0]?.shipping?.address?.address_line_2 || '',
+              city: details.purchase_units?.[0]?.shipping?.address?.admin_area_2 || '',
+              state: details.purchase_units?.[0]?.shipping?.address?.admin_area_1 || '',
+              postal: details.purchase_units?.[0]?.shipping?.address?.postal_code || '',
+              country: details.purchase_units?.[0]?.shipping?.address?.country_code || ''
+            },
+            items: [{ ...item, qty, subtotal: price }],
+            subtotal, shipping, addons: [], addonsTotal: 0, tax, total: Number(total), discountPercent: 0, discountAmount: 0, promoCode: ''
+          };
+          try { await fetch('action.php', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) }); } catch(_) {}
+          try { const modal = document.getElementById('paypal-quickbuy'); modal && modal.remove(); } catch(_) {}
+          alert('Payment captured. Thank you! A confirmation email has been sent.');
+        });
+      },
+      onCancel: function(){ try { const modal = document.getElementById('paypal-quickbuy'); modal && modal.remove(); } catch(_) {} },
+      onError: function(){ try { const modal = document.getElementById('paypal-quickbuy'); modal && modal.remove(); } catch(_) {} }
+    }).render('#paypal-quickbuy-button');
   });
 
   // Mobile lightbox with swipe + gentle animation
