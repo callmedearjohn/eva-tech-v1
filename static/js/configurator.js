@@ -318,7 +318,11 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Allowed colors (filter any sources to these lists)
-  const ALLOWED_MAT_COLORS = ['black','grey','beige','red','brown','blue','orange'];
+  // Sync with available layered assets in static/images/price-constructor/mats/*.png
+  const ALLOWED_MAT_COLORS = [
+    'black','gray','grey','blue','darkblue','brown','red','orange','yellow','beige',
+    'salad','violet','pink','bronze','white'
+  ];
   const ALLOWED_TRIM_COLORS = [
     'black','light-grey','darkgray','lightgray','grey','gray',
     'orange','red','blue','yellow','brown',
@@ -393,11 +397,18 @@ document.addEventListener('DOMContentLoaded', () => {
       'black': 'black',
       'gray': 'gray',
       'grey': 'gray',
-      'beige': 'beg',
-      'brown': 'brown',
       'blue': 'blue',
+      'darkblue': 'darkblue',
+      'brown': 'brown',
       'red': 'red',
-      'orange': 'red' // fallback approximation if orange mat not present
+      'orange': 'orange',
+      'yellow': 'yellow',
+      'beige': 'beige',
+      'salad': 'salad',
+      'violet': 'violet',
+      'pink': 'pink',
+      'bronze': 'bronze',
+      'white': 'white'
     };
     return map[n] || '';
   }
