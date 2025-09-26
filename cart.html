@@ -105,9 +105,9 @@
   <div class="cart">
     <!-- <div class=""><div class="crumble"><a href="/">Home</a> / Cart</div></div> -->
     <div class="maincontent basket">
-      <div class=""><h1>Cart</h1></div>
       <div class="site">
         <div class="wrapper">
+          <h1>Cart</h1>
           <!-- <ul class="checkout_process_path">
             <li class="active">Cart</li><li>/</li>
             <li class="">Shipping</li><li>/</li>
@@ -136,12 +136,12 @@
                   <div><span>Tax</span><span>$<span id="cart-tax">0</span></span></div>
                   <div><span>Total</span><span>$<span id="cart-total">0</span></span></div>
                 </div>
-                <div style="margin-top:12px"><div id="paypal-button-container"></div></div>
                 <div style="margin-top:12px">
                   <label style="display:inline-flex; align-items:center; gap:6px; font-size:14px;">
-                    <input type="checkbox" id="agree-terms"> I agree to the <a href="#" id="open-terms">Terms and Conditions</a>
+                    <input type="checkbox" id="agree-terms"> I agree to the <a href="privacyPolicy">Terms and Conditions</a>
                   </label>
                 </div>
+                <div style="margin-top:12px"><div id="paypal-button-container"></div></div>
                 <dialog id="terms-dialog" style="max-width:720px; width:90%; padding:16px 18px; border:1px solid #e5e5e5; border-radius:10px;">
                   <h3 style="margin:0 0 10px;">Terms and Conditions</h3>
                   <div style="max-height:50vh; overflow:auto; color:#333; font-size:14px; line-height:1.55;">
@@ -229,6 +229,7 @@
   </div>
   <script src="static/js/dist/burger.bundle.js"></script>
   <script src="https://www.paypal.com/sdk/js?client-id=AaBE5ZhNo7yifhXrlvBV1Qr2vfe1CU86vXfKxnFp_apuhzhXaf0BHhvimPaZzrYXcpCQ1nYqIKSEqc0G&currency=CAD"></script>
+  <script defer src="static/js/cart-badge.js"></script>
   <script type="module">
     import { Cart } from './static/js/cart.js';
     const rowsEl = document.getElementById('basket-rows');
@@ -299,6 +300,7 @@
       document.getElementById('cart-freeship').style.display = free ? 'none' : 'block';
       const shipNote = document.getElementById('ship-note');
       shipNote.style.display = free ? 'none' : 'block';
+      try { if (window.updateCartBadge) window.updateCartBadge(); } catch(_){}
     }
     if (applyPromoBtn) {
       applyPromoBtn.addEventListener('click', async ()=>{
@@ -321,6 +323,37 @@
     }
     // render initial
     render();
+    // Mobile-only: instant add-to-cart for upsell Buy buttons in cart section
+    (function enableInstantUpsellAdd(){
+      try {
+        const buyLinks = document.querySelectorAll('.near_goods .btn_wrapperx a');
+        if (!buyLinks || !buyLinks.length) return;
+        const isMobile = () => window.matchMedia('(max-width: 768px)').matches;
+        const updateBadge = () => {
+          const count = Cart.list().reduce((s,i)=> s + (i.qty||1), 0);
+          document.querySelectorAll('[data-cart-count]').forEach(el=> el.textContent = String(count));
+        };
+        buyLinks.forEach(a=>{
+          a.addEventListener('click', (e)=>{
+            if (!isMobile()) return; // keep default navigation on desktop/tablet
+            const href = a.getAttribute('href') || '';
+            const url = new URL(href, location.origin);
+            const product = url.searchParams.get('product');
+            if (!product) return;
+            e.preventDefault();
+            if (product === 'carsbag') {
+              Cart.add({ product: 'carsbag', set: 'front', pattern: '', matColor: '#000000', trimColor: '#000000', qty: 1, subtotal: ADDON_CARSBAG_PRICE });
+            } else if (product === 'home') {
+              Cart.add({ product: 'home', set: 'full', pattern: '', matColor: '#000000', trimColor: '#000000', qty: 1, subtotal: ADDON_HOME_PRICE });
+            } else {
+              return; // unknown product, skip interception
+            }
+            render();
+            updateBadge();
+          });
+        });
+      } catch(_) {}
+    })();
     // PayPal button
     if (window.paypal) {
       paypal.Buttons({

@@ -92,6 +92,32 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     } catch(_){ }
     try { const patternBlock = document.querySelector('.cfg-patterns')?.closest('.cfg-block'); if (patternBlock) patternBlock.style.display='none'; } catch(_){ }
+    // Update Description tab content for Carsbag and Home products
+    try {
+      const descPane = document.getElementById('tab0');
+      if (descPane) {
+        if (paramsProduct === 'carsbag') {
+          descPane.innerHTML = [
+            '<p><strong>EVA CarsBag — the trunk organizer that keeps chaos on lockdown</strong></p>',
+            '<p>Meet your new go-to cargo companion. Built from waterproof, odourless EVA with rigid walls, CarsBag keeps tools, emergency gear, detailing supplies, and groceries contained and upright — no leaks, no smells, no mess. Rinses clean in seconds and dries fast.</p>',
+            '<p><strong>Stays put. Even when you don’t.</strong><br>A non-slip hook-and-loop base (rear attachment for carpeted trunks) prevents sliding in corners and hard braking, so your load doesn’t go flying. Safer, tidier, smarter.</p>',
+            '<p><strong>Designed for real life</strong><br> • Two sizes: Medium for everyday essentials; Large for full toolkits and bulkier items. (Pick based on how you roll.)<br> • Zippered lid + reinforced carry handles — toss it in, zip it up, lift it out.<br> • Collapsible when empty to save space — folds flat in seconds.<br> • Optional divider to separate fluids and tools.<br> • Style it to match your mats with colour trims that actually look good in your trunk.</p>',
+            '<p><strong>What it loves to carry</strong><br>Jump starter, compressor, tow strap, tools, washer fluid, cleaning kit, first-aid and roadside gear — plus the random weekend stuff that usually rolls around.</p>'
+          ].join('');
+        } else if (paramsProduct === 'home') {
+          descPane.innerHTML = [
+            '<p><strong>EVA Multi-Use Mat — one mat, many messes solved</strong></p>',
+            '<p>Meet the all-season mat that traps mess before it spreads. Made from waterproof, odourless EVA, the deep rhombus cells lock in mud, sand, water and small debris below foot level, keeping surfaces clean and dry from winter slush to summer rain.</p>',
+            '<p><strong>Why it’s better</strong><br> • All-season, all-purpose: stays elastic from −50 °C to +50 °C; won’t crack in cold or get soggy in heat.<br> • Waterproof & low-maintenance: closed-cell EVA doesn’t absorb water or odours; liquid stays contained until you pour it out.<br> • Rinse-and-go clean: shake to empty dry debris, then rinse — no special cleaners needed; dries quickly.<br> • Comfort & quiet: lightweight, slightly springy surface softens steps and adds a touch of sound dampening.<br> • Looks the part: pick colour trims that match your space.</p>',
+            '<p><strong>Smart uses (beyond the door)</strong><br> • Pet zone: as a litter-catcher under cat boxes (traps granules) and a splash guard under food/water bowls.<br> • Kitchen & laundry: under dish racks to catch drips, by the sink, or as a floor protector near washers.<br> • Plants & hobbies: under planters to contain water/soil; as a craft or utility mat to keep floors clean.<br> • Entry & garage: mudrooms, balconies, patio doors, workshop corners — anywhere mess appears.</p>',
+            '<p><strong>Set-up tips</strong><br> • On very smooth floors (polished tile/vinyl), add a non-slip underlay for extra grip.<br> • For kitchen use, place under racks or bowls; avoid direct contact with hot cookware straight from the oven/stove.</p>',
+            '<p><strong>Sizes</strong><br>Available in multiple sizes; custom cuts on request to fit your space.</p>'
+          ].join('');
+        }
+      }
+    } catch(_){ }
+    // Hide Before/After section for simple products (no relevance for bags/home)
+    try { const ba = document.querySelector('.evabeforeafter'); if (ba) ba.style.display = 'none'; } catch(_){ }
     // Hide Options block (gift/third-row) for simple products
     try {
       const optionsBlock = document.querySelector('.gift-block')?.closest('.cfg-block');
@@ -169,6 +195,21 @@ document.addEventListener('DOMContentLoaded', () => {
           list.innerHTML = itemCarMats + itemHomeMat; // show Car Mats and Home Mat on Carsbag product
         } else if (paramsProduct === 'home') {
           list.innerHTML = itemCarBags + itemCarMats; // show both Carsbag and Car Mats
+        }
+      }
+    } catch(_){ }
+    // Adjust "Description / Specifications / Advantages" tab titles for simple products
+    try {
+      const tabs = document.querySelectorAll('.nav.nav-tabs .nav-link');
+      if (tabs && tabs.length >= 3) {
+        if (paramsProduct === 'carsbag') {
+          tabs[0].textContent = 'Description';
+          tabs[1].textContent = 'Specifications';
+          tabs[2].textContent = 'Advantages';
+        } else if (paramsProduct === 'home') {
+          tabs[0].textContent = 'Description';
+          tabs[1].textContent = 'Specifications';
+          tabs[2].textContent = 'Advantages';
         }
       }
     } catch(_){ }

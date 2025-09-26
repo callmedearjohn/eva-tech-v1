@@ -35,6 +35,9 @@
       .top-products img { width: 88px !important; height: 88px !important; }
       .side-products .button { padding: 6px 10px; font-size: 12px; }
     }
+        /* Mobile-only slot to host the Vehicle block when < md */
+        .mobile-vehicle-slot { display: none; }
+        @media (max-width: 768px) { .mobile-vehicle-slot { display: block; margin-top: 12px; margin-bottom: 12px; } }
     /* Promo price badges */
     .price-line { display:inline-flex; align-items:center; gap:.35rem; }
     .price-old { text-decoration: line-through; opacity:.6; }
@@ -166,8 +169,9 @@
       <div class="goodcard goodcard181" data-category="181">
         <div class="container">
           <div class="row">
-            <div class="col-md-4 col-xl-4">
+            <div class="col-md-4 col-xl-4" id="left-col">
               <div class="mobile_container" data-fromclass="car_pattern_block"></div>
+              <div id="mobile-vehicle-slot" class="mobile-vehicle-slot"></div>
               <div class="image_container_constructor">
                 <div id="image_container_constructor">
                   <div class="allinnone">
@@ -189,6 +193,9 @@
                     <img src="./static/images/work-examples/4.jpg" alt="thumb">
                     <img src="./static/images/work-examples/5.jpg" alt="thumb">
                     <img src="./static/images/work-examples/6.jpg" alt="thumb">
+                    <img src="./static/images/price-constructor/PIC2.jpg" alt="thumb">
+                    <img src="./static/images/price-constructor/PIC3.PNG" alt="thumb">
+                    <img src="./static/images/price-constructor/PIC4.jpg" alt="thumb">
                   </div>
                 </div>
               </div>
@@ -327,14 +334,14 @@
               <div class="preim3_block">
                 <div class="preim3"><div  class="widgetblock-cardpreim widgetblock cardpreim"><ul class="">
                   <li>
-                    <a class="" href="/dostavkaioplata/" target="_blank">
+                    <p>
                       <noindex>
                         <div class="preim_item" style="background:url(https://www.prime-avto.ru/images/html_content/5d298d0100b6c.png)">
                           <div class="name">Fast delivery</div>
                           <div class="desc">Orders are shipped in 1-3 days</div>
                         </div>
                       </noindex>
-                    </a>
+                    </p>
                   </li>
                   <li>
                     <div class="">
@@ -413,41 +420,35 @@
         </div>
       </div>
       <div class="container">
-        <div class="tab-content"> <div class="tab-pane fade in active show" id="tab0" name="tab0" role="tabpanel"><p dir="ltr" id="docs-internal-guid-713fb6e4-7fff-f81a-b529-b06e5c0acb9f">
-  <strong>Custom EVA car mats</strong> are durable, convenient and versatile accessories that protect your interior and trunk from dust, dirt and moisture all year round.</p>
-<p dir="ltr">
-  EVA mats are perfect for all-season use. They do not absorb water and remain elastic in cold weather, unlike textile or classic rubber mats.</p>
-<p dir="ltr">
-  EVA mats are made from an eco‑friendly material with high wear resistance, resistance to extreme temperatures (<strong>from +50°C to −50°C</strong>) and aggressive chemicals. They are <strong>lightweight</strong>, and the dense structure provides excellent sound insulation.</p>
+        <div class="tab-content"> <div class="tab-pane fade in active show" id="tab0" name="tab0" role="tabpanel"><p dir="ltr">
+  <strong>Custom EVA car mats — protection that pays off</strong></p>
+<p dir="ltr">Drive cleaner, drier, and quieter all year. Our EVA mats shield your interior and trunk from dust, dirt, and moisture, without soaking up water. The closed-cell material stays elastic from −50 °C to +50 °C, unlike textile or classic rubber, and shrugs off common chemicals. It’s lightweight yet tough, and the dense structure adds a touch of sound insulation for a calmer cabin.</p>
+<p dir="ltr">The rhombus cell pattern locks in grime and water below foot level, keeping footwear and surfaces clean. Rinse in seconds—no special tools; touchless washes work great.</p>
+<p dir="ltr">Match your style with dozens of colour combos: from understated classics to bold, sporty trims. Pick your make, model, and year, choose your colours, and build the set that fits like it was made for your car—because it is.</p>
 <div class="row" style="margin-top:20px;">
   <div class="col-md-6" style="margin-bottom:20px;">
-    <img alt="" src="./static/images/work-examples/10.jpg" style="max-width: 100%;height: 100%;" /></div>
+    <img alt="" src="./static/images/price-constructor/PIC5.PNG" style="max-width: 100%;height: 100%;" /></div>
   <div class="col-md-6" style="margin-bottom:20px;">
     <img alt="" src="./static/images/work-examples/11.jpg" style="max-width: 100%;height: 100%;" /></div>
 </div>
-<p dir="ltr">
-  The surface has a special <strong>rhombus</strong> pattern that effectively localizes dirt and water, keeping footwear and interior surfaces clean. The mats are easy to rinse without special tools, including with a touchless wash.</p>
-  The mats come in many color variations and fit any style. Choose from classic tones to bright sporty combinations to give your car a unique look.</p>
-<p dir="ltr">
-  The mats come in many color variations and fit any style. Choose from classic tones to bright sporty combinations to give your car a unique look.</p>
 <div style="text-align:center">
   &nbsp;</div>
 <p>
   &nbsp;</p>
 <div  class="widgetblock-preimdesc181 widgetblock preim4"><ul class=""><li class="selected"><div class="" >    <div class="item">
-<img src="./static/images/work-examples/5.jpg">
+<img src="./static/images/price-constructor/small1.jpg">
 <div class="title">Additional fasteners</div>
 <div class="desc">Hook-and-loop fasteners hold the mats around the perimeter for better fixation.</div>
 </div>  </div></li><li ><div class="" >    <div class="item">
-<img src="./static/images/work-examples/6.jpg">
+<img src="./static/images/price-constructor/PIC1.jpg">
 <div class="title">All-season use</div>
 <div class="desc">Usable year-round thanks to temperature resistance from +50°C to −50°C.</div>
 </div>  </div></li><li ><div class="" >    <div class="item">
-<img src="./static/images/work-examples/7.jpg">
+<img src="./static/images/price-constructor/small3.jpg">
 <div class="title">Rhombus surface</div>
 <div class="desc">Localizes spilled liquids and debris, preventing spread across the cabin.</div>
 </div>  </div></li><li ><div class="" >    <div class="item">
-<img src="./static/images/work-examples/8.jpg">
+<img src="./static/images/price-constructor/small4.jpg">
 <div class="title">OEM mounts</div>
 <div class="desc">If your car has factory mounts, we install compatible clips on the mats.</div>
 </div>  </div></li></ul>
@@ -514,14 +515,14 @@
   &nbsp;</p>
 </div></div><div class="tab-pane fade in  show" id="tab2" name="tab2" role="tabpanel"><div  class="widgetblock-preim181 widgetblock "><noindex><p dir="ltr">
   <strong>Advantages of EVA mats</strong></p>
-<p dir="ltr">- The cells reliably hold water. To pour it out, hold the mat almost vertically. This prevents water from splashing like with rubber mats.</p>
-<p dir="ltr">- Eco-friendly and safe material. Odorless and hypoallergenic.</p>
-<p dir="ltr">- All-season use. Remains elastic at <strong>−50 / +50</strong>.</p>
-<p dir="ltr">- Choice of mat and edging colors.</p>
-<p dir="ltr">- Maximum floor coverage.</p>
-<p dir="ltr">- Reliable fastening to OEM clips plus extra hook-and-loop to the floor.</p>
-<p dir="ltr">- Easy to clean with a stream of water — dirt rinses out from the cells.</p>
-<p dir="ltr">- We guarantee high product quality.</p>
+<p dir="ltr">• Locks in water, no splashes. Deep cells trap liquid; to drain, just hold the mat nearly vertical—no messy slosh like with tray-style rubber.</p>
+<p dir="ltr">• Eco-friendly &amp; safe. EVA is odourless and hypoallergenic.</p>
+<p dir="ltr">• Truly all-season. Stays elastic from −50 °C to +50 °C.</p>
+<p dir="ltr">• Your style, your colours. Mix mat and edging colours for a custom look.</p>
+<p dir="ltr">• Maximum coverage. Patterns refined for broad floor protection without pedal interference.</p>
+<p dir="ltr">• Stays put. OEM clips plus hook-and-loop to the floor for extra hold.</p>
+<p dir="ltr">• Rinse-clean in seconds. A water jet flushes dirt out of the cells—no special tools.</p>
+<p dir="ltr">• Quality you can trust. Backed by a 1-year warranty.</p>
 </noindex></div></div>
       </div>
 
@@ -793,6 +794,123 @@
   <script src="static/js/dist/burger.bundle.js"></script>
   <script defer src="static/js/dist/main.bundle.js"></script>
   <script defer src="static/js/dist/faq.bundle.js"></script>
+  <script>
+    // Move the title, rating, and only the "Your vehicle" block into the left column on small screens
+    (function mobileVehicleBlock(){
+      function initOnce(){
+        try {
+          var slot = document.getElementById('mobile-vehicle-slot');
+          var leftCol = document.getElementById('left-col');
+          var vehicleRow = document.querySelector('.cfg-row-vehicle');
+          var buildOrder = document.getElementById('build-order');
+          if (!slot || !vehicleRow || !buildOrder) return;
+          var vehicleBlock = vehicleRow.closest('.cfg-block');
+          var titleEl = buildOrder.querySelector('.card_title');
+          var ratingEl = buildOrder.querySelector('.cfg-rating');
+          if (!vehicleBlock) return;
+          // Create origin anchors next to the original elements to restore on desktop
+          var vbOrigin = document.getElementById('vehicle-block-origin');
+          if (!vbOrigin) {
+            vbOrigin = document.createElement('div');
+            vbOrigin.id = 'vehicle-block-origin';
+            vbOrigin.style.display = 'none';
+            vehicleBlock.parentNode.insertBefore(vbOrigin, vehicleBlock);
+          }
+          var titleOrigin = document.getElementById('build-order-title-origin');
+          if (titleEl && !titleOrigin) {
+            titleOrigin = document.createElement('div');
+            titleOrigin.id = 'build-order-title-origin';
+            titleOrigin.style.display = 'none';
+            titleEl.parentNode.insertBefore(titleOrigin, titleEl);
+          }
+          var ratingOrigin = document.getElementById('cfg-rating-origin');
+          if (ratingEl && !ratingOrigin) {
+            ratingOrigin = document.createElement('div');
+            ratingOrigin.id = 'cfg-rating-origin';
+            ratingOrigin.style.display = 'none';
+            ratingEl.parentNode.insertBefore(ratingOrigin, ratingEl);
+          }
+          var mql = window.matchMedia('(max-width: 768px)');
+          function update(){
+            try {
+              if (mql.matches) {
+                // Ensure the slot is at the very top of the left column on mobile
+                if (leftCol && leftCol.firstChild !== slot) {
+                  leftCol.insertBefore(slot, leftCol.firstChild);
+                }
+                if (titleEl && !slot.contains(titleEl)) slot.appendChild(titleEl);
+                if (ratingEl && !slot.contains(ratingEl)) slot.appendChild(ratingEl);
+                if (!slot.contains(vehicleBlock)) slot.appendChild(vehicleBlock);
+              } else {
+                if (titleEl && titleOrigin && titleOrigin.parentNode && titleOrigin.nextSibling !== titleEl) {
+                  titleOrigin.parentNode.insertBefore(titleEl, titleOrigin.nextSibling);
+                }
+                if (ratingEl && ratingOrigin && ratingOrigin.parentNode && ratingOrigin.nextSibling !== ratingEl) {
+                  ratingOrigin.parentNode.insertBefore(ratingEl, ratingOrigin.nextSibling);
+                }
+                if (vbOrigin && vbOrigin.parentNode && vbOrigin.nextSibling !== vehicleBlock) {
+                  vbOrigin.parentNode.insertBefore(vehicleBlock, vbOrigin.nextSibling);
+                }
+              }
+            } catch(_) {}
+          }
+          // Initial and responsive reflow
+          update();
+          if (mql.addEventListener) mql.addEventListener('change', update);
+          else window.addEventListener('resize', update);
+        } catch(_) {}
+      }
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initOnce);
+      } else {
+        initOnce();
+      }
+    })();
+  </script>
+  <script>
+    // Move "You may also like" (upsell) below the cart module on mobile
+    (function moveUpsellBelowCart(){
+      function init(){
+        try {
+          var upsell = document.querySelector('.car_pattern_block .upsell');
+          var orderplate = document.querySelector('.orderplate');
+          if (!upsell || !orderplate) return;
+          // Create an origin anchor to restore on desktop
+          var origin = document.getElementById('upsell-origin');
+          if (!origin) {
+            origin = document.createElement('div');
+            origin.id = 'upsell-origin';
+            origin.style.display = 'none';
+            upsell.parentNode.insertBefore(origin, upsell);
+          }
+          var mql = window.matchMedia('(max-width: 768px)');
+          function update(){
+            try {
+              if (mql.matches) {
+                // Place upsell directly after the cart/order module
+                if (orderplate && orderplate.parentNode && orderplate.nextSibling !== upsell) {
+                  orderplate.parentNode.insertBefore(upsell, orderplate.nextSibling);
+                }
+              } else {
+                // Restore to original location on desktop
+                if (origin && origin.parentNode && origin.nextSibling !== upsell) {
+                  origin.parentNode.insertBefore(upsell, origin.nextSibling);
+                }
+              }
+            } catch(_) {}
+          }
+          update();
+          if (mql.addEventListener) mql.addEventListener('change', update);
+          else window.addEventListener('resize', update);
+        } catch(_) {}
+      }
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+      } else {
+        init();
+      }
+    })();
+  </script>
   <script>
     // On small screens, ensure the preview images render above the build section
     (function fixMobileOrder(){

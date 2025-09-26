@@ -173,6 +173,21 @@ input[type="checkbox"]:disabled {
   color: var(--form-control-disabled);
 }
 
+
+@media (max-width: 900px) {
+  .hero { padding: 10rem 0 0.5rem 0; }
+  .hero__title { margin-bottom: 1.5rem; }
+  .hero__sub-title { margin-bottom: 2rem; }
+  .hero-selector { margin-top: 0.5rem; }
+  .hero-scroll-down { margin-top: 0.75rem; }
+  .hero__text { margin-bottom: 2rem; }
+}
+
+/* On very small screens, hide the scroll arrows to reclaim space */
+@media (max-width: 560px) {
+  .hero-scroll-down { display: none; }
+}
+
 /* === Configurator description: align images and cards (tab 0) === */
 /* Make the two side-by-side images the same height and properly cropped */
 #tab0 .row > [class*="col-"] img {
@@ -216,4 +231,42 @@ input[type="checkbox"]:disabled {
 }
 @media (max-width: 560px) {
   .widgetblock-preimdesc181 ul { grid-template-columns: 1fr; }
+}
+
+/* === Products section: layout + spacing tweaks === */
+/* Goal: Card 1 full-width on top; cards 2 and 3 side-by-side below. */
+section#products { padding-top: 1.25rem; padding-bottom: 1.25rem; }
+#products .section__title { margin-bottom: 0.75rem; }
+
+/* Define grid with template areas; default stack for very small screens */
+#products .advantage__items {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-areas:
+    "item1"
+    "item2"
+    "item3";
+  gap: 12px;
+  align-items: stretch;
+}
+
+/* Ensure auto height and moderate image heights to fit all on one screen */
+#products .advantage__item { height: auto; }
+#products .advantage__item > img { height: 220px; }
+
+/* Place items into grid areas */
+#products .advantage__item:nth-child(1) { grid-area: item1; }
+#products .advantage__item:nth-child(2) { grid-area: item2; }
+#products .advantage__item:nth-child(3) { grid-area: item3; }
+
+@media (min-width: 560px) {
+  #products .advantage__items {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "item1 item1"
+      "item2 item3";
+    gap: 14px; /* slightly larger gap when there is room */
+  }
+  /* Give the hero card a slightly taller visual */
+  #products .advantage__item:first-child > img { height: 260px; }
 }
