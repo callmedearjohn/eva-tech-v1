@@ -57,10 +57,12 @@ function reserveOrderNumber(mysqli $db){
     $db->begin_transaction();
     try {
         $res = $db->query('SELECT order_number FROM orders ORDER BY order_number DESC LIMIT 1 FOR UPDATE');
-        $next = 101001;
+        $baseline = 101001;
+        $next = $baseline;
         if ($res && $res->num_rows > 0) {
             $row = $res->fetch_assoc();
-            $next = (int)$row['order_number'] + 1;
+            $latest = (int)$row['order_number'];
+            $next = max($baseline, $latest + 1);
         }
         if ($res) { $res->free(); }
         $stmt = $db->prepare('INSERT INTO orders (order_number) VALUES (?)');
@@ -335,7 +337,7 @@ function sendOneClickEmail($data, $mail) {
                     'premium_plus' => 'Premium + (Front + 2nd + 3rd + Trunk)'
                 ];
                 $setLabel = $setNames[$set] ?? $set;
-                $rows .= "<li><b>{$make} {$model} {$year}</b> — {$setLabel} | Pattern: {$pattern} | Colors: {$mat}/{$trim} | 3rd row: {$third} | Heel pad: {$heel} | Hybrid: {$hybrid} | price: {$price}$ × {$qty}</li>";
+                $rows .= "<li><b>{$make} {$model} {$year}</b> — {$setLabel} | Pattern: {$pattern} | Colors: {$mat}/{$trim} | Heel pad: {$heel} | Hybrid: {$hybrid} | price: {$price}$ × {$qty}</li>";
             }
         }
 
@@ -431,7 +433,7 @@ function sendPaypalEmail($data, $mail) {
                 $hybrid = (!empty($i['hybrid'])) ? 'Yes' : 'No';
                 $setLabel = $setNames[$set] ?? $set;
                 $title = trim("$make $model $year — $setLabel");
-                $details = "Pattern: {$pattern}; Colors: {$mat}/{$trim}; 3rd row: {$third}; Heel pad: {$heel}; Hybrid: {$hybrid}";
+                $details = "Pattern: {$pattern}; Colors: {$mat}/{$trim}; Heel pad: {$heel}; Hybrid: {$hybrid}";
                 $itemRows .= "<tr><td style='padding:8px 6px;border-bottom:1px solid #e5e7eb;'>{$title}</td><td style='padding:8px 6px;border-bottom:1px solid #e5e7eb;'>{$details}</td><td style='text-align:center;padding:8px 6px;border-bottom:1px solid #e5e7eb;'>{$qty}</td><td style='text-align:right;padding:8px 6px;border-bottom:1px solid #e5e7eb;'>{$price}$</td></tr>";
             }
         }
