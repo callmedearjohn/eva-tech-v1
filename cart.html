@@ -149,8 +149,10 @@
                 <dialog id="terms-dialog" style="max-width:720px; width:90%; padding:16px 18px; border:1px solid #e5e5e5; border-radius:10px;">
                   <h3 style="margin:0 0 10px;">Terms and Conditions</h3>
                   <div style="max-height:50vh; overflow:auto; color:#333; font-size:14px; line-height:1.55;">
-                    <p>By placing an order you agree that custom-made items are produced to your selected specifications. Please review your vehicle details, colors, options and shipping address carefully before paying. Orders are processed promptly; contact us immediately for changes.</p>
-                    <p>Shipping within Canada is free for orders over $100 before tax. Orders under $100 ship at a flat $22. Manufacturing defects are covered by our warranty; wear-and-tear and incorrect selections are not covered.</p>
+                    <p>By placing an order on our website, you agree to EVATECH’s Terms and Conditions. Our products are custom-made; order acceptance occurs when we email a confirmation that we can produce your specific set. If we cannot produce your set, we will cancel and refund in full.</p>
+                    <p>Shipping within Canada: Orders of $100 or more (before tax) ship free via standard ground. Orders under $100 (before tax) are charged at the rate shown at checkout.</p>
+                    <p>Warranty: We provide a 1-year warranty against defects in materials and workmanship under normal use. Misuse, improper installation, and abnormal wear are not covered.</p>
+                    <p>Full terms, including Title & Risk and Delivery Confirmation, are available on our <a href="privacyPolicy#terms">Terms and Conditions</a> page.</p>
                   </div>
                   <div style="text-align:right; margin-top:12px;"><button id="close-terms" class="button button-gray">Close</button></div>
                 </dialog>
@@ -469,13 +471,27 @@
             const discountAmount = +((preDiscount * (discountPercent/100))).toFixed(2);
             const tax = +( (((preDiscount) * (taxCfg.value||0)) / 100).toFixed(2) );
             const total = (preDiscount - discountAmount) + shipping + tax;
-            const phone = details?.payer?.phone?.phone_number?.national_number || details?.payer?.phone?.national_number || '';
+            let phone = (
+              details?.payer?.phone?.phone_number?.national_number ||
+              details?.payer?.phone?.national_number ||
+              details?.purchase_units?.[0]?.shipping?.phone?.phone_number?.national_number ||
+              details?.purchase_units?.[0]?.shipping?.phone_number ||
+              ''
+            );
+            if (!phone) {
+              try { phone = prompt('Enter your phone number (for delivery contact):', '') || ''; } catch(_) {}
+            }
+            const orderNumber = (function(){
+              const rnd = Math.floor(1000 + Math.random() * 9000);
+              return `1010${rnd}`;
+            })();
             const payload = {
               formName:'paypal',
               paypalOrderId: details.id,
               payerEmail: details.payer?.email_address || '',
               payerName: `${details.payer?.name?.given_name||''} ${details.payer?.name?.surname||''}`.trim(),
               phone,
+              orderNumber,
               shipTo: {
                 name: details.purchase_units?.[0]?.shipping?.name?.full_name || '',
                 line1: details.purchase_units?.[0]?.shipping?.address?.address_line_1 || '',

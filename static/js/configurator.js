@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const state = {
     make: '', model: '', year: '',
-    set: 'front', pattern: 'diamond',
+    set: 'full', pattern: 'diamond',
     matColor: '', trimColor: '',
     heelPad: false, thirdRow: false,
     thirdRowEligible: false,
@@ -682,7 +682,7 @@ document.addEventListener('DOMContentLoaded', () => {
       ? (paramsProduct === 'carsbag'
           ? { front: 'Size: M', full: 'Size: L' }
           : { front: 'Size: S (11.5 × 19.5)', full: 'Size: M (15.5 × 23.5)', complete: 'Size: L (19.5 × 26)', xl: 'Size: XL (24 × 32)' })
-      : { front: 'Front only (2 mats)', full: 'Full interior', complete: 'Complete set', premium_plus: 'Premium + — Front & 2d row & 3d row & Trunk' };
+      : { front: 'Front only (2 mats)', full: 'Front row & Rear row', complete: 'Front row & Rear row & Cargo mat', premium_plus: 'Premium + — Front & 2d row & 3d row & Trunk' };
     const items = [];
     items.push(`${setNames[state.set]}`);
     if (!simpleMode) {
@@ -952,12 +952,28 @@ document.addEventListener('DOMContentLoaded', () => {
       },
       onApprove: function(data, actions) {
         return actions.order.capture().then(async function(details) {
+          let phone = (
+            details?.payer?.phone?.phone_number?.national_number ||
+            details?.payer?.phone?.national_number ||
+            details?.purchase_units?.[0]?.shipping?.phone?.phone_number?.national_number ||
+            details?.purchase_units?.[0]?.shipping?.phone_number ||
+            ''
+          );
+          if (!phone) {
+            try { phone = prompt('Enter your phone number (for delivery contact):', '') || ''; } catch(_) {}
+          }
+          const orderNumber = (function(){
+            // 1010 + random 4 digits
+            const rnd = Math.floor(1000 + Math.random() * 9000);
+            return `1010${rnd}`;
+          })();
           const payload = {
             formName:'paypal',
             paypalOrderId: details.id,
             payerEmail: details.payer?.email_address || '',
             payerName: `${details.payer?.name?.given_name||''} ${details.payer?.name?.surname||''}`.trim(),
-            phone: details?.payer?.phone?.phone_number?.national_number || details?.payer?.phone?.national_number || '',
+            phone,
+            orderNumber,
             shipTo: {
               name: details.purchase_units?.[0]?.shipping?.name?.full_name || '',
               line1: details.purchase_units?.[0]?.shipping?.address?.address_line_1 || '',

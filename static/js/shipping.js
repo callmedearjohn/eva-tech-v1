@@ -9,7 +9,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Функция для получения и обновления номера заказа
   const getOrderNumber = () => {
-    let orderNumber = parseInt(localStorage.getItem('orderNumber')) || 100;
+    // Start from 1010 on first run
+    let orderNumber = parseInt(localStorage.getItem('orderNumber'));
+    if (!Number.isFinite(orderNumber)) orderNumber = 1009; // next -> 1010
     localStorage.setItem('orderNumber', ++orderNumber);
     return orderNumber;
   };

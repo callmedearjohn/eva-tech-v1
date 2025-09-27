@@ -79,6 +79,15 @@
       box-shadow: 0 0 0 2px rgba(0,0,0,0.04);
     }
 
+    /* Success state inside modal after submit */
+    .partner-success { text-align: center; padding: 24px 10px; background: #fff; border-radius: 12px; }
+    .partner-success i { color: #1a9; font-size: 40px; display: inline-block; margin-bottom: 10px; }
+    .partner-success h3 { margin: 6px 0 8px; font-size: 22px; }
+    .partner-success p { margin: 0 0 16px; color: #555; }
+
+    /* Loading state for submit buttons (no spinner) */
+    .button.is-loading { pointer-events: none; opacity: .8; }
+
     /* Mini-survey modal */
     .partner-survey { padding: 6px; }
     .partner-survey__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
@@ -314,14 +323,51 @@
         if (!form) return;
         form.addEventListener('submit', function(e){
           e.preventDefault();
+          var submitBtn = form.querySelector('button[type="submit"]');
+          var originalText = submitBtn ? submitBtn.textContent : '';
+          if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.classList.add('is-loading');
+            submitBtn.textContent = 'Sending...';
+          }
           var fd = new FormData(form);
           var data = {};
           fd.forEach(function(v, k){ data[k] = v; });
           var payload = { formName: 'partner', type: type };
           for (var k in data) payload[k] = data[k];
           fetch('action.php', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) })
-            .then(function(res){ if(res.ok){ alert('Sent! We will contact you shortly.'); form.reset(); formModal.close(); } else { alert('Failed to send.'); } })
-            .catch(function(){ alert('Failed to send.'); });
+            .then(function(res){
+              if(res.ok){
+                form.reset();
+                formModal.setContent(
+                  '<div class="partner-success">'
+                    + '<i class="icon-check" aria-hidden="true"></i>'
+                    + '<h3>Thank you!</h3>'
+                    + '<p>We will contact you shortly.</p>'
+                    + '<button class="button" type="button" id="partner-success-close">Close</button>'
+                  + '</div>'
+                );
+                setTimeout(function(){
+                  var btn = document.getElementById('partner-success-close');
+                  if (btn) btn.addEventListener('click', function(){ formModal.close(); });
+                }, 0);
+              } else {
+                alert('Failed to send.');
+                if (submitBtn) {
+                  submitBtn.disabled = false;
+                  submitBtn.classList.remove('is-loading');
+                  submitBtn.textContent = originalText || 'Send request';
+                }
+              }
+            })
+            .catch(function(){
+              alert('Failed to send.');
+              if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('is-loading');
+                submitBtn.textContent = originalText || 'Send request';
+              }
+            });
         });
       }
 

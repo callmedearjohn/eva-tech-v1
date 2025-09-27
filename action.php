@@ -15,7 +15,7 @@ $recipientEmail = 'info.evatech.ca@gmail.com';
 // Настройки почтового сервера
 $mail = new PHPMailer(true);
 $mail->isSMTP();
-$mail->SMTPDebug = 2;
+$mail->SMTPDebug = 0;
 $mail->Host = 'smtp.hostinger.com';
 $mail->Port = 465;
 $mail->SMTPAuth = true;
@@ -111,59 +111,78 @@ $mail->setFrom('info@eva-tech.ca ', 'EVA Carmats');
 $mail->isHTML(true); 
 
 $mail->Subject = 'Confirmation of Your EVA Carmats Order';
-$mail->Body = "
-<html>
-<head>
-<style>
-* {
-    color: black;
-}
-.bold {
-    font-weight: bold;
-}
-.blue {
-    color: blue;
-}
-</style>
-</head>
-<body>
-<p>Dear $userName,</p>
-<p>We appreciate your recent order for car mats and are excited to share that it has been successfully processed. Your choice in enhancing your vehicle's interior with our new generation car mats is valued.</p>
-<p>Here are the details of your order:</p>
-<ul>
-    <li>Product:</li>
-    <ul>
-        <li>Car make - $carMake;</li>
-        <li>Car model - $carModel;</li>
-        <li>Car year - $carYear;</li>
-        <li>Mat color - $rugBackgroundColor;</li>
-        <li>Trim color - $rugOutlineColor;</li>
-    </ul>
-    <li>Set Name: $setType (+Footrest for a driver mat as a gift!)</li>
-    <ul>Adress information:
-        <li>Street adress - $userAddress;</li>
-        <li>Province - $userProvince;</li>
-        <li>Postal code - $userPostalCode;</li>
-        </ul>
-    <ul>
-    <li>Use promo code - $promoCode;</li>
-    <li>Shipping price - $shippingPrice $;</li>
-    <li>Product price - $subtotalPrice $;</li>
-    <li>Dicount - $discount %;</li>
-    <li class='blue'>Total price - $totalPrice $;</li>
-    </ul>
-</ul>
-<p class='bold'>Please send your payment total amount to <span class='blue'>info@eva-tech.ca</span> by E-transfer. No need to write anything in the message.</p>
-<p class='bold'>Secret Question: My order number ($orderNumber)<br>Secret Answer: Evatech</p>
-<p>Our team will be reaching out to you shortly to confirm the order and shipping information any questions you may have. Your satisfaction is our priority, and we are committed to ensuring a seamless experience.</p>
-<p>Should you need immediate assistance, feel free to contact our customer service team at +1 613-214-1621.</p>
-<p>Thank you for choosing us for your automotive accessory needs. We look forward to serving you.</p>
-<p>Best regards,<br>
-Evatech<br>
-+1 613-214-1621</p>
-</body>
-</html>
-";
+
+// Build branded HTML confirmation (same design language as partner confirmation)
+$brand = '#11aa99';
+$hUserName    = htmlspecialchars($userName);
+$hMake        = htmlspecialchars($carMake);
+$hModel       = htmlspecialchars($carModel);
+$hYear        = htmlspecialchars($carYear);
+$hMat         = htmlspecialchars($rugBackgroundColor);
+$hTrim        = htmlspecialchars($rugOutlineColor);
+$hSet         = htmlspecialchars($setType);
+$hAddress     = htmlspecialchars($userAddress);
+$hProvince    = htmlspecialchars($userProvince);
+$hPostal      = htmlspecialchars($userPostalCode);
+$hPromo       = htmlspecialchars($promoCode);
+$hSubtotal    = htmlspecialchars($subtotalPrice);
+$hShipping    = htmlspecialchars($shippingPrice);
+$hTotal       = htmlspecialchars($totalPrice);
+$hDiscount    = htmlspecialchars($discount);
+$hOrderNumber = htmlspecialchars($orderNumber);
+$hNotes       = htmlspecialchars($orderTextarea);
+
+$confirmBodyHtml =
+    "<html><body style='background:#f6f9fc;margin:0;padding:24px;'>" .
+    "<div style='max-width:620px;margin:0 auto;background:#ffffff;border:1px solid #e9eef3;border-radius:10px;overflow:hidden;font-family:Arial,sans-serif;'>" .
+        "<div style='padding:16px 20px;border-bottom:1px solid #eef3f7;background:#ffffff;'>" .
+            "<div style='font-size:18px;font-weight:700;color:" . $brand . ";letter-spacing:0.2px;'>EVATECH</div>" .
+            "<div style='margin-top:2px;color:#667085;font-size:12px;'>Order confirmation</div>" .
+        "</div>" .
+        "<div style='padding:22px 24px;color:#111;font-size:14px;line-height:1.6;'>" .
+            "<p style='margin:0 0 12px;'>Hi " . $hUserName . ",</p>" .
+            "<p style='margin:0 0 12px;color:#2c2c2c;'>Thanks for your order. We've received it and will contact you shortly to confirm details and shipping.</p>".
+            "<div style='margin:16px 0 8px;padding:14px 16px;background:#fafbfc;border:1px solid #edf2f7;border-radius:8px;'>" .
+                "<div style='font-weight:600;color:#111;font-size:14px;margin:0 0 8px;'>Order # " . $hOrderNumber . "</div>" .
+                "<ul style='margin:0;padding:0;list-style:none;color:#444;font-size:13px;line-height:1.6;'>" .
+                    "<li><strong>Car:</strong> " . $hMake . " " . $hModel . " " . $hYear . "</li>" .
+                    "<li><strong>Set:</strong> " . $hSet . "</li>" .
+                    "<li><strong>Colors:</strong> " . $hMat . " / " . $hTrim . "</li>" .
+                    "<li><strong>Address:</strong> " . $hAddress . ", " . $hProvince . ", " . $hPostal . "</li>" .
+                    (strlen(trim($promoCode)) ? "<li><strong>Promo code:</strong> " . $hPromo . "</li>" : "") .
+                    "<li><strong>Product price:</strong> " . $hSubtotal . " $</li>" .
+                    "<li><strong>Shipping:</strong> " . $hShipping . " $</li>" .
+                    (strlen(trim($discount)) ? "<li><strong>Discount:</strong> " . $hDiscount . " %</li>" : "") .
+                    "<li><strong>Total:</strong> <span style='color:" . $brand . ";font-weight:600;'>" . $hTotal . " $</span></li>" .
+                "</ul>" .
+            "</div>" .
+            (strlen(trim($orderTextarea)) ? "<p style='margin:12px 0 0;color:#444;font-size:13px;'><strong>Your notes:</strong> " . nl2br($hNotes) . "</p>" : "") .
+            "<p style='margin:16px 0 0;color:#111;font-size:14px;font-weight:600;'>Payment via Interac e‑Transfer</p>" .
+            "<p style='margin:4px 0 0;color:#444;font-size:13px;line-height:1.6;'>Please send the total amount to <a style='color:" . $brand . ";text-decoration:none;' href='mailto:info@eva-tech.ca'>info@eva-tech.ca</a>. No message required.</p>" .
+            "<p style='margin:4px 0 0;color:#444;font-size:13px;line-height:1.6;'><strong>Secret Question:</strong> My order number (" . $hOrderNumber . ")<br><strong>Secret Answer:</strong> Evatech</p>" .
+            "<p style='margin:12px 0 0;'>If you need help, email us at <a style='color:" . $brand . ";text-decoration:none;' href='mailto:info.evatech.ca@gmail.com'>info.evatech.ca@gmail.com</a> or call <a style='color:" . $brand . ";text-decoration:none;' href='tel:+16132141621'>+1 613-214-1621</a>.</p>" .
+            "<p style='margin:16px 0 0;color:#111;'>Best regards,<br>EVATECH</p>" .
+        "</div>" .
+        "<div style='padding:12px 20px;border-top:1px solid #eef3f7;background:#ffffff;color:#8a94a6;font-size:12px;text-align:center;'>Kingston, ON · <a style='color:" . $brand . ";text-decoration:none;' href='https://www.instagram.com/evatech.ca/'>Instagram</a> · <a style='color:" . $brand . ";text-decoration:none;' href='https://www.facebook.com/people/VI-CarMats/61556124253098/?mibextid=sCpJLy'>Facebook</a></div>" .
+    "</div>" .
+    "</body></html>";
+
+$mail->Body = $confirmBodyHtml;
+$mail->AltBody =
+    "Order confirmation (EVATECH)\n" .
+    "Order #: " . $orderNumber . "\n" .
+    "Car: " . $carMake . " " . $carModel . " " . $carYear . "\n" .
+    "Set: " . $setType . "\n" .
+    "Colors: " . $rugBackgroundColor . "/" . $rugOutlineColor . "\n" .
+    "Address: " . $userAddress . ", " . $userProvince . ", " . $userPostalCode . "\n" .
+    (strlen(trim($promoCode)) ? ("Promo code: " . $promoCode . "\n") : "") .
+    "Product price: " . $subtotalPrice . "$\n" .
+    "Shipping: " . $shippingPrice . "$\n" .
+    (strlen(trim($discount)) ? ("Discount: " . $discount . "%\n") : "") .
+    "Total: " . $totalPrice . "$\n" .
+    (strlen(trim($orderTextarea)) ? ("Notes: " . $orderTextarea . "\n") : "") .
+    "Payment: E-transfer to info@eva-tech.ca (Question: My order number (" . $orderNumber . ") / Answer: Evatech)\n" .
+    "+1 613-214-1621";
 
 $mail->send();
 
@@ -184,7 +203,7 @@ function sendQuestionsEmail($data, $mail) {
         $userName = $data['userName'];
         $userEmail = $data['userEmail'];
         $userMessage = $data['userMessage'];
-        $date = $data['date'];
+        $date = $data['date'] ?? date('Y-m-d H:i:s');
 
         $mail->clearAddresses();
 
@@ -259,8 +278,8 @@ function sendOneClickEmail($data, $mail) {
                 $hybrid = (!empty($i['hybrid'])) ? 'Yes' : 'No';
                 $setNames = [
                     'front' => 'Front only (2 mats)',
-                    'full' => 'Front + Rear',
-                    'complete' => 'Front + Rear + Trunk',
+                    'full' => 'Front row & Rear row',
+                    'complete' => 'Front row & Rear row & Cargo mat',
                     'premium_plus' => 'Premium + (Front + 2nd + 3rd + Trunk)'
                 ];
                 $setLabel = $setNames[$set] ?? $set;
@@ -302,32 +321,78 @@ function sendPaypalEmail($data, $mail) {
         $payerName = $data['payerName'] ?? '';
         $shipTo = $data['shipTo'] ?? [];
 
+        // Generate or accept provided order number: starts with 1010 + random 4 digits
+        $orderNumber = $data['orderNumber'] ?? null;
+        if (!$orderNumber) {
+            try { $rnd = random_int(1000, 9999); } catch (Exception $e) { $rnd = mt_rand(1000, 9999); }
+            $orderNumber = '1010' . $rnd;
+        }
+
         $mail->clearAddresses();
         $mail->addAddress($recipientEmail);
         $mail->setFrom('info@eva-tech.ca', 'EVA Carmats');
         $mail->isHTML(true);
 
-        $rows = '';
+        // Helpers
+        $colorName = function($c){
+            $c = trim(strtolower((string)$c));
+            if ($c === '') return '—';
+            if (preg_match('/^#?[0-9a-f]{6}$/i', $c)) {
+                $hex = ltrim($c, '#');
+                $map = [
+                    '000000'=>'black','ffffff'=>'white','d9d9d9'=>'gray','e5e5e5'=>'light-grey','777777'=>'darkgray',
+                    '2b61c8'=>'blue','124b9a'=>'darkblue','8a5b3c'=>'brown','ff1a13'=>'red','ffa000'=>'orange','ffee00'=>'yellow',
+                    'dcc48e'=>'beige','7bc96f'=>'salad','6f1d8a'=>'violet','ff5e9c'=>'pink','d4af37'=>'gold'
+                ];
+                return $map[strtolower($hex)] ?? ('#' . $hex);
+            }
+            return $c;
+        };
+
+        $setNames = [
+            'front' => 'Front only (2 mats)',
+            'full' => 'Front row & Rear row',
+            'complete' => 'Front row & Rear row & Cargo mat',
+            'premium_plus' => 'Premium + (Front + 2nd + 3rd + Trunk)'
+        ];
+
+        $itemRows = '';
         foreach ($items as $i) {
-            $make = $i['make'] ?? '';
-            $model = $i['model'] ?? '';
-            $year = $i['year'] ?? '';
+            $product = $i['product'] ?? 'mats';
             $set = $i['set'] ?? '';
-            $pattern = $i['pattern'] ?? '';
-            $mat = $i['matColor'] ?? '';
-            $trim = $i['trimColor'] ?? '';
-            $third = (!empty($i['thirdRow'])) ? 'Yes' : 'No';
-            $heel = (!empty($i['heelPad'])) ? 'Yes' : 'No';
+            $mat = $colorName($i['matColor'] ?? '');
+            $trim = $colorName($i['trimColor'] ?? '');
             $price = $i['subtotal'] ?? 0;
             $qty = $i['qty'] ?? 1;
-            $rows .= "<li>{$make} {$model} {$year} — {$set} | {$pattern} | {$mat}/{$trim} | 3rd row: {$third} | heel pad: {$heel} | price: {$price}$ × {$qty}</li>";
+
+            if ($product === 'carsbag' || $product === 'home') {
+                $sizeMap = ($product === 'carsbag')
+                    ? ['front'=>'M','full'=>'L']
+                    : ['front'=>'S','full'=>'M','complete'=>'L','xl'=>'XL'];
+                $size = $sizeMap[$set] ?? strtoupper($set);
+                $title = ($product === 'carsbag') ? 'Cars Bag' : 'Home Mat';
+                $details = "Size: {$size}; Colors: {$mat}/{$trim}";
+                $itemRows .= "<tr><td>{$title}</td><td>{$details}</td><td style='text-align:center;'>{$qty}</td><td style='text-align:right;'>{$price}$</td></tr>";
+            } else {
+                $make = $i['make'] ?? '';
+                $model = $i['model'] ?? '';
+                $year = $i['year'] ?? '';
+                $pattern = $i['pattern'] ?? '';
+                $third = (!empty($i['thirdRow'])) ? 'Yes' : 'No';
+                $heel = (!empty($i['heelPad'])) ? 'Yes' : 'No';
+                $hybrid = (!empty($i['hybrid'])) ? 'Yes' : 'No';
+                $setLabel = $setNames[$set] ?? $set;
+                $title = trim("$make $model $year — $setLabel");
+                $details = "Pattern: {$pattern}; Colors: {$mat}/{$trim}; 3rd row: {$third}; Heel pad: {$heel}; Hybrid: {$hybrid}";
+                $itemRows .= "<tr><td>{$title}</td><td>{$details}</td><td style='text-align:center;'>{$qty}</td><td style='text-align:right;'>{$price}$</td></tr>";
+            }
         }
 
         if (!empty($addons)) {
             foreach ($addons as $a) {
                 $aname = $a['name'] ?? 'Add‑on';
                 $aprice = $a['price'] ?? 0;
-                $rows .= "<li>{$aname} — {$aprice}$ × 1</li>";
+                $itemRows .= "<tr><td>{$aname}</td><td>—</td><td style='text-align:center;'>1</td><td style='text-align:right;'>{$aprice}$</td></tr>";
             }
         }
 
@@ -347,21 +412,34 @@ function sendPaypalEmail($data, $mail) {
         $discountAmount  = $data['discountAmount'] ?? 0;
         $promoCode       = $data['promoCode'] ?? '';
 
-        $mail->Subject = 'PayPal Order';
+        $table = "<table style='width:100%;border-collapse:collapse;font-size:13px;line-height:1.4;'>
+            <thead>
+                <tr>
+                    <th style='text-align:left;border-bottom:1px solid #e5e7eb;padding:6px 6px;'>Item</th>
+                    <th style='text-align:left;border-bottom:1px solid #e5e7eb;padding:6px 6px;'>Details</th>
+                    <th style='text-align:center;border-bottom:1px solid #e5e7eb;padding:6px 6px;'>Qty</th>
+                    <th style='text-align:right;border-bottom:1px solid #e5e7eb;padding:6px 6px;'>Price</th>
+                </tr>
+            </thead>
+            <tbody style='font-size:12px;'>{$itemRows}</tbody>
+        </table>";
+
+        $mail->Subject = 'PayPal Order #' . $orderNumber;
         $mail->Body = "<html><body>
-            <h3>PayPal order captured</h3>
-            <p><b>PayPal Order ID:</b> {$paypalId}</p>
-            <p><b>Payer:</b> {$payerName} ({$payerEmail})</p>
-            <p><b>Phone:</b> {$phone}</p>
-            <p><b>Ship To:</b> {$address}</p>
-            <ul>{$rows}</ul>
-            <p><b>Subtotal:</b> {$subtotal}$</p>
-            <p><b>Add-ons:</b> {$addonsTotal}$</p>
-            " . (!empty($promoCode) || $discountAmount>0 ? "<p><b>Discount:</b> {$discountAmount}$ ({$discountPercent}%)</p>" : "") . "
-            " . (!empty($promoCode) ? "<p><b>Promo code:</b> {$promoCode}</p>" : "") . "
-            <p><b>Tax:</b> {$tax}$</p>
-            <p><b>Shipping:</b> {$shipping}$</p>
-            <p><b>Total:</b> {$total}$</p>
+            <h3 style='margin:0 0 6px;font-size:18px;'>PayPal order captured</h3>
+            <p style='margin:0 0 4px;font-size:13px;'><b>Order #:</b> {$orderNumber}</p>
+            <p style='margin:0 0 4px;font-size:13px;'><b>PayPal Order ID:</b> {$paypalId}</p>
+            <p style='margin:0 0 4px;font-size:13px;'><b>Payer:</b> {$payerName} ({$payerEmail})</p>
+            <p style='margin:0 0 4px;font-size:13px;'><b>Phone:</b> {$phone}</p>
+            <p style='margin:0 0 10px;font-size:13px;'><b>Ship To:</b> {$address}</p>
+            {$table}
+            <p style='margin:10px 0 0;font-size:13px;'><b>Subtotal:</b> {$subtotal}$</p>
+            <p style='margin:2px 0 0;font-size:13px;'><b>Add-ons:</b> {$addonsTotal}$</p>
+            " . (!empty($promoCode) || $discountAmount>0 ? "<p style='margin:2px 0 0;font-size:13px;'><b>Discount:</b> {$discountAmount}$ ({$discountPercent}%)</p>" : "") . "
+            " . (!empty($promoCode) ? "<p style='margin:2px 0 0;font-size:13px;'><b>Promo code:</b> {$promoCode}</p>" : "") . "
+            <p style='margin:2px 0 0;font-size:13px;'><b>Tax:</b> {$tax}$</p>
+            <p style='margin:2px 0 0;font-size:13px;'><b>Shipping:</b> {$shipping}$</p>
+            <p style='margin:4px 0 0;font-size:13px;'><b>Total:</b> {$total}$</p>
         </body></html>";
         $mail->send();
 
@@ -372,31 +450,37 @@ function sendPaypalEmail($data, $mail) {
                 $mail->setFrom('info@eva-tech.ca', 'EVATECH Team');
                 $mail->addAddress($payerEmail);
                 $mail->isHTML(true);
-                $mail->Subject = 'Thank you for your order - EVATECH';
+                $mail->Subject = 'Thank you for your order - EVATECH #' . $orderNumber;
 
-                $summaryRows = $rows;
-                $confirmBody = "<html><body>
-                    <div style='font-family:Arial,sans-serif;color:#111;'>
-                      <h2 style='margin:0 0 10px;'>Thank you for your order!</h2>
-                      <p style='margin:0 0 12px;'>Hi " . htmlspecialchars($payerName) . ",</p>
-                      <p style='margin:0 0 12px;'>We've received your payment and started processing your order.</p>
-                      <p style='margin:0 0 12px;'><b>PayPal Order ID:</b> " . htmlspecialchars($paypalId) . "</p>
-                      <p style='margin:0 0 6px;'><b>Shipping to:</b> " . htmlspecialchars($address) . "</p>
-                      <div style='margin:12px 0;padding:12px 14px;background:#fafbfc;border:1px solid #edf2f7;border-radius:8px;'>
-                        <div style='font-weight:600;margin:0 0 8px;'>Order summary</div>
-                        <ul style='margin:0;padding:0 0 0 16px;'>$summaryRows</ul>
-                        <p style='margin:8px 0 0;'>Subtotal: <b>{$subtotal}$</b></p>
-                        <p style='margin:2px 0 0;'>Tax: <b>{$tax}$</b></p>
-                        <p style='margin:2px 0 0;'>Shipping: <b>{$shipping}$</b></p>
-                        <p style='margin:6px 0 0;'>Total: <b>{$total}$</b></p>
+                $brand = '#11aa99';
+                $confirmBody = "<html><body style='background:#f6f9fc;margin:0;padding:24px;'>
+                    <div style='max-width:680px;margin:0 auto;background:#ffffff;border:1px solid #e9eef3;border-radius:10px;overflow:hidden;font-family:Arial,sans-serif;'>
+                      <div style='padding:14px 18px;border-bottom:1px solid #eef3f7;background:#ffffff;'>
+                        <div style='font-size:16px;font-weight:700;color:#111;'>EVATECH</div>
+                        <div style='margin-top:2px;color:#667085;font-size:12px;'>Order confirmation</div>
                       </div>
-                      <p style='margin:12px 0 0;'>If you have any questions, reply to this email or call +1 613-214-1621.</p>
-                      <p style='margin:12px 0 0;'>— EVATECH Team</p>
+                      <div style='padding:18px 20px;color:#111;font-size:14px;line-height:1.5;'>
+                        <p style='margin:0 0 12px;'>Hi " . htmlspecialchars($payerName) . ",</p>
+                        <p style='margin:0 0 12px;'>We appreciate your recent order for car mats and are excited to share that it has been successfully processed. Your choice in enhancing your vehicle's interior with our new generation car mats is valued.</p>
+                        <p style='margin:0 0 4px;'><b>Order #:</b> " . htmlspecialchars($orderNumber) . "</p>
+                        <p style='margin:0 0 4px;'><b>PayPal Order ID:</b> " . htmlspecialchars($paypalId) . "</p>
+                        <p style='margin:0 0 4px;'><b>Phone provided:</b> " . htmlspecialchars($phone) . "</p>
+                        <p style='margin:0 0 10px;'><b>Shipping to:</b> " . htmlspecialchars($address) . "</p>
+                        <div style='margin:10px 0;padding:10px 12px;background:#fafbfc;border:1px solid #edf2f7;border-radius:8px;'>
+                          <div style='font-weight:600;margin:0 0 8px;'>Order summary</div>
+                          {$table}
+                          <p style='margin:8px 0 0;font-size:13px;'>Subtotal: <b>{$subtotal}$</b></p>
+                          <p style='margin:2px 0 0;font-size:13px;'>Tax: <b>{$tax}$</b></p>
+                          <p style='margin:2px 0 0;font-size:13px;'>Shipping: <b>{$shipping}$</b></p>
+                          <p style='margin:6px 0 0;font-size:13px;'>Total: <b>{$total}$</b></p>
+                        </div>
+                        <p style='margin:12px 0 0;'>Your satisfaction is our priority, and we are committed to ensuring a seamless experience. Should you need immediate assistance, feel free to contact our customer service team at <a style='color:" . $brand . ";text-decoration:none;' href='tel:+16132141621'>+1 613-214-1621</a>.<br>Thank you for choosing us for your automotive accessory needs. We look forward to serving you.<br><br>Best regards,<br>Evatech</p>
+                      </div>
                     </div>
                   </body></html>";
 
                 $mail->Body = $confirmBody;
-                $mail->AltBody = "Thank you for your order!\nPayPal Order ID: {$paypalId}\nShip to: {$address}\nTotal: {$total}$\n— EVATECH Team";
+                $mail->AltBody = "Thank you for your order!\nOrder #: {$orderNumber}\nPayPal Order ID: {$paypalId}\nPhone: {$phone}\nShip to: {$address}\nTotal: {$total}$\nBest regards, EVATECH";
                 $mail->send();
             } catch (Exception $e) {
                 // Ignore payer email failures to avoid breaking the main flow
@@ -496,12 +580,12 @@ function sendPartnerEmail($data, $mail) {
 					'<li><strong>Date:</strong> ' . $hDate . '</li>';
 			}
 
-			$brand = '#1a9';
+			$brand = '#11aa99';
 			$confirmBodyHtml =
 				"<html><body style='background:#f6f9fc;margin:0;padding:24px;'>" .
 				"<div style='max-width:620px;margin:0 auto;background:#ffffff;border:1px solid #e9eef3;border-radius:10px;overflow:hidden;'>" .
 					"<div style='padding:16px 20px;border-bottom:1px solid #eef3f7;background:#ffffff;'>" .
-						"<div style='font-size:18px;font-weight:700;color:#111;letter-spacing:0.2px;'>EVATECH</div>" .
+						"<div style='font-size:18px;font-weight:700;color:" . $brand . ";letter-spacing:0.2px;'>EVATECH</div>" .
 						"<div style='margin-top:2px;color:#667085;font-size:12px;'>Partner request received</div>" .
 					"</div>" .
 					"<div style='padding:22px 24px;'>" .
@@ -544,9 +628,20 @@ function sendPartnerEmail($data, $mail) {
 // Обработчик POST запросов
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
    
-    $jsonData = file_get_contents('php://input');
-    $data = json_decode($jsonData, true);
-    $formName = $data['formName'];
+    $rawBody = file_get_contents('php://input');
+    $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
+    $data = null;
+    if (stripos($contentType, 'application/json') !== false) {
+        $parsed = json_decode($rawBody, true);
+        if (is_array($parsed)) {
+            $data = $parsed;
+        }
+    }
+    if (!is_array($data) || empty($data)) {
+        // Fallback to traditional form POST
+        $data = $_POST;
+    }
+    $formName = $data['formName'] ?? '';
 
     $mail->isHTML(false);
     $successMessage = "Your request was sent successfully!";
