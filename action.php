@@ -22,7 +22,58 @@ $mail->SMTPAuth = true;
 $mail->SMTPSecure = 'ssl';
 $mail->Username = 'info@eva-tech.ca';
 $mail->Password = 'Vlad0612!';
+// Enforce UTF-8 to avoid mojibake in Order Summary tables and subjects
+$mail->CharSet = 'UTF-8';
+$mail->Encoding = 'base64';
 
+
+// --- Database helpers for order number persistence (mysqli) ---
+function getDB(){
+    static $db = null;
+    if ($db instanceof mysqli) return $db;
+    $servername = "localhost";
+    $username = "u167309559_sheremet_vlad";
+    $password = "Sheremet.vlad6";
+    $dbname = "u167309559_orders";
+    $db = new mysqli($servername, $username, $password, $dbname);
+    if ($db->connect_error) {
+        // Do not stop the script; let callers handle fallback via try/catch
+        throw new Exception('Connection failed: ' . $db->connect_error);
+    }
+    ensureOrdersTable($db);
+    return $db;
+}
+
+function ensureOrdersTable(mysqli $db){
+    $sql = 'CREATE TABLE IF NOT EXISTS orders (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        order_number BIGINT NOT NULL UNIQUE
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4';
+    $db->query($sql);
+}
+
+// Atomically reserve and persist the next order number (starts at 101001)
+function reserveOrderNumber(mysqli $db){
+    $db->begin_transaction();
+    try {
+        $res = $db->query('SELECT order_number FROM orders ORDER BY order_number DESC LIMIT 1 FOR UPDATE');
+        $next = 101001;
+        if ($res && $res->num_rows > 0) {
+            $row = $res->fetch_assoc();
+            $next = (int)$row['order_number'] + 1;
+        }
+        if ($res) { $res->free(); }
+        $stmt = $db->prepare('INSERT INTO orders (order_number) VALUES (?)');
+        $stmt->bind_param('i', $next);
+        $stmt->execute();
+        $stmt->close();
+        $db->commit();
+        return (string)$next;
+    } catch (Throwable $e) {
+        $db->rollback();
+        throw $e;
+    }
+}
 
 // Функция для отправки заказа
 function sendOrderEmail($data, $mail) {
@@ -47,7 +98,8 @@ $promoCode = $data['promoCode'];
 $promoCodeValue = $data['promoCodeValue']; 
 $userPostalCode = $data['postalCode']; 
 $date = $data['date'];
-$orderNumber = $data['orderNumber'];
+// Server-side order number (ignore any frontend-provided value)
+try { $orderNumber = reserveOrderNumber(getDB()); } catch (Exception $e) { $orderNumber = '101001'; }
 $orderTextarea = $data['textareaValue'];
 $discount = $data['discountValue'];
 
@@ -321,12 +373,8 @@ function sendPaypalEmail($data, $mail) {
         $payerName = $data['payerName'] ?? '';
         $shipTo = $data['shipTo'] ?? [];
 
-        // Generate or accept provided order number: starts with 1010 + random 4 digits
-        $orderNumber = $data['orderNumber'] ?? null;
-        if (!$orderNumber) {
-            try { $rnd = random_int(1000, 9999); } catch (Exception $e) { $rnd = mt_rand(1000, 9999); }
-            $orderNumber = '1010' . $rnd;
-        }
+        // Server-side sequential order number saved to DB (ignore frontend)
+        try { $orderNumber = reserveOrderNumber(getDB()); } catch (Exception $e) { $orderNumber = '101001'; }
 
         $mail->clearAddresses();
         $mail->addAddress($recipientEmail);
@@ -372,7 +420,7 @@ function sendPaypalEmail($data, $mail) {
                 $size = $sizeMap[$set] ?? strtoupper($set);
                 $title = ($product === 'carsbag') ? 'Cars Bag' : 'Home Mat';
                 $details = "Size: {$size}; Colors: {$mat}/{$trim}";
-                $itemRows .= "<tr><td>{$title}</td><td>{$details}</td><td style='text-align:center;'>{$qty}</td><td style='text-align:right;'>{$price}$</td></tr>";
+                $itemRows .= "<tr><td style='padding:8px 6px;border-bottom:1px solid #e5e7eb;'>{$title}</td><td style='padding:8px 6px;border-bottom:1px solid #e5e7eb;'>{$details}</td><td style='text-align:center;padding:8px 6px;border-bottom:1px solid #e5e7eb;'>{$qty}</td><td style='text-align:right;padding:8px 6px;border-bottom:1px solid #e5e7eb;'>{$price}$</td></tr>";
             } else {
                 $make = $i['make'] ?? '';
                 $model = $i['model'] ?? '';
@@ -384,7 +432,7 @@ function sendPaypalEmail($data, $mail) {
                 $setLabel = $setNames[$set] ?? $set;
                 $title = trim("$make $model $year — $setLabel");
                 $details = "Pattern: {$pattern}; Colors: {$mat}/{$trim}; 3rd row: {$third}; Heel pad: {$heel}; Hybrid: {$hybrid}";
-                $itemRows .= "<tr><td>{$title}</td><td>{$details}</td><td style='text-align:center;'>{$qty}</td><td style='text-align:right;'>{$price}$</td></tr>";
+                $itemRows .= "<tr><td style='padding:8px 6px;border-bottom:1px solid #e5e7eb;'>{$title}</td><td style='padding:8px 6px;border-bottom:1px solid #e5e7eb;'>{$details}</td><td style='text-align:center;padding:8px 6px;border-bottom:1px solid #e5e7eb;'>{$qty}</td><td style='text-align:right;padding:8px 6px;border-bottom:1px solid #e5e7eb;'>{$price}$</td></tr>";
             }
         }
 
@@ -392,7 +440,7 @@ function sendPaypalEmail($data, $mail) {
             foreach ($addons as $a) {
                 $aname = $a['name'] ?? 'Add‑on';
                 $aprice = $a['price'] ?? 0;
-                $itemRows .= "<tr><td>{$aname}</td><td>—</td><td style='text-align:center;'>1</td><td style='text-align:right;'>{$aprice}$</td></tr>";
+                $itemRows .= "<tr><td style='padding:8px 6px;border-bottom:1px solid #e5e7eb;'>{$aname}</td><td style='padding:8px 6px;border-bottom:1px solid #e5e7eb;'>—</td><td style='text-align:center;padding:8px 6px;border-bottom:1px solid #e5e7eb;'>1</td><td style='text-align:right;padding:8px 6px;border-bottom:1px solid #e5e7eb;'>{$aprice}$</td></tr>";
             }
         }
 
@@ -421,7 +469,7 @@ function sendPaypalEmail($data, $mail) {
                     <th style='text-align:right;border-bottom:1px solid #e5e7eb;padding:6px 6px;'>Price</th>
                 </tr>
             </thead>
-            <tbody style='font-size:12px;'>{$itemRows}</tbody>
+            <tbody style='font-size:12px;line-height:1.6;'>{$itemRows}</tbody>
         </table>";
 
         $mail->Subject = 'PayPal Order #' . $orderNumber;

@@ -877,6 +877,16 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   buyBtn.addEventListener('click', async ()=>{
     if (!ensureVehicleSelected() || !ensureColorsSelected()) return;
+    // Show loading state
+    try {
+      buyBtn.setAttribute('data-loading','true');
+      const original = buyBtn.textContent;
+      buyBtn.textContent = 'Loading...';
+      buyBtn.dataset._prevText = original;
+      buyBtn.style.pointerEvents = 'none';
+      buyBtn.style.opacity = '.8';
+      setTimeout(()=>{ try { if (buyBtn.getAttribute('data-loading')==='true') buyBtn.textContent = 'Still working...'; } catch(_){} }, 1200);
+    } catch(_) {}
     // Build a temporary checkout-only cart for PayPal
     const item = toCartItem();
     const qty = Math.max(1, Number(state.qty||1));
@@ -929,6 +939,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // For PayPal to collect shipping address, request shipping in the purchase unit
         return actions.order.create({
           intent: 'CAPTURE',
+          application_context: { shipping_preference: 'GET_FROM_FILE' },
           purchase_units: [{
             amount: {
               currency_code: 'CAD',
@@ -951,7 +962,15 @@ document.addEventListener('DOMContentLoaded', () => {
         });
       },
       onApprove: function(data, actions) {
+        console.log(data, "data");
+        console.log(actions, "actions");
+        try {
+          // Show global loader if cart page loader exists in DOM
+          const gl = document.getElementById('global-loader');
+          if (gl) { gl.style.display = 'flex'; document.body.style.overflow = 'hidden'; }
+        } catch(_){}
         return actions.order.capture().then(async function(details) {
+          console.log(details, "details");
           let phone = (
             details?.payer?.phone?.phone_number?.national_number ||
             details?.payer?.phone?.national_number ||
@@ -959,11 +978,8 @@ document.addEventListener('DOMContentLoaded', () => {
             details?.purchase_units?.[0]?.shipping?.phone_number ||
             ''
           );
-          if (!phone) {
-            try { phone = prompt('Enter your phone number (for delivery contact):', '') || ''; } catch(_) {}
-          }
           const orderNumber = (function(){
-            // 1010 + random 4 digits
+            // 1010 + random 4 digits 
             const rnd = Math.floor(1000 + Math.random() * 9000);
             return `1010${rnd}`;
           })();
@@ -988,13 +1004,66 @@ document.addEventListener('DOMContentLoaded', () => {
           };
           try { await fetch('action.php', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) }); } catch(_) {}
           try { const modal = document.getElementById('paypal-quickbuy'); modal && modal.remove(); } catch(_) {}
-          alert('Payment captured. Thank you! A confirmation email has been sent.');
+          // Hide loader and open success dialog; do not show order number; remove alerts
+          try {
+            const gl = document.getElementById('global-loader');
+            if (gl) { gl.style.display = 'none'; document.body.style.overflow = ''; }
+            const dlg = document.getElementById('success-dialog');
+            const emailEl = document.getElementById('success-email');
+            if (emailEl) emailEl.textContent = String(payload?.payerEmail || details?.payer?.email_address || 'your email');
+            if (dlg) { try { dlg.showModal(); } catch(_) { dlg.setAttribute('open',''); } }
+          } catch(_){}
         });
       },
-      onCancel: function(){ try { const modal = document.getElementById('paypal-quickbuy'); modal && modal.remove(); } catch(_) {} },
-      onError: function(){ try { const modal = document.getElementById('paypal-quickbuy'); modal && modal.remove(); } catch(_) {} }
+      onCancel: function(){ try { const modal = document.getElementById('paypal-quickbuy'); modal && modal.remove(); const gl = document.getElementById('global-loader'); if (gl) { gl.style.display = 'none'; document.body.style.overflow = ''; } } catch(_) {} },
+      onError: function(){ try { const modal = document.getElementById('paypal-quickbuy'); modal && modal.remove(); const gl = document.getElementById('global-loader'); if (gl) { gl.style.display = 'none'; document.body.style.overflow = ''; } } catch(_) {} }
     }).render('#paypal-quickbuy-button');
+    // Restore loading state if PayPal rendered
+    try {
+      buyBtn.removeAttribute('data-loading');
+      const prev = buyBtn.dataset._prevText || 'Buy in 1 click';
+      buyBtn.textContent = prev;
+      delete buyBtn.dataset._prevText;
+      buyBtn.style.pointerEvents = '';
+      buyBtn.style.opacity = '';
+    } catch(_) {}
   });
+
+  // Intercept upsell Add buttons to add directly to cart with loading state
+  (function enableUpsellInstantAdd(){
+    try {
+      const anchors = Array.from(document.querySelectorAll('.upsell .upsell__btn'));
+      if (!anchors.length) return;
+      anchors.forEach((a)=>{
+        a.addEventListener('click', async function(e){
+          const href = a.getAttribute('href') || '';
+          const url = new URL(href, location.origin);
+          const product = url.searchParams.get('product');
+          if (!product) return; // allow default nav for non-product links
+          e.preventDefault();
+          // loading state
+          const prev = a.textContent;
+          a.textContent = 'Adding...';
+          const prevStyle = a.getAttribute('style') || '';
+          a.setAttribute('style', prevStyle + (prevStyle && !/;\s*$/.test(prevStyle) ? '; ' : '') + 'pointer-events:none; opacity:.7;');
+          try {
+            const module = await import('./cart.js');
+            if (product === 'carsbag') {
+              module.Cart.add({ product: 'carsbag', set: 'front', pattern: '', matColor: '#000000', trimColor: '#000000', qty: 1, subtotal: 45 });
+            } else if (product === 'home') {
+              module.Cart.add({ product: 'home', set: 'full', pattern: '', matColor: '#000000', trimColor: '#000000', qty: 1, subtotal: 25 });
+            }
+            a.textContent = 'Added';
+            setTimeout(()=>{ try { a.textContent = prev || 'Add'; } catch(_){} }, 1200);
+          } catch(_) {
+            try { a.textContent = prev || 'Add'; } catch(_) {}
+          } finally {
+            a.setAttribute('style', prevStyle);
+          }
+        });
+      });
+    } catch(_) {}
+  })();
 
   // Mobile lightbox with swipe + gentle animation
   (function enableMobileLightbox(){

@@ -102,6 +102,10 @@
     .container_before_after::before { content: ""; position: absolute; top: 0; bottom: 0; left: var(--ba); width: 3px; background: var(--clr-primary); box-shadow: 0 0 0 2px rgba(255,255,255,.85); z-index: 3; }
     /* Drag handle knob */
     .container_before_after::after { content: ""; position: absolute; left: var(--ba); top: 50%; transform: translate(-50%, -50%); width: 28px; height: 28px; border-radius: 50%; background: #fff; border: 2px solid var(--clr-primary); box-shadow: 0 2px 8px rgba(0,0,0,.25); z-index: 4; }
+    /* Full-screen loader (shared with cart) */
+    .global-loader { position: fixed; inset: 0; background: rgba(255,255,255,.85); display: none; align-items: center; justify-content: center; z-index: 99999; }
+    .loader-spinner { width: 64px; height: 64px; border: 4px solid #e5e5e5; border-top-color: #ffcc33; border-radius: 50%; animation: cfg-spin 1s linear infinite; }
+    @keyframes cfg-spin { to { transform: rotate(360deg); } }
   </style>
 
 </head>
@@ -760,6 +764,41 @@
       </div>
     </footer>
   </div>
+
+  <!-- Global loader overlay -->
+  <div id="global-loader" class="global-loader" aria-hidden="true" role="status" aria-live="polite">
+    <div class="loader-spinner" aria-label="Loading"></div>
+  </div>
+  <!-- Success modal (no order number) -->
+  <dialog id="success-dialog" style="max-width:520px; width:90%; padding:18px 18px; border:1px solid #e5e5e5; border-radius:10px;">
+    <h3 style="margin:0 0 10px;">Thank you for your order!</h3>
+    <p style="margin:0; color:#333;">Your payment has been captured successfully.</p>
+    <p style="margin:8px 0 0; color:#333;">A confirmation email has been sent to <strong><span id="success-email">your email</span></strong>.</p>
+    <ul style="margin:12px 0 16px 18px; color:#333; line-height:1.5;">
+      <li>We’ll start processing your order right away.</li>
+      <li>Tracking details will be emailed once your order ships.</li>
+      <li>If you have questions, contact us at <a href="mailto:info.evatech.ca@gmail.com">info.evatech.ca@gmail.com</a> or <a href="tel:+16139857956">+1 613-214-1621</a>.</li>
+    </ul>
+    <div style="display:flex; gap:8px; justify-content:flex-end; align-items:center;">
+      <a href="/" class="button">Continue shopping</a>
+      <button id="close-success" class="button button-gray">Close</button>
+    </div>
+  </dialog>
+  <script>
+    // Success dialog close handler
+    (function(){
+      function init(){
+        try {
+          var dlg = document.getElementById('success-dialog');
+          var btn = document.getElementById('close-success');
+          if (btn && dlg) {
+            btn.addEventListener('click', function(){ try { dlg.close(); } catch(_) { dlg.removeAttribute('open'); } });
+          }
+        } catch(_) {}
+      }
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+    })();
+  </script>
 
   <div class="header__menu-mobile">
     <div class="header__menu-top">

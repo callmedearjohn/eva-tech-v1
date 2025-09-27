@@ -47,6 +47,10 @@
     .cart-invalid { outline: 2px solid #d93025 !important; border-color: #d93025 !important; color:#d93025 !important; }
     @keyframes cart-shake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-3px); } 75% { transform: translateX(3px); } }
     .cart-shake { animation: cart-shake .4s ease; }
+    /* Full-screen loader */
+    .global-loader { position: fixed; inset: 0; background: rgba(255,255,255,.85); display: none; align-items: center; justify-content: center; z-index: 99999; }
+    .loader-spinner { width: 64px; height: 64px; border: 4px solid #e5e5e5; border-top-color: #ffcc33; border-radius: 50%; animation: cart-spin 1s linear infinite; }
+    @keyframes cart-spin { to { transform: rotate(360deg); } }
     @media (max-width: 900px){ .basket_wrapper { grid-template-columns: 1fr; } .s{ position:static; } }
     @media (max-width: 720px){
       .basket-table, .basket-table thead, .basket-table tbody, .basket-table tr, .basket-table th, .basket-table td { display:block; width:100%; }
@@ -205,6 +209,25 @@
       </div>
     </div>
   </footer>
+  <!-- Global loader overlay -->
+  <div id="global-loader" class="global-loader" aria-hidden="true" role="status" aria-live="polite">
+    <div class="loader-spinner" aria-label="Loading"></div>
+  </div>
+  <!-- Success modal -->
+  <dialog id="success-dialog" style="max-width:520px; width:90%; padding:18px 18px; border:1px solid #e5e5e5; border-radius:10px;">
+    <h3 style="margin:0 0 10px;">Thank you for your order!</h3>
+    <p style="margin:0; color:#333;">Your payment has been captured successfully.</p>
+    <p style="margin:8px 0 0; color:#333;">A confirmation email has been sent to <strong><span id="success-email">your email</span></strong>.</p>
+    <ul style="margin:12px 0 16px 18px; color:#333; line-height:1.5;">
+      <li>We’ll start processing your order right away.</li>
+      <li>Tracking details will be emailed once your order ships.</li>
+      <li>If you have questions, contact us at <a href="mailto:info.evatech.ca@gmail.com">info.evatech.ca@gmail.com</a> or <a href="tel:+16139857956">+1 613-214-1621</a>.</li>
+    </ul>
+    <div style="display:flex; gap:8px; justify-content:flex-end; align-items:center;">
+      <a href="/" class="button">Continue shopping</a>
+      <button id="close-success" class="button button-gray">Close</button>
+    </div>
+  </dialog>
   <div class="header__menu-mobile">
     <div class="header__menu-top">
       <a href="/" aria-label="Custom EVA mats for the interior of your car" class="logo header__menu-logo">
@@ -265,6 +288,28 @@
       const map = { 'black':'black', 'light-grey':'lightgray', 'grey':'darkgray', 'gray':'darkgray', 'orange':'orange', 'red':'red', 'blue':'blue', 'yellow':'yellow', 'velvet':'black' };
       return map[n] || '';
     }
+    function normalizeText(s){
+      try {
+        return String(s)
+          .replace(/â€”/g, '—')
+          .replace(/â€“/g, '–')
+          .replace(/â€™/g, '’')
+          .replace(/â€˜/g, '‘')
+          .replace(/â€œ/g, '“')
+          .replace(/â€�/g, '”')
+          .replace(/Â\s/g, ' ');
+      } catch(_) { return s; }
+    }
+    function escapeHtml(s){
+      try {
+        return String(s)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/\"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      } catch(_) { return s; }
+    }
     function render(){
       const items = Cart.list();
       rowsEl.innerHTML = '';
@@ -290,9 +335,10 @@
         const isSimple = it.product === 'carsbag' || it.product === 'home';
         const sizeMap = it.product === 'carsbag' ? { front:'M', full:'L' } : { front:'S', full:'M', complete:'L', xl:'XL' };
         const productName = it.product === 'carsbag' ? 'Cars Bag' : (it.product === 'home' ? 'Home Mat' : 'EVA Car Mats');
-        const detail = isSimple
+        const detailRaw = isSimple
           ? `${productName} — Size: ${sizeMap[it.set] || it.set} | Color: ${it.matColor || '—'} / ${it.trimColor || it.matColor || '—'}`
           : `${title || productName} — ${it.set} | ${it.pattern} | ${it.matColor}/${it.trimColor||it.matColor} ${it.thirdRow ? '| 3rd row' : ''} ${it.heelPad ? '| heel pad' : ''} ${it.hybrid ? '| hybrid' : ''}`;
+        const detail = escapeHtml(normalizeText(detailRaw));
         const colorDot = it.matColor ? `<span class="basketcolor" style="background:${it.matColor}"></span>` : '';
         const trimDot = it.trimColor ? `<span class="basketcolor" style="background:${it.trimColor}"></span>` : '';
         // Build layered image preview for car mats when available; fallback to combo photo
@@ -351,6 +397,21 @@
       shipNote.style.display = free ? 'none' : 'block';
       try { if (window.updateCartBadge) window.updateCartBadge(); } catch(_){}
     }
+
+    // Global loader helpers
+    function showGlobalLoader(){
+      try { const el = document.getElementById('global-loader'); if (el) { el.style.display = 'flex'; document.body.style.overflow = 'hidden'; } } catch(_){}
+    }
+    function hideGlobalLoader(){
+      try { const el = document.getElementById('global-loader'); if (el) { el.style.display = 'none'; document.body.style.overflow = ''; } } catch(_){}
+    }
+    function openSuccessModal(){
+      try {
+        const dlg = document.getElementById('success-dialog');
+        if (!dlg) return;
+        try { dlg.showModal(); } catch(_) { dlg.setAttribute('open',''); }
+      } catch(_){}
+    }
     if (applyPromoBtn) {
       applyPromoBtn.addEventListener('click', async ()=>{
         const code = (promoInput.value||'').trim();
@@ -378,33 +439,47 @@
     }
     // render initial
     render();
-    // Mobile-only: instant add-to-cart for upsell Buy buttons in cart section
+    // Instant add-to-cart for upsell Buy buttons in cart section (all devices) with loading state
     (function enableInstantUpsellAdd(){
       try {
         const buyLinks = document.querySelectorAll('.near_goods .btn_wrapperx a');
         if (!buyLinks || !buyLinks.length) return;
-        const isMobile = () => window.matchMedia('(max-width: 768px)').matches;
         const updateBadge = () => {
-          const count = Cart.list().reduce((s,i)=> s + (i.qty||1), 0);
+          const count = Cart.list().reduce((sum,item)=> sum + (item.qty||1), 0);
           document.querySelectorAll('[data-cart-count]').forEach(el=> el.textContent = String(count));
         };
         buyLinks.forEach(a=>{
           a.addEventListener('click', (e)=>{
-            if (!isMobile()) return; // keep default navigation on desktop/tablet
             const href = a.getAttribute('href') || '';
             const url = new URL(href, location.origin);
             const product = url.searchParams.get('product');
-            if (!product) return;
+            if (!product) return; // allow normal nav for unknown links
             e.preventDefault();
-            if (product === 'carsbag') {
-              Cart.add({ product: 'carsbag', set: 'front', pattern: '', matColor: '#000000', trimColor: '#000000', qty: 1, subtotal: ADDON_CARSBAG_PRICE });
-            } else if (product === 'home') {
-              Cart.add({ product: 'home', set: 'full', pattern: '', matColor: '#000000', trimColor: '#000000', qty: 1, subtotal: ADDON_HOME_PRICE });
-            } else {
-              return; // unknown product, skip interception
+            // Loading state
+            const textEl = a.querySelector('.text') || a;
+            const prev = textEl.textContent;
+            textEl.textContent = 'Adding...';
+            a.setAttribute('aria-disabled','true');
+            const prevStyle = a.getAttribute('style') || '';
+            a.setAttribute('style', prevStyle + (prevStyle && !/;\s*$/.test(prevStyle) ? '; ' : '') + 'pointer-events:none; opacity:.7;');
+            try {
+              if (product === 'carsbag') {
+                Cart.add({ product: 'carsbag', set: 'front', pattern: '', matColor: '#000000', trimColor: '#000000', qty: 1, subtotal: ADDON_CARSBAG_PRICE });
+              } else if (product === 'home') {
+                Cart.add({ product: 'home', set: 'full', pattern: '', matColor: '#000000', trimColor: '#000000', qty: 1, subtotal: ADDON_HOME_PRICE });
+              }
+              render();
+              updateBadge();
+              textEl.textContent = 'Added';
+            } catch(_) {
+              textEl.textContent = prev || 'Buy';
             }
-            render();
-            updateBadge();
+            // Restore interactivity after a short delay
+            setTimeout(()=>{
+              a.removeAttribute('aria-disabled');
+              a.setAttribute('style', prevStyle);
+              try { textEl.textContent = prev || 'Buy'; } catch(_) {}
+            }, 1200);
           });
         });
       } catch(_) {}
@@ -443,6 +518,7 @@
           const tax = +( (((preDiscount) * (taxCfg.value||0)) / 100).toFixed(2) );
           const total = (preDiscount - discountAmount) + shipping + tax;
           return actions.order.create({
+            application_context: { shipping_preference: 'GET_FROM_FILE' },
             purchase_units: [{
               amount: { value: total.toFixed(2), currency_code: 'CAD',
                 breakdown: {
@@ -461,6 +537,7 @@
           });
         },
         onApprove: function(data, actions) {
+          try { showGlobalLoader(); } catch(_){}
           return actions.order.capture().then(async function(details) {
             const items = Cart.list();
             const subtotal = Cart.total();
@@ -478,9 +555,6 @@
               details?.purchase_units?.[0]?.shipping?.phone_number ||
               ''
             );
-            if (!phone) {
-              try { phone = prompt('Enter your phone number (for delivery contact):', '') || ''; } catch(_) {}
-            }
             const orderNumber = (function(){
               const rnd = Math.floor(1000 + Math.random() * 9000);
               return `1010${rnd}`;
@@ -509,9 +583,17 @@
             try { Cart.clear(); } catch(_) { }
             try { if (window.updateCartBadge) window.updateCartBadge(); } catch(_) { }
             try { rowsEl.innerHTML = ''; render(); } catch(_) { }
-            alert('Payment captured. Thank you! A confirmation email has been sent.');
+            // populate success modal email
+            try {
+              const emailEl = document.getElementById('success-email');
+              if (emailEl) emailEl.textContent = String(payload?.payerEmail || details?.payer?.email_address || 'your email');
+            } catch(_){ }
+            try { hideGlobalLoader(); } catch(_){ }
+            openSuccessModal();
           });
-        }
+        },
+        onCancel: function(){ try { hideGlobalLoader(); } catch(_){} },
+        onError: function(){ try { hideGlobalLoader(); } catch(_){} }
       }).render('#paypal-button-container');
     }
     // Terms modal open/close
@@ -519,11 +601,16 @@
       const open = document.getElementById('open-terms');
       const dlg = document.getElementById('terms-dialog');
       const close = document.getElementById('close-terms');
+      const succ = document.getElementById('success-dialog');
+      const succClose = document.getElementById('close-success');
       if (open && dlg) {
         open.addEventListener('click', function(e){ e.preventDefault(); try { dlg.showModal(); } catch(_){ dlg.setAttribute('open',''); } });
       }
       if (close && dlg) {
         close.addEventListener('click', function(){ try { dlg.close(); } catch(_){ dlg.removeAttribute('open'); } });
+      }
+      if (succ && succClose) {
+        succClose.addEventListener('click', function(){ try { succ.close(); } catch(_){ succ.removeAttribute('open'); } });
       }
     })();
   </script>
