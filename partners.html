@@ -10,6 +10,14 @@
   <meta property="og:description" content="Wholesale and collaboration opportunities with EVATECH.">
   <meta property="og:image" content="./static/images/logo.png">
   <title>Partners — EVATECH</title>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-4ZGVB06TPX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-4ZGVB06TPX');
+  </script>
   <link rel="shortcut icon" href="favicon.ico">
   <link rel="apple-touch-icon" type="image/png" href="apple-touch-icon-57x57-precomposed.png" sizes="57x57">
   <link rel="apple-touch-icon" type="image/png" href="apple-touch-icon-60x60-precomposed.png" sizes="60x60">
@@ -305,7 +313,6 @@
       var surveyTpl = document.getElementById('partner-survey');
       var collabFormTpl = document.getElementById('collab-form');
       var wholesaleFormTpl = document.getElementById('wholesale-form');
-
       function createModal(){
         return new tingle.modal({
           footer: false,

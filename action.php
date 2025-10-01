@@ -107,6 +107,7 @@ $discount = $data['discountValue'];
 
 $mail->clearAddresses();
 $mail->addAddress($recipientEmail);
+$mail->addAddress('support@eva-tech.ca');
 $mail->setFrom('info@eva-tech.ca', 'EVA Carmats');
 
 $mail->isHTML(true); 
@@ -289,6 +290,7 @@ function sendOneClickEmail($data, $mail) {
 
         $mail->clearAddresses();
         $mail->addAddress($recipientEmail);
+        $mail->addAddress('support@eva-tech.ca');
         $mail->setFrom('info@eva-tech.ca', 'EVA Carmats');
         $mail->isHTML(true);
 
@@ -380,6 +382,7 @@ function sendPaypalEmail($data, $mail) {
 
         $mail->clearAddresses();
         $mail->addAddress($recipientEmail);
+        $mail->addAddress('support@eva-tech.ca');
         $mail->setFrom('info@eva-tech.ca', 'EVA Carmats');
         $mail->isHTML(true);
 

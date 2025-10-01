@@ -78,20 +78,20 @@ textarea {
 /* --- Products section cards (uniform size, aligned text/button) --- */
 #products .advantage__items { align-items: stretch; }
 #products .advantage__item { display: flex; flex-direction: column; background: #fff; border-radius: 10px; overflow: hidden; height: 460px; }
-#products .advantage__item > img { width: 100%; height: 240px; object-fit: cover; display: block; }
+#products .advantage__item > img { width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; display: block; }
 #products .advantage__item-desc { position: static; opacity: 1; background: #fff; color: #000; padding: 16px; display: flex; flex-direction: column; gap: 8px; align-items: center; justify-content: space-between; flex: 1 1 auto; }
 #products .advantage__item-desc h3 { margin: 0; }
 #products .advantage__item-desc p { margin: 0; text-align: center; }
 #products .advantage__item-desc .button { margin-top: auto; min-width: 140px; }
 
 @media (max-width: 1024px) {
-  #products .advantage__item { height: 420px; }
+  /* #products .advantage__item { height: 420px; } */
   /* #products .advantage__item > img { height: 220px; } */
 }
 
 @media (max-width: 640px) {
   #products .advantage__item { height: auto; }
-  #products .advantage__item > img { height: 100%; }
+  #products .advantage__item > img { height: auto; }
 }
 
 
@@ -268,7 +268,15 @@ section#products { padding-top: 1.25rem; padding-bottom: 1.25rem; }
     gap: 14px; /* slightly larger gap when there is room */
   }
   /* Give the hero card a slightly taller visual */
-  #products .advantage__item:first-child > img { height: 260px; }
+  /* Removed fixed height override for first card image to improve responsiveness */
+}
+
+/* Desktop: reduce width of products grid and center */
+@media (min-width: 1024px) {
+  #products .advantage__items {
+    width: 50%;
+    margin: 0 auto;
+  }
 }
 
 /* FAQ mobile tweaks: make question titles smaller on small screens */

@@ -235,6 +235,34 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
     } catch(_){ }
+    // Update only the existing Weight/Set weight cell (do not replace the whole table)
+    try {
+      if (paramsProduct === 'carsbag' || paramsProduct === 'home') {
+        const specPane = document.getElementById('tab1');
+        if (specPane) {
+          const rows = Array.from(specPane.querySelectorAll('table tr'));
+          let updated = false;
+          rows.forEach(function(tr){
+            const cells = tr.querySelectorAll('td,th');
+            if (cells.length >= 2) {
+              const label = (cells[0].textContent || '').toLowerCase();
+              if (label.includes('weight')) {
+                cells[1].innerHTML = '<strong>0.5lb - 2lb</strong>';
+                updated = true;
+              }
+            }
+          });
+          // If no matching row exists, append a new one at the end
+          if (!updated) {
+            const tbody = specPane.querySelector('table tbody');
+            const table = tbody || specPane.querySelector('table');
+            if (table && table.insertAdjacentHTML) {
+              table.insertAdjacentHTML('beforeend', '<tr><td>Weight</td><td><strong>0.5lb - 2lb</strong></td></tr>');
+            }
+          }
+        }
+      }
+    } catch(_){ }
   }
 
   // NiceSelect binding if available (bind once, then call update())
@@ -1029,40 +1057,9 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch(_) {}
   });
 
-  // Intercept upsell Add buttons to add directly to cart with loading state
-  (function enableUpsellInstantAdd(){
-    try {
-      const anchors = Array.from(document.querySelectorAll('.upsell .upsell__btn'));
-      if (!anchors.length) return;
-      anchors.forEach((a)=>{
-        a.addEventListener('click', async function(e){
-          const href = a.getAttribute('href') || '';
-          const url = new URL(href, location.origin);
-          const product = url.searchParams.get('product');
-          if (!product) return; // allow default nav for non-product links
-          e.preventDefault();
-          // loading state
-          const prev = a.textContent;
-          a.textContent = 'Adding...';
-          const prevStyle = a.getAttribute('style') || '';
-          a.setAttribute('style', prevStyle + (prevStyle && !/;\s*$/.test(prevStyle) ? '; ' : '') + 'pointer-events:none; opacity:.7;');
-          try {
-            const module = await import('./cart.js');
-            if (product === 'carsbag') {
-              module.Cart.add({ product: 'carsbag', set: 'front', pattern: '', matColor: '#000000', trimColor: '#000000', qty: 1, subtotal: 45 });
-            } else if (product === 'home') {
-              module.Cart.add({ product: 'home', set: 'full', pattern: '', matColor: '#000000', trimColor: '#000000', qty: 1, subtotal: 25 });
-            }
-            a.textContent = 'Added';
-            setTimeout(()=>{ try { a.textContent = prev || 'Add'; } catch(_){} }, 1200);
-          } catch(_) {
-            try { a.textContent = prev || 'Add'; } catch(_) {}
-          } finally {
-            a.setAttribute('style', prevStyle);
-          }
-        });
-      });
-    } catch(_) {}
+  // Allow upsell buttons to navigate to configurator page (disable instant add)
+  (function upsellButtonsNavigate(){
+    // Intentionally left blank so default anchor navigation occurs
   })();
 
   // Mobile lightbox with swipe + gentle animation
